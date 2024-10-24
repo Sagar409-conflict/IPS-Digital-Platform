@@ -1,0 +1,33 @@
+{
+  "DEFAULT": "Action successfully performed.",
+  "DETAILS_OF_ORGANIZER": "Organizer details fetched successfully",
+
+  "EMAIL_EXIST": "Email is already in use, please try again with different email",
+
+  "FORGOT_PASWORD_EMAIL_SENT_SUCESS": "Password reset email sent successfully",
+
+  "INVALID_OTP": "The OTP you entered is incorrect. Please try again.",
+  "INVALID_REQUEST_PARAMS": "The provided request parameters are invalid. Please check your request and try again.",
+
+  "LIST_OF_ORGANIZER": "Organizers list retrieved successfully",
+  "LOGIN_SUCCESS": "Welcome back! You have successfully logged in",
+
+  "ORGANIZER_CREATED_SUCCESSFULLY": "Organizer registration completed successfully, Please check email for account credentials",
+  "OTP_EXPIRED": "The OTP has expired, Please request a new OTP",
+  "OTP_VALIDATE_SUCCESSFULLY": "OTP has been verified successfully",
+  "OTP_RESEND_SUCCESS": "A new verification code has been sent to your email",
+
+  "PASSWORD_RESET_SUCCESS": "Your password has been successfully reset",
+
+  "PROFILE_UPDATED_SUCCESS": "Profile has been updated successfully",
+  "RECORD_SUCCESSFULLY_DELETED": "Record was successfully deleted from the system",
+
+  "STATUS_UPDATED_SUCCESS": "Status has been successfully updated for requested record",
+
+  "UNAUTHORIZED": "Access denied. You do not have the necessary permissions to access this resource",
+  "UNABLE_TO_FOUND_A_RECORD": "Unable to find the requested record in the system",
+  "USER_INACTIVE": "Your account is currently inactive, Please contact support to reactivate",
+  "USER_NOT_EXIST": "Unable to find an active account with the provided parameters",
+  "UNABLE_TO_UPDATE": "The requested update operation could not be completed",
+  "UNABLE_TO_DELETE": "The requested delete operation could not be completed"
+}
