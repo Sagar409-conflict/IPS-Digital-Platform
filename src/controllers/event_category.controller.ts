@@ -8,10 +8,11 @@ import { encrypt } from '../helpers/encrypt'
 import { statusCode } from '../config/statucCode'
 import { IPagination } from '../types/common.interface'
 import mailTemplateService from '../services/mail_template.service'
-import { uploadFile } from '../helpers/fileUpload'
+import { removeFile, uploadFile } from '../helpers/fileUpload'
 import { UploadedFile } from 'express-fileupload'
 import eventCategoryService from '../services/event_category.service'
 import { Op } from 'sequelize'
+import { CONFIG } from '../config/config'
 
 class EventCategoryController {
   /**************************************************************************
@@ -58,12 +59,12 @@ class EventCategoryController {
     }
   }
 
-  /****************************************************
-   * REST API endpoint for get a list of all Organizers
+  /**********************************************************
+   * REST API endpoint for get a list of all event categories
    * @param req
    * @param res
    * @returns
-   ****************************************************/
+   **********************************************************/
   async getAll(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
@@ -74,8 +75,6 @@ class EventCategoryController {
         page_number: typeof page_number === 'undefined' ? 1 : Number(page_number),
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
-        status: typeof status === 'undefined' ? undefined : Number(status),
-        role: ROLES.ORGANIZER,
       }
 
       //Get all customizations based on search and pagination
@@ -91,12 +90,12 @@ class EventCategoryController {
     }
   }
 
-  /**********************************************************
-   * REST API endpoint for get details of specified organiser
+  /****************************************************************
+   * REST API endpoint for get details of specified event category
    * @param req
    * @param res
    * @returns
-   **********************************************************/
+   ****************************************************************/
   async get(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
@@ -116,16 +115,55 @@ class EventCategoryController {
     }
   }
 
-  /****************************************************************
-   * REST API endpoint for update an information for requested user
+  /************************************************
+   * REST API endpoint for update an event category
    * @param req
    * @param res
    * @returns
-   ***************************************************************/
+   ************************************************/
   async update(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+    console.log('dfsdfsdfs')
 
     try {
+      let eventCategoryId = req.params.id
+      let payload = req.body
+      let icon_images_status: boolean = false
+
+      // Check if user has necessary permissions or not
+      if (req.user.role !== ROLES.SUPER_ADMIN) return unAuthorized(res, languageCode)
+
+      // Check if whether the data is exist in the database or not
+      const record = await eventCategoryService.findOne({
+        where: { id: eventCategoryId },
+        raw: true,
+      })
+
+      if (!record) return badRequest(res, languageCode, 'EVENT_CATEGORY_NOT_EXIST')
+
+      // Upload the icon image if provided in req.files
+      if (
+        req.files != undefined &&
+        req.files.icon_image !== undefined &&
+        !Array.isArray(req.files.icon_image)
+      ) {
+        payload.icon_image = await uploadFile(req.files.icon_image, `event_category_icons/`)
+        icon_images_status = true // modify the icon image flag and set it to true
+      }
+      // Perform Update operation to the database
+      const userUpdated = (await eventCategoryService.update(eventCategoryId, payload))[0]
+
+      // Check weather it was updated or not
+      if (!userUpdated) return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')
+
+      // Fetch an updated record and send as a response
+      const result = await userService.findOne({ where: { id: eventCategoryId }, raw: true })
+
+      // If flag is set 'true' it means need to delete previous image form the storage
+      if (icon_images_status) await removeFile(record?.icon_image)
+
+      // Send the updated record as a response with success message
+      return success(res, languageCode, undefined, 'EVENT_CATEGORY_UPDATED_SUCCESS', result)
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
@@ -133,13 +171,29 @@ class EventCategoryController {
   }
 
   /************************************************
-   * REST API endpoint for delete an requested user
+   * REST API endpoint for delete an event category
    * @param req
    * @param res
    ***********************************************/
   async delete(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
+      // Check if logged in user has necessary permissions or not
+      if (req.user.role !== ROLES.SUPER_ADMIN) return unAuthorized(res, languageCode)
+
+      // Check Request has necessary parameters or not
+      if (!req.params.id)
+        return internalServer(res, languageCode, req.body, 'INVALID_REQUEST_PARAMS')
+
+      const { id } = req.params
+      const record = await eventCategoryService.findOne({ where: { id }, raw: true })
+
+      if (!record) return badRequest(res, languageCode, 'EVENT_CATEGORY_NOT_EXIST')
+      const result = await eventCategoryService.delete(id)
+      if (!result) return internalServer(res, languageCode, req.body, 'UNABLE_TO_DELETE')
+
+      await removeFile(record?.icon_image)
+      return success(res, languageCode, undefined, 'RECORD_SUCCESSFULLY_DELETED')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)

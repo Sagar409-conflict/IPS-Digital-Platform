@@ -82,7 +82,7 @@ class EventCategoryService {
       where: {
         id: id,
       },
-      attributes: ['id', 'name', 'email', 'contact_number'],
+      attributes: ['id', 'title', 'email', 'contact_number'],
     })
   }
 }

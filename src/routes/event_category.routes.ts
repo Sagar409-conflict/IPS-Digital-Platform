@@ -15,6 +15,19 @@ eventCategoryRoutes.post(
 )
 
 eventCategoryRoutes.get('/', EventCategoryController.getAll)
+eventCategoryRoutes.put(
+  '/:id',
+  AuthGuard,
+  checkRole([ROLES.SUPER_ADMIN]),
+  validate('updateEventCategory'),
+  EventCategoryController.update
+)
 eventCategoryRoutes.get('/:id', EventCategoryController.get)
+eventCategoryRoutes.delete(
+  '/:id',
+  AuthGuard,
+  checkRole([ROLES.SUPER_ADMIN]),
+  EventCategoryController.delete
+)
 
 export default eventCategoryRoutes

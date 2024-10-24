@@ -41,9 +41,11 @@ export const validateFileType = (file: UploadedFile, ALLOWED_TYPES: string[]): b
   return ALLOWED_TYPES.includes(extension)
 }
 
-export const removeFile = async (path: string): Promise<{ error: boolean; message: string }> => {
+export const removeFile = async (
+  filePath: string
+): Promise<{ error: boolean; message: string }> => {
   return new Promise((resolve) => {
-    fs.unlink(path, (err) => {
+    fs.unlink(path.join(__dirname, `../public${filePath}`), (err) => {
       if (err) {
         console.error(`Error deleting file: ${err.message}`)
         resolve({
@@ -51,6 +53,7 @@ export const removeFile = async (path: string): Promise<{ error: boolean; messag
           message: err.message,
         })
       } else {
+        console.error(`File deleted successfully`)
         resolve({
           error: false,
           message: 'File deleted successfully',

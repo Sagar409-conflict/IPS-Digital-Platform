@@ -8,6 +8,7 @@
   "EVENT_CATEGORY_CREATED": "Event Category created successfully!",
   "EVENT_CATEGORY_LIST": "Event Category list retrieved successfully",
   "EVENT_CATEGORY_NOT_EXIST": "Request Event Category is not exist",
+  "EVENT_CATEGORY_UPDATED_SUCCESS": "Event Category updated successfully!",
 
   "FORGOT_PASWORD_EMAIL_SENT_SUCESS": "Password reset email sent successfully",
 
