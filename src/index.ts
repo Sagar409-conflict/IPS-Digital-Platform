@@ -7,7 +7,6 @@ import bodyParser from 'body-parser'
 import { CONFIG } from './config/config'
 import route from './routes'
 import connectDB from './models'
-
 import { Server } from 'http'
 import fileUpload from 'express-fileupload'
 
@@ -37,8 +36,7 @@ app.use(
   })
 )
 // Enable file upload support
-// app.use(express.static(path.join(__dirname, 'public')))
-
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(fileUpload())
 
 app.use(bodyParser.urlencoded({ limit: '500mb', extended: false }))
@@ -67,6 +65,7 @@ connectDB().then(() => {
 const bootstrap = async () => {
   try {
     httpServer.listen(PORT, () => {
+      console.log('>>>>', __dirname)
       console.log(`Server is running on port ${PORT}`)
     })
   } catch (error) {

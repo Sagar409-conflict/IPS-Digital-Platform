@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import organizerController from '../controllers/organizer.controller'
+import EventCategoryController from '../controllers/event_category.controller'
 import { validate } from '../middleware/validator.middleware'
 import { AuthGuard, checkRole } from '../middleware/auth.middleware'
 import { ROLES } from '../helpers/constant'
@@ -10,37 +10,11 @@ eventCategoryRoutes.post(
   '/',
   AuthGuard,
   checkRole([ROLES.SUPER_ADMIN]),
-  validate('createOrganiser'),
-  organizerController.createOrganizer
+  validate('createEventCategory'),
+  EventCategoryController.create
 )
 
-eventCategoryRoutes.get(
-  '/',
-  AuthGuard,
-  checkRole([ROLES.SUPER_ADMIN]),
-  organizerController.getAllOrganizer
-)
+eventCategoryRoutes.get('/', EventCategoryController.getAll)
+eventCategoryRoutes.get('/:id', EventCategoryController.get)
 
-eventCategoryRoutes.get(
-  '/:id',
-  AuthGuard,
-  checkRole([ROLES.SUPER_ADMIN, ROLES.ORGANIZER]),
-  organizerController.get
-)
-
-eventCategoryRoutes.put(
-  '/:id',
-  AuthGuard,
-  checkRole([ROLES.SUPER_ADMIN, ROLES.ORGANIZER]),
-  validate('updatedOrganiser'),
-  organizerController.update
-)
-
-eventCategoryRoutes.delete(
-  '/:id',
-  AuthGuard,
-  checkRole([ROLES.SUPER_ADMIN]),
-  validate('id'),
-  organizerController.delete
-)
 export default eventCategoryRoutes

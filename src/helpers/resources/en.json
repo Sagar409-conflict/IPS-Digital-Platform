@@ -1,8 +1,13 @@
 {
   "DEFAULT": "Action successfully performed.",
   "DETAILS_OF_ORGANIZER": "Organizer details fetched successfully",
+  "DETAILS_OF_EVENT_CATEGORY": "Event Category details fetched successfully",
 
   "EMAIL_EXIST": "Email is already in use, please try again with different email",
+  "EVENT_CATEGORY_EXIST": "Event Category is already exist",
+  "EVENT_CATEGORY_CREATED": "Event Category created successfully!",
+  "EVENT_CATEGORY_LIST": "Event Category list retrieved successfully",
+  "EVENT_CATEGORY_NOT_EXIST": "Request Event Category is not exist",
 
   "FORGOT_PASWORD_EMAIL_SENT_SUCESS": "Password reset email sent successfully",
 
@@ -12,6 +17,8 @@
   "LIST_OF_ORGANIZER": "Organizers list retrieved successfully",
   "LOGIN_SUCCESS": "Welcome back! You have successfully logged in",
 
+  "MEDIA_EVENT_ICON_REQUIRED": "Please upload an icon image",
+
   "ORGANIZER_CREATED_SUCCESSFULLY": "Organizer registration completed successfully, Please check email for account credentials",
   "OTP_EXPIRED": "The OTP has expired, Please request a new OTP",
   "OTP_VALIDATE_SUCCESSFULLY": "OTP has been verified successfully",
@@ -19,8 +26,8 @@
 
   "PASSWORD_RESET_SUCCESS": "Your password has been successfully reset",
 
-  "PROFILE_UPDATED_SUCCESS": "Profile has been updated successfully",
   "RECORD_SUCCESSFULLY_DELETED": "Record was successfully deleted from the system",
+  "PROFILE_UPDATED_SUCCESS": "Profile has been updated successfully",
 
   "STATUS_UPDATED_SUCCESS": "Status has been successfully updated for requested record",
 

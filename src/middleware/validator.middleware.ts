@@ -88,6 +88,14 @@ const updatedOrganiserSchema = Joi.object({
     .required(),
 })
 
+const createEventCategorySchema = Joi.object({
+  title: Joi.string().required().messages({
+    'string.base': 'Title should be a type of text.',
+    'string.empty': 'Title cannot be empty.',
+    'any.required': 'Title is required.',
+  }),
+  icon_image: Joi.string().optional(),
+})
 const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   id: idSchema,
   register: registerSchema,
@@ -95,6 +103,7 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   resetPassword: resetPasswordSchema,
   createOrganiser: createOrganiserSchema,
   updatedOrganiser: updatedOrganiserSchema,
+  createEventCategory: createEventCategorySchema,
 }
 
 export const validate = (schemaName: string) => {

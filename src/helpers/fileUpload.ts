@@ -3,6 +3,7 @@ import fs from 'fs'
 import fsPromise from 'fs/promises'
 import { UploadedFile } from 'express-fileupload'
 import { IAllMediaFields } from '../types/common.interface'
+import { generateRandomString } from './common'
 
 /**
  * Upload a single file to the specified directory.
@@ -20,7 +21,8 @@ export const uploadFile = async (file: UploadedFile, uploadDir: string): Promise
     fs.mkdirSync(uploadDirPath, { recursive: true })
   }
 
-  const uploadPath = path.join(uploadDirPath, file.name)
+  let generateFileName = await generateRandomString(16)
+  const uploadPath = path.join(uploadDirPath, `${generateFileName}${path.extname(file.name)}`)
 
   return new Promise((resolve, reject) => {
     // Move the file to the upload directory

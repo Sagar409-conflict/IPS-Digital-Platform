@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Digital Platform - Backend",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node dist/index.js",
     "build": "rimraf dist && tsc",

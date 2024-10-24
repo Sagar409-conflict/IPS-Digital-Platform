@@ -29,14 +29,25 @@ export const success = (
   data: object | object[] | null = null,
   message = getMessage(code, 'DEFAULT', languageCode)
 ) => {
-  const resData = {
-    // error: false,
-    message: message,
-    statusCode: status_code,
-    // messageCode: code,
-    data,
+  if (data !== null) {
+    const resData = {
+      // error: false,
+      message: message,
+      statusCode: status_code,
+      // messageCode: code,
+      data,
+    }
+    return res.status(status_code).json(resData)
+  } else {
+    const resData = {
+      // error: false,
+      message: message,
+      statusCode: status_code,
+      // messageCode: code,
+      // data,
+    }
+    return res.status(status_code).json(resData)
   }
-  return res.status(status_code).json(resData)
 }
 
 export const notFound = (

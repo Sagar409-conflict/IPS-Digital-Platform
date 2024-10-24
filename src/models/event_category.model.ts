@@ -1,10 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
 import { v4 as uuidv4 } from 'uuid'
 import sequelize from '../config/database'
-import { ROLES, ROLES_ARRAY } from '../helpers/constant'
-import { ICreateUser, IUser } from '../types/user.interface'
 import { ICreateEventCatgory, IEventCatgory } from '../types/event_category.interface'
-// import Agent from '../models/agent.model'
 
 class EventCategory extends Model<ICreateEventCatgory> implements IEventCatgory {
   public id!: string
@@ -46,6 +43,19 @@ EventCategory.init(
     hooks: {
       beforeCreate: async (eventCategory) => {
         eventCategory.id = uuidv4()
+      },
+      afterFind: async (record: EventCategory) => {
+        if (Array.isArray(record)) {
+          record.forEach((row) => {
+            if (row.icon_image) {
+              row.icon_image = `${process.env.LOCAL_URL}${row.icon_image}`
+            }
+          })
+        } else {
+          if (record?.icon_image) {
+            record.icon_image = `${process.env.LOCAL_URL}${record.icon_image}`
+          }
+        }
       },
     },
   }

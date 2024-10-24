@@ -7,7 +7,7 @@ export interface IEventCatgory {
 }
 
 export interface ICreateEventCatgory {
-  id: string
+  id?: string
   title: string
   icon_image: string
   createdAt?: Date

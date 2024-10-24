@@ -65,7 +65,6 @@ class AuthController {
           let token = await generateToken(isValidUser)
           const user = await userService.findOneByEmail(email)
           return success(res, languageCode, statusCode.SUCCESS, 'LOGIN_SUCCESS', {
-            ...user,
             token,
           })
         } else {
@@ -102,9 +101,7 @@ class AuthController {
         otp,
       }
       await mailTemplateService.sendFogotPasswordMail(mailBody)
-      return success(res, languageCode, statusCode.SUCCESS, 'FORGOT_PASWORD_EMAIL_SENT_SUCESS', {
-        otp,
-      })
+      return success(res, languageCode, statusCode.SUCCESS, 'FORGOT_PASWORD_EMAIL_SENT_SUCESS')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
