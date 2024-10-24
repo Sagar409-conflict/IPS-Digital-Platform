@@ -52,3 +52,7 @@ export interface IPagination {
   status?: number
   role?: string
 }
+export interface IAllMediaFields {
+  icon_image?: string
+  profile_image?: string
+}
