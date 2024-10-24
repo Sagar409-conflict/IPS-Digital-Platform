@@ -15,8 +15,8 @@ class User extends Model<ICreateUser> implements IUser {
   public password!: string
   public country_code!: string
   public mobile_number!: string
-  public otp!: number
-  public otp_expire_time!: Date
+  public otp!: number | null
+  public otp_expire_time!: Date | null
   public status!: number
   public readonly createdAt!: Date
   public readonly updatedAt!: Date

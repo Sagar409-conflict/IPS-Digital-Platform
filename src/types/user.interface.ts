@@ -25,8 +25,8 @@ export interface ICreateUser {
   password: string
   country_code: string
   mobile_number: string
-  otp?: number
-  otp_expire_time?: Date
+  otp?: number | null
+  otp_expire_time?: Date | null
   status?: number
   createdAt?: Date
   updatedAt?: Date

@@ -148,16 +148,14 @@ class OrganizerController {
     }
   }
 
-  /**
+  /************************************************
    * REST API endpoint for delete an requested user
    * @param req
    * @param res
-   */
+   ***********************************************/
   async delete(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
-      console.log('REQ.USER : ', req.user)
-
       if (req.user.role !== ROLES.SUPER_ADMIN) return unAuthorized(res, languageCode)
 
       if (!req.params.id)
