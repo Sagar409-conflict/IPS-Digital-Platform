@@ -23,7 +23,7 @@
   "MEDIA_NEWS_ICON_REQUIRED": "Media file is required",
 
   "NEWS_CATEGORY_EXIST": "This field is already exist",
-  
+
   "NEWS_CATEGORY_CREATED": "News Category Created successfully",
   "NEWS_CATEGORY_LIST": "Get All Data Successfully",
   "NEWS_CATEGORY_NOT_FOUND": "News Category Not Found",
@@ -49,12 +49,4 @@
   "USER_NOT_EXIST": "Unable to find an active account with the provided parameters",
   "UNABLE_TO_UPDATE": "The requested update operation could not be completed",
   "UNABLE_TO_DELETE": "The requested delete operation could not be completed"
- 
-  
-
-
-
-
-
-
 }

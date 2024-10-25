@@ -104,6 +104,11 @@ const createEventCategorySchema = Joi.object({
 
 const updateEventCategorySchema = Joi.object({
   id: Joi.string().uuid().required(),
+  title: Joi.string().optional().messages({
+    'string.base': 'Title should be a type of text.',
+    'string.empty': 'Title cannot be empty.',
+  }),
+  icon_image: Joi.string().optional(),
 })
 const createNewsCategorySchema = Joi.object({
   title: Joi.string().required().messages({
@@ -134,7 +139,7 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   createEventCategory: createEventCategorySchema,
   updateEventCategory: updateEventCategorySchema,
   createNewsCategory: createNewsCategorySchema,
-  updateNewsCategory: updateNewsCategorySchema
+  updateNewsCategory: updateNewsCategorySchema,
 }
 
 export const validate = (schemaName: string) => {
