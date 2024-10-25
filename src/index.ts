@@ -65,7 +65,7 @@ connectDB().then(() => {
 const bootstrap = async () => {
   try {
     httpServer.listen(PORT, () => {
-      console.log('>>>>', __dirname)
+      // console.log('>>>>', __dirname)
       console.log(`Server is running on port ${PORT}`)
     })
   } catch (error) {

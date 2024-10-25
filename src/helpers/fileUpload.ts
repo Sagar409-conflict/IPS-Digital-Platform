@@ -24,6 +24,8 @@ export const uploadFile = async (file: UploadedFile, uploadDir: string): Promise
   let generateFileName = await generateRandomString(16)
   const uploadPath = path.join(uploadDirPath, `${generateFileName}${path.extname(file.name)}`)
 
+  console.log("uploadPath : ",uploadPath);
+  
   return new Promise((resolve, reject) => {
     // Move the file to the upload directory
     file.mv(uploadPath, (err) => {

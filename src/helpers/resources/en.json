@@ -9,6 +9,7 @@
   "EVENT_CATEGORY_LIST": "Event Category list retrieved successfully",
   "EVENT_CATEGORY_NOT_EXIST": "Request Event Category is not exist",
   "EVENT_CATEGORY_UPDATED_SUCCESS": "Event Category updated successfully!",
+  "Error deleting associated icon image": "facing issue to delete icone in to local folder",
 
   "FORGOT_PASWORD_EMAIL_SENT_SUCESS": "Password reset email sent successfully",
 
@@ -19,6 +20,16 @@
   "LOGIN_SUCCESS": "Welcome back! You have successfully logged in",
 
   "MEDIA_EVENT_ICON_REQUIRED": "Please upload an icon image",
+  "MEDIA_NEWS_ICON_REQUIRED": "Media file is required",
+
+  "NEWS_CATEGORY_EXIST": "This field is already exist",
+  
+  "NEWS_CATEGORY_CREATED": "News Category Created successfully",
+  "NEWS_CATEGORY_LIST": "Get All Data Successfully",
+  "NEWS_CATEGORY_NOT_FOUND": "News Category Not Found",
+  "NEWS_CATEGORY_FOUND": "Get Data Successfully",
+  "NEWS_CATEGORY_DELETED_SUCCESSFULLY": "Delete data successfully",
+  "NEWS_CATEGORY_UPDATED_SUCCESS": "Update newscategory successfully",
 
   "ORGANIZER_CREATED_SUCCESSFULLY": "Organizer registration completed successfully, Please check email for account credentials",
   "OTP_EXPIRED": "The OTP has expired, Please request a new OTP",
@@ -38,4 +49,12 @@
   "USER_NOT_EXIST": "Unable to find an active account with the provided parameters",
   "UNABLE_TO_UPDATE": "The requested update operation could not be completed",
   "UNABLE_TO_DELETE": "The requested delete operation could not be completed"
+ 
+  
+
+
+
+
+
+
 }
