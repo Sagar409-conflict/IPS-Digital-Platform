@@ -123,13 +123,7 @@ class NewsCategoryController {
       }
       await newsCategoryService.delete(id)
 
-      return success(
-        res,
-        languageCode,
-        statusCode.SUCCESS,
-        'NEWS_CATEGORY_DELETED_SUCCESSFULLY',
-        newsCategory
-      )
+      return success(res, languageCode, statusCode.SUCCESS, 'NEWS_CATEGORY_DELETED_SUCCESSFULLY')
     } catch (error) {
       console.error('��� ERROR ��', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
@@ -165,6 +159,7 @@ class NewsCategoryController {
         !Array.isArray(req.files.icon_image)
       ) {
         payload.icon_image = await uploadFile(req.files.icon_image, `news_category_icons/`)
+        icon_images_status = true
       }
       const userUpdated = (await newsCategoryService.update(newsCategoryId, payload))[0]
 
