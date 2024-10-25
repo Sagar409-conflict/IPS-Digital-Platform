@@ -4,6 +4,8 @@ import fsPromise from 'fs/promises'
 import { UploadedFile } from 'express-fileupload'
 import { IAllMediaFields } from '../types/common.interface'
 import { generateRandomString } from './common'
+import eventService from '../services/event.service'
+import { ICreateEventAssets } from '../types/event_assets.interface'
 
 /**
  * Upload a single file to the specified directory.
@@ -61,6 +63,39 @@ export const removeFile = async (
       }
     })
   })
+}
+
+export const uploadAssetsHelper = async (
+  files: Array<UploadedFile> | UploadedFile,
+  event_id: string,
+  mediaType: string,
+  destinationLocation: string
+) => {
+  let ArrayOfVideoPaths: ICreateEventAssets[] = []
+
+  if (Array.isArray(files)) {
+    const assetsPromise = files.map(async (video) => {
+      const uploadedAssetpath = await uploadFile(video, `${destinationLocation}`)
+
+      ArrayOfVideoPaths.push({
+        event_id,
+        media_type: mediaType,
+        path: uploadedAssetpath,
+      })
+    })
+
+    // Wait for all uploads to complete
+    await Promise.all(assetsPromise)
+    return await eventService.bulkCreateEventAssets(ArrayOfVideoPaths)
+  } else {
+    const uploadedAssetpath = await uploadFile(files, `${destinationLocation}`)
+    ArrayOfVideoPaths.push({
+      event_id,
+      media_type: mediaType,
+      path: uploadedAssetpath,
+    })
+    return await eventService.bulkCreateEventAssets(ArrayOfVideoPaths)
+  }
 }
 
 // function isKeyOfIAllMediaFields(key: string): key is keyof IAllMediaFields {

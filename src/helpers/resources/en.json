@@ -4,11 +4,15 @@
   "DETAILS_OF_EVENT_CATEGORY": "Event Category details fetched successfully",
 
   "EMAIL_EXIST": "Email is already in use, please try again with different email",
-  "EVENT_CATEGORY_EXIST": "Event Category is already exist",
-  "EVENT_CATEGORY_CREATED": "Event Category created successfully!",
-  "EVENT_CATEGORY_LIST": "Event Category list retrieved successfully",
-  "EVENT_CATEGORY_NOT_EXIST": "Request Event Category is not exist",
-  "EVENT_CATEGORY_UPDATED_SUCCESS": "Event Category updated successfully!",
+  "EVENT_CATEGORY_EXIST": "Event category is already exist",
+  "EVENT_CATEGORY_CREATED": "Event category created successfully!",
+  "EVENT_CATEGORY_LIST": "Event category list retrieved successfully",
+  "EVENT_CATEGORY_NOT_EXIST": "Requested event category is not exist",
+  "EVENT_CATEGORY_UPDATED_SUCCESS": "Event category updated successfully!",
+  "EVENT_CREATION_SUCCESS": "Event created successfully!",
+  "EVENT_THUMBNAIL_IMAGE_REQUIRED": "Event thumbnail image is required",
+  "EVENT_VIDEO_REQUIRED": "Event video is required",
+  "EVENT_IMAGE_REQUIRED": "Event image is required",
   "Error deleting associated icon image": "facing issue to delete icone in to local folder",
 
   "FORGOT_PASWORD_EMAIL_SENT_SUCESS": "Password reset email sent successfully",
@@ -23,13 +27,13 @@
   "MEDIA_NEWS_ICON_REQUIRED": "Media file is required",
 
   "NEWS_CATEGORY_EXIST": "This field is already exist",
-  
+
   "NEWS_CATEGORY_CREATED": "News Category Created successfully",
   "NEWS_CATEGORY_LIST": "Get All Data Successfully",
   "NEWS_CATEGORY_NOT_FOUND": "News Category Not Found",
   "NEWS_CATEGORY_FOUND": "Get Data Successfully",
   "NEWS_CATEGORY_DELETED_SUCCESSFULLY": "Delete data successfully",
-  "NEWS_CATEGORY_UPDATED_SUCCESS": "Update newscategory successfully",
+  "NEWS_CATEGORY_UPDATED_SUCCESS": "News category updated successfully!",
 
   "ORGANIZER_CREATED_SUCCESSFULLY": "Organizer registration completed successfully, Please check email for account credentials",
   "OTP_EXPIRED": "The OTP has expired, Please request a new OTP",
@@ -49,12 +53,4 @@
   "USER_NOT_EXIST": "Unable to find an active account with the provided parameters",
   "UNABLE_TO_UPDATE": "The requested update operation could not be completed",
   "UNABLE_TO_DELETE": "The requested delete operation could not be completed"
- 
-  
-
-
-
-
-
-
 }

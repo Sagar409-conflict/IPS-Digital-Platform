@@ -35,28 +35,10 @@ EventCategory.init(
     timestamps: true,
     // paranoid: true,
 
-    scopes: {
-      withPassword: {
-        attributes: undefined,
-      },
-    },
     hooks: {
       beforeCreate: async (eventCategory) => {
         eventCategory.id = uuidv4()
       },
-      // afterFind: async (record: EventCategory) => {
-      //   if (Array.isArray(record)) {
-      //     record.forEach((row) => {
-      //       if (row.icon_image) {
-      //         row.icon_image = `${process.env.LOCAL_URL}${row.icon_image}`
-      //       }
-      //     })
-      //   } else {
-      //     if (record?.icon_image) {
-      //       record.icon_image = `${process.env.LOCAL_URL}${record.icon_image}`
-      //     }
-      //   }
-      // },
     },
   }
 )

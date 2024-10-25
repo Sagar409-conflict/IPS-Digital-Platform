@@ -127,6 +127,44 @@ const updateNewsCategorySchema = Joi.object({
   }),
   icon_image: Joi.string().optional(),
 })
+const createEventSchema = Joi.object({
+  title: Joi.string().required().messages({
+    'string.base': 'Title should be a type of text.',
+    'string.empty': 'Title cannot be empty.',
+    'any.required': 'Title is required.',
+  }),
+  event_category_id: Joi.string().required().messages({
+    'string.empty': 'Event category cannot be empty.',
+    'any.required': 'Event category is required.',
+  }),
+  description: Joi.string().required().messages({
+    'string.empty': 'Description cannot be empty.',
+    'any.required': 'Description is required.',
+  }),
+  city: Joi.string().required().messages({
+    'string.base': 'City should be a type of text.',
+    'string.empty': 'City cannot be empty.',
+    'any.required': 'City is required.',
+  }),
+  state: Joi.string().required().messages({
+    'string.base': 'State should be a type of text.',
+    'string.empty': 'State cannot be empty.',
+    'any.required': 'State is required.',
+  }),
+  country: Joi.string().required().messages({
+    'string.base': 'Country should be a type of text.',
+    'string.empty': 'Country cannot be empty.',
+    'any.required': 'Country is required.',
+  }),
+  event_date: Joi.date()
+    .greater('now') // Ensures the date is greater than the current date
+    .required()
+    .messages({
+      'date.greater': 'Event date must be in the future.',
+      'date.base': 'Invalid date format.',
+      'any.required': 'Event date is required.',
+    }),
+})
 
 const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   id: idSchema,
@@ -140,6 +178,7 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   updateEventCategory: updateEventCategorySchema,
   createNewsCategory: createNewsCategorySchema,
   updateNewsCategory: updateNewsCategorySchema,
+  createEvent: createEventSchema,
 }
 
 export const validate = (schemaName: string) => {

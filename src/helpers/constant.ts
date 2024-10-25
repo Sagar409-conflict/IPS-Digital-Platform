@@ -19,3 +19,13 @@ export const LANGUAGE_CODE = {
   EN: 'en',
   IT: 'it',
 }
+export const EVENT_STATUS = {
+  DRAFT: 'draft',
+  PENDING: 'pending',
+  APPROVE: 'approve',
+  REJECT: 'reject',
+}
+export const EVENT_MEDIA_TYPE = {
+  IMAGE: 'image',
+  VIDEO: 'video',
+} as const
