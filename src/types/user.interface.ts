@@ -10,7 +10,7 @@ export interface IUser {
   mobile_number: string
   otp?: number | null
   otp_expire_time?: Date | null
-  status: number
+  status: string
   createdAt: Date
   updatedAt: Date
 }
@@ -27,7 +27,7 @@ export interface ICreateUser {
   mobile_number: string
   otp?: number | null
   otp_expire_time?: Date | null
-  status?: number
+  status?: string
   createdAt?: Date
   updatedAt?: Date
 }

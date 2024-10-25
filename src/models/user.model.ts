@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
 import { v4 as uuidv4 } from 'uuid'
 import sequelize from '../config/database'
-import { ROLES, ROLES_ARRAY } from '../helpers/constant'
+import { ROLES, ROLES_ARRAY, USER_STATUS } from '../helpers/constant'
 import { ICreateUser, IUser } from '../types/user.interface'
 // import Agent from '../models/agent.model'
 
@@ -17,7 +17,7 @@ class User extends Model<ICreateUser> implements IUser {
   public mobile_number!: string
   public otp!: number | null
   public otp_expire_time!: Date | null
-  public status!: number
+  public status!: string
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
 }
@@ -78,9 +78,10 @@ User.init(
       allowNull: true,
     },
     status: {
-      type: DataTypes.TINYINT,
+      type: DataTypes.ENUM,
+      values: Object.values(USER_STATUS),
       allowNull: false,
-      defaultValue: 1,
+      defaultValue: USER_STATUS.ACTIVE,
     },
   },
   {

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
 import { internalServer, validationErrorResponse } from '../helpers/response'
-import { ROLES, ROLES_ARRAY } from '../helpers/constant'
+import { ROLES, ROLES_ARRAY, USER_STATUS } from '../helpers/constant'
 
 const registerSchema = Joi.object({
   first_name: Joi.string().required(),
@@ -22,6 +22,11 @@ const loginSchema = Joi.object({
 
 const idSchema = Joi.object({
   id: Joi.string().uuid().required(),
+})
+const statusUpdateSchema = Joi.object({
+  status: Joi.string()
+    .valid(...Object.values(USER_STATUS))
+    .required(),
 })
 
 const resetPasswordSchema = Joi.object({
@@ -108,6 +113,7 @@ const updateEventCategorySchema = Joi.object({
 })
 const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   id: idSchema,
+  statusUpdate: statusUpdateSchema,
   register: registerSchema,
   login: loginSchema,
   resetPassword: resetPasswordSchema,
