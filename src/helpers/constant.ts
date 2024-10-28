@@ -6,7 +6,6 @@ export const ROLES_ARRAY = [ROLES.SUPER_ADMIN, ROLES.ORGANIZER]
 export const USER_STATUS = {
   ACTIVE: 'active',
   INACTIVE: 'inactive',
-  BLOCKED: 'blocked',
 }
 export const MODULE_IDENTIFIRES = {
   USER: 'user',
@@ -22,7 +21,7 @@ export const LANGUAGE_CODE = {
 export const EVENT_STATUS = {
   DRAFT: 'draft',
   PENDING: 'pending',
-  APPROVE: 'approve',
+  PUBLISH: 'publish',
   REJECT: 'reject',
 }
 export const EVENT_MEDIA_TYPE = {

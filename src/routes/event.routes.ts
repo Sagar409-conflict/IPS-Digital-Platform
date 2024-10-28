@@ -15,4 +15,14 @@ eventRoutes.post(
   EventController.create
 )
 
+eventRoutes.get('/', EventController.getAll)
+eventRoutes.get('/:id', validate('id'), EventController.get)
+eventRoutes.delete(
+  '/:id',
+  validate('id'),
+  AuthGuard,
+  checkRole([ROLES.SUPER_ADMIN, ROLES.ORGANIZER]),
+  EventController.delete
+)
+
 export default eventRoutes

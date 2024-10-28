@@ -49,7 +49,7 @@ export interface IPagination {
   page_number: number
   total_data?: number
   search?: string
-  status?: number
+  status?: string
   role?: string
 }
 export interface IAllMediaFields {

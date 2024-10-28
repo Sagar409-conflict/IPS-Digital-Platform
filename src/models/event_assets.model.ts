@@ -58,8 +58,5 @@ Event.hasMany(EventAssets, {
 })
 EventAssets.belongsTo(Event, {
   foreignKey: 'event_id',
-  as: 'event_assets',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE',
 })
 export default EventAssets

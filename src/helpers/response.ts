@@ -23,7 +23,7 @@ export const getErrorMessage = (code: string, defaultcode: string, languageCode:
 
 export const success = (
   res: Response,
-  languageCode = LANGUAGE_CODE.EN,
+  languageCode = LANGUAGE_CODE.IT,
   status_code = statusCode.SUCCESS,
   code = '',
   data: object | object[] | null = null,

@@ -2,6 +2,7 @@ import { FindOptions, Op, WhereOptions } from 'sequelize'
 import User from '../models/user.model'
 import { ICreateUser, IUser, IUserResponse } from '../types/user.interface'
 import { IPagination, IResponseAndCount } from '../types/common.interface'
+import { USER_STATUS } from '../helpers/constant'
 
 class UserService {
   async create(payload: ICreateUser): Promise<IUser> {
@@ -76,6 +77,7 @@ class UserService {
     const filter: FindOptions<IUserResponse> = {
       where: {
         email,
+        status: USER_STATUS.ACTIVE,
       },
       raw: true,
     }

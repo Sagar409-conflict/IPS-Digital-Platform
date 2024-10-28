@@ -39,6 +39,7 @@ export interface IUserResponse {
   email: string
   country_code: string
   mobile_number: string
+  status: string
   createdAt: Date
   updatedAt: Date
 }

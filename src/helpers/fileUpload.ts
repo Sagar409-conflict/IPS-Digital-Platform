@@ -17,6 +17,7 @@ import { ICreateEventAssets } from '../types/event_assets.interface'
 export const uploadFile = async (file: UploadedFile, uploadDir: string): Promise<string> => {
   // Ensure the upload directory exists
 
+  uploadDir = uploadDir.replace(/\s+/g, '_')
   const uploadDirPath: string = path.join(__dirname, `../public/uploads/${uploadDir}`)
 
   if (!fs.existsSync(uploadDirPath)) {
@@ -46,6 +47,7 @@ export const validateFileType = (file: UploadedFile, ALLOWED_TYPES: string[]): b
 export const removeFile = async (
   filePath: string
 ): Promise<{ error: boolean; message: string }> => {
+  filePath = filePath.replace(/\s+/g, '_')
   return new Promise((resolve) => {
     fs.unlink(path.join(__dirname, `../public${filePath}`), (err) => {
       if (err) {
@@ -64,7 +66,20 @@ export const removeFile = async (
     })
   })
 }
-
+export const removeFolder = async (folderPath: string) => {
+  folderPath = folderPath.replace(/\s+/g, '_')
+  fs.rm(
+    path.join(__dirname, `../public/uploads/${folderPath}`),
+    { recursive: true, force: true },
+    (err) => {
+      if (err) {
+        console.error('Error deleting folder:', err)
+      } else {
+        console.log('Folder deleted successfully!')
+      }
+    }
+  )
+}
 export const uploadAssetsHelper = async (
   files: Array<UploadedFile> | UploadedFile,
   event_id: string,
@@ -72,6 +87,10 @@ export const uploadAssetsHelper = async (
   destinationLocation: string
 ) => {
   let ArrayOfVideoPaths: ICreateEventAssets[] = []
+
+  destinationLocation = destinationLocation.replace(/\s+/g, '_')
+
+  console.log('🚀 ~ file: fileUpload.ts:78 ~ destinationLocation:', destinationLocation)
 
   if (Array.isArray(files)) {
     const assetsPromise = files.map(async (video) => {

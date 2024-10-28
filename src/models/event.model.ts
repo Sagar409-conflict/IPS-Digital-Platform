@@ -11,9 +11,8 @@ class Event extends Model<ICreateEvent> implements IEvent {
   public thumbnail_image!: string
   public title!: string
   public description!: string
-  public city!: string
-  public state!: string
-  public country!: string
+  public location!: string
+  public location_coordinates!: string
   public event_date!: Date
   public submittedAt!: Date
   public publishedAt!: Date
@@ -43,17 +42,13 @@ Event.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    city: {
-      type: DataTypes.STRING,
+    location: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
-    state: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    country: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    location_coordinates: {
+      type: DataTypes.JSON,
+      allowNull: true,
     },
     event_date: {
       type: DataTypes.DATE,
@@ -92,15 +87,15 @@ Event.init(
 )
 
 //Event Categories Association
-Event.hasMany(EventCategory, {
+Event.belongsTo(EventCategory, {
   foreignKey: 'event_category_id',
-  as: 'event_categories',
+  as: 'event_category',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 })
-EventCategory.belongsTo(Event, {
+EventCategory.hasMany(Event, {
   foreignKey: 'event_category_id',
-  as: 'event',
+  as: 'events',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 })
