@@ -15,6 +15,9 @@
 
   "INVALID_OTP": "The OTP you entered is incorrect. Please try again.",
   "INVALID_REQUEST_PARAMS": "The provided request parameters are invalid. Please check your request and try again.",
+  "INVALID_STATUS_FOR_": "Invalid status for login user",
+  "IMAGE_REQUIRED": "Image is required",
+  "INVALID_STATUS": "Invalid status",
 
   "LIST_OF_ORGANIZER": "Organizers list retrieved successfully",
   "LOGIN_SUCCESS": "Welcome back! You have successfully logged in",
@@ -30,6 +33,12 @@
   "NEWS_CATEGORY_FOUND": "Get Data Successfully",
   "NEWS_CATEGORY_DELETED_SUCCESSFULLY": "Delete data successfully",
   "NEWS_CATEGORY_UPDATED_SUCCESS": "Update newscategory successfully",
+  "NEWS_CREATED_SUCCESSFULLY": "News created successfully",
+  "NEWS_LIST": "News data get successfully",
+  "NEWS_NOT_FOUND": "News not found",
+  "NEWS_DELETED_SUCCESSFULLY" : "News delete successfully",
+  "NEWS_UPDATED_SUCCESSFULLY" : "News update successfully",
+  "NEWS_STATUS_UPDATED_SUCCESSFULLY": "News status update successfully",
 
   "ORGANIZER_CREATED_SUCCESSFULLY": "Organizer registration completed successfully, Please check email for account credentials",
   "OTP_EXPIRED": "The OTP has expired, Please request a new OTP",
@@ -48,5 +57,6 @@
   "USER_INACTIVE": "Your account is currently inactive, Please contact support to reactivate",
   "USER_NOT_EXIST": "Unable to find an active account with the provided parameters",
   "UNABLE_TO_UPDATE": "The requested update operation could not be completed",
-  "UNABLE_TO_DELETE": "The requested delete operation could not be completed"
+  "UNABLE_TO_DELETE": "The requested delete operation could not be completed",
+  "UNABLE_TO_UPDATE_STATUS": "Unable to update status"
 }

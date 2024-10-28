@@ -19,3 +19,12 @@ export const LANGUAGE_CODE = {
   EN: 'en',
   IT: 'it',
 }
+
+export const NEWS_STATUS = {
+  PUBLISHED: 'published',
+  PENDING: 'pending',
+  REJECTED: 'rejected',
+  DRAFT: 'draft',
+} as const
+
+export type EventStatus = keyof typeof NEWS_STATUS
