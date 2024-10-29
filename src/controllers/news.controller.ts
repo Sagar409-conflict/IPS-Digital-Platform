@@ -86,7 +86,7 @@ class NewsCategoryController {
         page_number: typeof page_number === 'undefined' ? 1 : Number(page_number),
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
-        status: typeof status === 'undefined' ? undefined : Number(status),
+        status: typeof status === 'undefined' ? undefined : String(status),
         role: ROLES.ORGANIZER,
       }
       const { count, rows } = await newsService.findAll(pagination)
