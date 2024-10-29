@@ -47,4 +47,8 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+*.env
 
+# Other files needs to be ignored
+package-lock.json
+src/public/
