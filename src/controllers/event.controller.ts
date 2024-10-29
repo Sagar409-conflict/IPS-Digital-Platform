@@ -33,9 +33,9 @@ class EventController {
       // Set default values in payload
       payload.creator_id = req.user.id
 
-      if (payload.status === EVENT_STATUS.PUBLISH && req.user.role === ROLES.SUPER_ADMIN) {
-        payload.status = EVENT_STATUS.PUBLISH
-      } else if (payload.status === EVENT_STATUS.PUBLISH && req.user.role === ROLES.ORGANIZER) {
+      if (payload.status === EVENT_STATUS.PUBLISHED && req.user.role === ROLES.SUPER_ADMIN) {
+        payload.status = EVENT_STATUS.PUBLISHED
+      } else if (payload.status === EVENT_STATUS.PUBLISHED && req.user.role === ROLES.ORGANIZER) {
         return badRequest(res, languageCode, 'NOT_ALLOWED_TO_PUBLISH')
       }
 
@@ -172,7 +172,7 @@ class EventController {
       if (!isExist) return badRequest(res, languageCode, 'EVENT_NOT_EXIST')
 
       // If Organizer wants to delete the event
-      if (req.user.role === ROLES.ORGANIZER && isExist.status === EVENT_STATUS.PUBLISH)
+      if (req.user.role === ROLES.ORGANIZER && isExist.status === EVENT_STATUS.PUBLISHED)
         return badRequest(res, languageCode, 'NOT_ALLOWED_TO_DELETE')
 
       const deletedStatus = await eventService.delete(event_id)
