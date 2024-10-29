@@ -21,10 +21,19 @@ export const LANGUAGE_CODE = {
 export const EVENT_STATUS = {
   DRAFT: 'draft',
   PENDING: 'pending',
-  PUBLISH: 'publish',
-  REJECT: 'reject',
+  PUBLISHED: 'published',
+  REJECTED: 'rejected',
 }
 export const EVENT_MEDIA_TYPE = {
   IMAGE: 'image',
   VIDEO: 'video',
 } as const
+
+export const NEWS_STATUS = {
+  PUBLISHED: 'published',
+  PENDING: 'pending',
+  REJECTED: 'rejected',
+  DRAFT: 'draft',
+} as const
+
+export type EventStatus = keyof typeof NEWS_STATUS
