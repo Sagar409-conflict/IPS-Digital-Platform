@@ -15,6 +15,7 @@ import { UploadedFile } from 'express-fileupload'
 import { IPagination } from '../types/common.interface'
 import { metaDataForPaginations } from '../helpers/common'
 import { statusCode } from '../config/statucCode'
+import { AssetsStatus, IResponseEvent } from '../types/event.interface'
 
 class EventController {
   /***************************************
@@ -37,6 +38,9 @@ class EventController {
         payload.status = EVENT_STATUS.PUBLISHED
       } else if (payload.status === EVENT_STATUS.PUBLISHED && req.user.role === ROLES.ORGANIZER) {
         return badRequest(res, languageCode, 'NOT_ALLOWED_TO_PUBLISH')
+      } else if (payload.status === EVENT_STATUS.PENDING && req.user.role === ROLES.ORGANIZER) {
+        payload.status = EVENT_STATUS.PENDING
+        payload.submittedAt = new Date()
       }
 
       // All Required Validations for validating files
@@ -112,7 +116,7 @@ class EventController {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
     try {
-      const { page_number, limit, search, status } = req.query
+      const { page_number, limit, search, status, todayDate, isUpcomingEvent } = req.query
 
       //Paginations Setup
       const pagination: IPagination = {
@@ -120,6 +124,9 @@ class EventController {
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
         status: typeof status === 'undefined' ? undefined : String(status),
+        todayDate: typeof todayDate === 'string' ? todayDate === 'true' : undefined,
+        isUpcomingEvent:
+          typeof isUpcomingEvent === 'string' ? isUpcomingEvent === 'true' : undefined,
       }
 
       //Get all customizations based on search and pagination
@@ -148,7 +155,126 @@ class EventController {
 
       if (!getEvent) return badRequest(res, languageCode, 'EVENT_NOT_EXIST')
 
-      return success(res, languageCode, undefined, 'DETAILS_OF_EVENT', getEvent)
+      if (getEvent.event_assets && getEvent.event_assets.length > 0) {
+        // let video: ICreateEventAssets[] = []
+        // let image: ICreateEventAssets[] = []
+        // getEvent.event_assets.forEach((asset) => {
+        //   if (asset.media_type === 'video') {
+        //     video.push(asset)
+        //   } else if (asset.media_type === 'image') {
+        //     image.push(asset)
+        //   }
+        // })
+        // let image = (
+        //   await Promise.all(
+        //     getEvent.event_assets.map(async (asset) => {
+        //       // Any asynchronous check or transformation here
+        //       return asset.media_type === 'image' ? asset : null
+        //     })
+        //   )
+        // ).filter((asset) => asset !== null)
+
+        // let data = {
+        //   ...getEvent,
+        //   image,
+        // }
+        // console.log(
+        //   '🚀 ~ file: event.controller.ts:170 ~ EventController ~ get ~ getEvent.image:',
+        //   data
+        // )
+
+        return success(res, languageCode, undefined, 'DETAILS_OF_EVENT', getEvent)
+
+        // getEvent.image = getEvent.event_assets.filter(async (asset) => asset.media_type === 'image')
+      } else {
+        return success(res, languageCode, undefined, 'DETAILS_OF_EVENT', getEvent)
+      }
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
+
+  async update(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+    try {
+      const event_id = req.params.id
+      const payload = req.body
+
+      const assetsUpdateStatus: AssetsStatus = {
+        thumbnail_image: false,
+        event_images: false,
+        event_videos: false,
+      }
+      const isExist = await eventService.findEeventDetails({ id: event_id })
+
+      if (!isExist) return badRequest(res, languageCode, 'EVENT_NOT_EXIST')
+      if (req.files) {
+        // Upload a thumbnail image
+        if (req.files.thumbnail_image && !Array.isArray(req.files.thumbnail_image)) {
+          payload.thumbnail_image = await uploadFile(
+            req.files.thumbnail_image,
+            `event_assets/${payload.title}/thumbnail_image/`
+          )
+          assetsUpdateStatus.thumbnail_image = true
+        }
+
+        if (req.files.event_videos) {
+          const bulkCreationStatusVideo = await uploadAssetsHelper(
+            req.files.event_videos,
+            event_id,
+            EVENT_MEDIA_TYPE.VIDEO,
+            `event_assets/${payload.title}/event_videos/`
+          )
+          assetsUpdateStatus.event_videos = true
+        }
+
+        if (req.files.event_images) {
+          const bulkCreationStatusImage = await uploadAssetsHelper(
+            req.files.event_images,
+            event_id,
+            EVENT_MEDIA_TYPE.IMAGE,
+            `event_assets/${payload.title}/event_images/`
+          )
+          assetsUpdateStatus.event_images = true
+        }
+      }
+
+      const updateRecord = (await eventService.update(event_id, payload))[0]
+      if (updateRecord) {
+        if (assetsUpdateStatus.thumbnail_image) await removeFile(isExist.thumbnail_image)
+
+        if (assetsUpdateStatus.event_videos) {
+          if (
+            isExist.event_assets &&
+            isExist.event_assets !== undefined &&
+            isExist.event_assets !== null
+          ) {
+            isExist.event_assets.map(async (media) => {
+              if (media.media_type === EVENT_MEDIA_TYPE.VIDEO) {
+                await removeFile(media.path)
+              }
+            })
+          }
+        }
+
+        if (assetsUpdateStatus.event_images) {
+          if (
+            isExist.event_assets &&
+            isExist.event_assets !== undefined &&
+            isExist.event_assets !== null
+          ) {
+            isExist.event_assets.map(async (media) => {
+              if (media.media_type === EVENT_MEDIA_TYPE.IMAGE) {
+                await removeFile(media.path)
+              }
+            })
+          }
+        }
+        return success(res, languageCode, undefined, 'EVENT_UPDATED_SUCCESS')
+      } else {
+        return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')
+      }
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)

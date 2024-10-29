@@ -194,6 +194,64 @@ const createEventSchema = Joi.object({
       'any.required': 'Event date is required.',
     }),
 })
+const updateEventSchema = Joi.object({
+  id: Joi.string().required(),
+  title: Joi.string().required().messages({
+    'string.base': 'Title should be a type of text.',
+    'string.empty': 'Title cannot be empty.',
+    'any.required': 'Title is required.',
+  }),
+  event_category_id: Joi.string().required().messages({
+    'string.empty': 'Event category cannot be empty.',
+    'any.required': 'Event category is required.',
+  }),
+  description: Joi.string().required().messages({
+    'string.empty': 'Description cannot be empty.',
+    'any.required': 'Description is required.',
+  }),
+  location: Joi.string().required().messages({
+    'string.base': 'Location should be a type of text.',
+    'string.empty': 'Location cannot be empty.',
+    'any.required': 'Location is required.',
+  }),
+  location_coordinates: Joi.string().required().messages({
+    'string.base': 'location_coordinates should be a type of text.',
+    'string.empty': 'location_coordinates cannot be empty.',
+    'any.required': 'location_coordinates is required.',
+  }),
+  // location_coordinates: Joi.object({
+  //   lat: Joi.number().min(-90).max(90).required().messages({
+  //     'number.base': `"latitude" should be a number`,
+  //     'number.min': `"latitude" should be greater than or equal to -90`,
+  //     'number.max': `"latitude" should be less than or equal to 90`,
+  //   }),
+  //   long: Joi.number().min(-180).max(180).required().messages({
+  //     'number.base': `"longitude" should be a number`,
+  //     'number.min': `"longitude" should be greater than or equal to -180`,
+  //     'number.max': `"longitude" should be less than or equal to 180`,
+  //   }),
+  // })
+  //   .required()
+  //   .messages({
+  //     'object.base': `"location_coordinates" should be an object`,
+  //     'any.required': `"location_coordinates" is required`,
+  //   }),
+  status: Joi.string()
+    .valid(...Object.values(EVENT_STATUS))
+    .required()
+    .messages({
+      'string.empty': 'Status cannot be empty.',
+      'any.required': 'Status is required.',
+    }),
+  event_date: Joi.date()
+    .greater('now') // Ensures the date is greater than the current date
+    .required()
+    .messages({
+      'date.greater': 'Event date must be in the future.',
+      'date.base': 'Invalid date format.',
+      'any.required': 'Event date is required.',
+    }),
+})
 const createNewsSchema = Joi.object({
   title: Joi.string().required(),
   news_description: Joi.string().required(),
@@ -233,6 +291,7 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   createNews: createNewsSchema,
   updateNewsStatus: updateNewsStatusSchema,
   updateNews: updateNewsSchema,
+  updateEvent: updateEventSchema,
 }
 
 export const validate = (schemaName: string) => {

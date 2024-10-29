@@ -16,6 +16,8 @@ eventRoutes.post(
 )
 
 eventRoutes.get('/', EventController.getAll)
+eventRoutes.put('/:id', validate('updateEvent'), EventController.update)
+
 eventRoutes.get('/:id', validate('id'), EventController.get)
 eventRoutes.delete(
   '/:id',

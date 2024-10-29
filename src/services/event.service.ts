@@ -61,6 +61,34 @@ class EventService {
         status: pagination.status,
       }
     }
+    if (pagination.todayDate) {
+      const today = new Date()
+
+      // Get the start of the day
+      const startOfDay = today.setHours(0, 0, 0, 0)
+
+      // Get the end of the day
+      const endOfDay = today.setHours(23, 59, 59, 999)
+
+      where = {
+        ...where,
+        event_date: {
+          [Op.gte]: startOfDay,
+          [Op.lte]: endOfDay,
+        },
+      }
+    }
+
+    if (pagination.isUpcomingEvent) {
+      const today = new Date()
+      const startOfToday = new Date(today.setHours(0, 0, 0, 0))
+      where = {
+        ...where,
+        event_date: {
+          [Op.gt]: startOfToday,
+        },
+      }
+    }
     if (pagination.search) {
       where = {
         ...where,
@@ -102,6 +130,9 @@ class EventService {
     return await Event.findAndCountAll(filter)
   }
 
+  async update(id: string, payload: ICreateEvent): Promise<[affectedCount: number]> {
+    return await Event.update(payload, { where: { id } })
+  }
   async delete(id: string): Promise<number> {
     return await Event.destroy({ where: { id } })
   }

@@ -45,6 +45,13 @@ export interface IResponseEvent {
   qr_code_image: string
   status: string
   event_assets?: ICreateEventAssets[]
+  video?: ICreateEventAssets[]
+  image?: ICreateEventAssets[]
   createdAt: Date
   updatedAt: Date
+}
+export type AssetsStatus = {
+  thumbnail_image: boolean
+  event_images: boolean
+  event_videos: boolean
 }

@@ -9,6 +9,7 @@
   "EVENT_CATEGORY_LIST": "Event category list retrieved successfully",
   "EVENT_CATEGORY_NOT_EXIST": "Requested event category is not exist",
   "EVENT_CATEGORY_UPDATED_SUCCESS": "Event category updated successfully!",
+  "EVENT_UPDATED_SUCCESS": "Event updated successfully!",
   "EVENT_CREATION_SUCCESS": "Event created successfully!",
   "EVENT_THUMBNAIL_IMAGE_REQUIRED": "Event thumbnail image is required",
   "EVENT_VIDEO_REQUIRED": "Event video is required",
