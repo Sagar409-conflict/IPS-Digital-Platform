@@ -16,6 +16,7 @@ import { IPagination } from '../types/common.interface'
 import { metaDataForPaginations } from '../helpers/common'
 import { statusCode } from '../config/statucCode'
 import { AssetsStatus, IResponseEvent } from '../types/event.interface'
+import { where } from 'sequelize'
 
 class EventController {
   /***************************************
@@ -116,11 +117,13 @@ class EventController {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
     try {
-      const { page_number, limit, search, status, todayDate, isUpcomingEvent } = req.query
+      const { page, limit, search, status, todayDate, isUpcomingEvent } = req.query
+
+      console.log('🚀 ~ file: event.controller.ts:122 ~ EventController ~ getAll ~ page:', page)
 
       //Paginations Setup
       const pagination: IPagination = {
-        page_number: typeof page_number === 'undefined' ? 1 : Number(page_number),
+        page: typeof page === 'undefined' ? 1 : Number(page),
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
         status: typeof status === 'undefined' ? undefined : String(status),
@@ -133,7 +136,7 @@ class EventController {
       const { count, rows } = await eventService.findAll(pagination)
       const data = {
         result: rows,
-        pagination: await metaDataForPaginations(pagination?.page_number, pagination.limit, count),
+        pagination: await metaDataForPaginations(pagination?.page, pagination.limit, count),
       }
       return success(res, languageCode, statusCode.SUCCESS, 'EVENT_LIST', data)
     } catch (error) {
@@ -155,40 +158,7 @@ class EventController {
 
       if (!getEvent) return badRequest(res, languageCode, 'EVENT_NOT_EXIST')
 
-      if (getEvent.event_assets && getEvent.event_assets.length > 0) {
-        // let video: ICreateEventAssets[] = []
-        // let image: ICreateEventAssets[] = []
-        // getEvent.event_assets.forEach((asset) => {
-        //   if (asset.media_type === 'video') {
-        //     video.push(asset)
-        //   } else if (asset.media_type === 'image') {
-        //     image.push(asset)
-        //   }
-        // })
-        // let image = (
-        //   await Promise.all(
-        //     getEvent.event_assets.map(async (asset) => {
-        //       // Any asynchronous check or transformation here
-        //       return asset.media_type === 'image' ? asset : null
-        //     })
-        //   )
-        // ).filter((asset) => asset !== null)
-
-        // let data = {
-        //   ...getEvent,
-        //   image,
-        // }
-        // console.log(
-        //   '🚀 ~ file: event.controller.ts:170 ~ EventController ~ get ~ getEvent.image:',
-        //   data
-        // )
-
-        return success(res, languageCode, undefined, 'DETAILS_OF_EVENT', getEvent)
-
-        // getEvent.image = getEvent.event_assets.filter(async (asset) => asset.media_type === 'image')
-      } else {
-        return success(res, languageCode, undefined, 'DETAILS_OF_EVENT', getEvent)
-      }
+      return success(res, languageCode, undefined, 'DETAILS_OF_EVENT', getEvent)
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
@@ -230,6 +200,8 @@ class EventController {
         }
 
         if (req.files.event_images) {
+          console.log('Image Media Now Go For Upload')
+
           const bulkCreationStatusImage = await uploadAssetsHelper(
             req.files.event_images,
             event_id,
@@ -242,35 +214,40 @@ class EventController {
 
       const updateRecord = (await eventService.update(event_id, payload))[0]
       if (updateRecord) {
-        if (assetsUpdateStatus.thumbnail_image) await removeFile(isExist.thumbnail_image)
+        if (isExist.title === payload.title) {
+          if (assetsUpdateStatus.thumbnail_image) await removeFile(isExist.thumbnail_image)
 
-        if (assetsUpdateStatus.event_videos) {
-          if (
-            isExist.event_assets &&
-            isExist.event_assets !== undefined &&
-            isExist.event_assets !== null
-          ) {
-            isExist.event_assets.map(async (media) => {
-              if (media.media_type === EVENT_MEDIA_TYPE.VIDEO) {
-                await removeFile(media.path)
-              }
-            })
+          if (assetsUpdateStatus.event_videos) {
+            if (
+              isExist.event_assets &&
+              isExist.event_assets !== undefined &&
+              isExist.event_assets !== null
+            ) {
+              isExist.event_assets.map(async (media) => {
+                if (media.media_type === EVENT_MEDIA_TYPE.VIDEO) {
+                  await removeFile(media.path)
+                }
+              })
+            }
           }
+
+          if (assetsUpdateStatus.event_images) {
+            if (
+              isExist.event_assets &&
+              isExist.event_assets !== undefined &&
+              isExist.event_assets !== null
+            ) {
+              isExist.event_assets.map(async (media) => {
+                if (media.media_type === EVENT_MEDIA_TYPE.IMAGE) {
+                  await removeFile(media.path)
+                }
+              })
+            }
+          }
+        } else {
+          await removeFolder(`event_assets/${isExist.title}`)
         }
 
-        if (assetsUpdateStatus.event_images) {
-          if (
-            isExist.event_assets &&
-            isExist.event_assets !== undefined &&
-            isExist.event_assets !== null
-          ) {
-            isExist.event_assets.map(async (media) => {
-              if (media.media_type === EVENT_MEDIA_TYPE.IMAGE) {
-                await removeFile(media.path)
-              }
-            })
-          }
-        }
         return success(res, languageCode, undefined, 'EVENT_UPDATED_SUCCESS')
       } else {
         return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')

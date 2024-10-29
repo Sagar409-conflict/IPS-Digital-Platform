@@ -64,11 +64,14 @@ class EventService {
     if (pagination.todayDate) {
       const today = new Date()
 
-      // Get the start of the day
-      const startOfDay = today.setHours(0, 0, 0, 0)
+      const startOfDay = new Date(
+        Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0, 0)
+      )
 
-      // Get the end of the day
-      const endOfDay = today.setHours(23, 59, 59, 999)
+      // End of day in UTC
+      const endOfDay = new Date(
+        Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59, 999)
+      )
 
       where = {
         ...where,
@@ -81,11 +84,13 @@ class EventService {
 
     if (pagination.isUpcomingEvent) {
       const today = new Date()
-      const startOfToday = new Date(today.setHours(0, 0, 0, 0))
+      const todayDate = new Date(
+        Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59, 999)
+      )
       where = {
         ...where,
         event_date: {
-          [Op.gt]: startOfToday,
+          [Op.gt]: todayDate,
         },
       }
     }
@@ -123,7 +128,7 @@ class EventService {
         },
       ],
       limit: pagination.limit || 10,
-      offset: (pagination.page_number - 1) * pagination.limit || 0,
+      offset: (pagination.page - 1) * pagination.limit || 0,
       order: [['createdAt', 'DESC']],
       nest: true,
     }
@@ -132,6 +137,10 @@ class EventService {
 
   async update(id: string, payload: ICreateEvent): Promise<[affectedCount: number]> {
     return await Event.update(payload, { where: { id } })
+  }
+
+  async getAssets(options: {}): Promise<ICreateEventAssets[]> {
+    return await EventAssets.findAll(options)
   }
   async delete(id: string): Promise<number> {
     return await Event.destroy({ where: { id } })

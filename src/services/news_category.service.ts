@@ -1,6 +1,10 @@
 import { FindOptions, Op, WhereOptions } from 'sequelize'
 import NewsCategory from '../models/news_category.model'
-import { ICreateNewsCategory, INewsCategory, INewsCategoryResponse } from '../types/news_category.interface'
+import {
+  ICreateNewsCategory,
+  INewsCategory,
+  INewsCategoryResponse,
+} from '../types/news_category.interface'
 import { IPagination, IResponseAndCount } from '../types/common.interface'
 
 class NewsCategoryService {
@@ -38,7 +42,7 @@ class NewsCategoryService {
     const filter: FindOptions<ICreateNewsCategory> = {
       where,
       limit: pagination.limit || 10,
-      offset: (pagination.page_number - 1) * pagination.limit || 0,
+      offset: (pagination.page - 1) * pagination.limit || 0,
       order: [['createdAt', 'DESC']],
       raw: true,
     }
@@ -52,11 +56,14 @@ class NewsCategoryService {
   }
 
   // Update a news category by ID
-  async update(id: string, payload: Partial<ICreateNewsCategory>): Promise<[affectedCount: number]> {
+  async update(
+    id: string,
+    payload: Partial<ICreateNewsCategory>
+  ): Promise<[affectedCount: number]> {
     return await NewsCategory.update(payload, { where: { id } })
   }
 
-//   // Find a news category by ID and return specific fields
+  //   // Find a news category by ID and return specific fields
   async getById(id: string): Promise<INewsCategory | null> {
     return NewsCategory.findOne({
       where: { id },

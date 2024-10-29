@@ -80,10 +80,10 @@ class NewsCategoryController {
   async getAll(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
-      const { page_number, limit, search, status } = req.query
+      const { page, limit, search, status } = req.query
 
       const pagination: IPagination = {
-        page_number: typeof page_number === 'undefined' ? 1 : Number(page_number),
+        page: typeof page === 'undefined' ? 1 : Number(page),
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
         status: typeof status === 'undefined' ? undefined : String(status),
@@ -92,7 +92,7 @@ class NewsCategoryController {
       const { count, rows } = await newsService.findAll(pagination)
       const data = {
         result: rows,
-        pagination: await metaDataForPaginations(pagination?.page_number, pagination.limit, count),
+        pagination: await metaDataForPaginations(pagination?.page, pagination.limit, count),
       }
       return success(res, languageCode, statusCode.SUCCESS, 'NEWS_LIST', data)
     } catch (error) {

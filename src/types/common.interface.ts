@@ -46,7 +46,7 @@ export interface IMediaPath {
 }
 export interface IPagination {
   limit: number
-  page_number: number
+  page: number
   total_data?: number
   search?: string
   status?: string

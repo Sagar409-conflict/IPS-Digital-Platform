@@ -38,7 +38,7 @@ class OrganizerService {
     const filter: FindOptions<ICreateUser> = {
       where,
       limit: pagination.limit || 10,
-      offset: (pagination.page_number - 1) * pagination.limit || 0,
+      offset: (pagination.page - 1) * pagination.limit || 0,
       raw: true,
     }
     return await User.findAndCountAll(filter)

@@ -45,8 +45,6 @@ export interface IResponseEvent {
   qr_code_image: string
   status: string
   event_assets?: ICreateEventAssets[]
-  video?: ICreateEventAssets[]
-  image?: ICreateEventAssets[]
   createdAt: Date
   updatedAt: Date
 }

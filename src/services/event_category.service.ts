@@ -39,7 +39,7 @@ class EventCategoryService {
     const filter: FindOptions<ICreateEventCatgory> = {
       where,
       limit: pagination.limit || 10,
-      offset: (pagination.page_number - 1) * pagination.limit || 0,
+      offset: (pagination.page - 1) * pagination.limit || 0,
       order: [['createdAt', 'DESC']],
       raw: true,
     }
