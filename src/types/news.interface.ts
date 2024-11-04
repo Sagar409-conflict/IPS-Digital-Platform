@@ -44,5 +44,5 @@ export interface INewsPagination {
   role?: string
   todayDate?: boolean
   isUpcomingEvent?: boolean
-  byId?: string
+  user_id?: string
 }

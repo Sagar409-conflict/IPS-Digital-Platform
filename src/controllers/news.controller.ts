@@ -82,14 +82,14 @@ class NewsCategoryController {
   async getAll(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
-      const { page, limit, search, status, byId } = req.query
+      const { page, limit, search, status, user_id } = req.query
 
       const pagination: INewsPagination = {
         page: typeof page === 'undefined' ? 1 : Number(page),
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
         status: typeof status === 'undefined' ? undefined : String(status),
-        byId: typeof byId === 'undefined' ? undefined : String(byId),
+        user_id: typeof user_id === 'undefined' ? undefined : String(user_id),
         role: ROLES.ORGANIZER,
       }
       const { count, rows } = await newsService.findAll(pagination)
@@ -188,11 +188,14 @@ class NewsCategoryController {
 
       if (payload.status) {
         if (!statusValidation[userRole]?.includes(payload.status)) {
-          return badRequest(res, languageCode, `INVALID_STATUS_FOR_`)
+          return badRequest(res, languageCode, `INVALID_STATUS_FOR_USER_ROLE`)
         }
       }
       if (payload.status === 'published') {
         payload.publishedAt = new Date()
+      }
+      if (payload.status === 'published') {
+        payload.submittedAt = new Date()
       }
 
       if (req.files && req.files.news_image && !Array.isArray(req.files.news_image)) {

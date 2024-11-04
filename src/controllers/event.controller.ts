@@ -131,7 +131,7 @@ class EventController {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
     try {
-      const { page, limit, search, status, todayDate, isUpcomingEvent, byId } = req.query
+      const { page, limit, search, status, todayDate, isUpcomingEvent, user_id } = req.query
 
       console.log('🚀 ~ file: event.controller.ts:122 ~ EventController ~ getAll ~ page:', page)
 
@@ -144,7 +144,7 @@ class EventController {
         todayDate: typeof todayDate === 'string' ? todayDate === 'true' : undefined,
         isUpcomingEvent:
           typeof isUpcomingEvent === 'string' ? isUpcomingEvent === 'true' : undefined,
-        byId: typeof byId === 'undefined' ? undefined : String(byId),
+        user_id: typeof user_id === 'undefined' ? undefined : String(user_id),
       }
 
       //Get all customizations based on search and pagination
@@ -197,6 +197,8 @@ class EventController {
           return badRequest(res, languageCode, `INVALID_STATUS_FOR_USER_ROLE`)
         }
       }
+      if (payload.status === EVENT_STATUS.PENDING) payload.submittedAt = new Date()
+
       const assetsUpdateStatus: AssetsStatus = {
         thumbnail_image: false,
         event_images: false,

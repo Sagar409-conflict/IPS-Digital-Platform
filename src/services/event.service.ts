@@ -6,6 +6,8 @@ import EventAssets from '../models/event_assets.model'
 import { ICreateEventAssets, IEventAssets } from '../types/event_assets.interface'
 import User from '../models/user.model'
 import EventCategory from '../models/event_category.model'
+import userService from './user.service'
+import { ROLES } from '../helpers/constant'
 
 class EventService {
   async create(payload: ICreateEvent): Promise<IEvent> {
@@ -61,10 +63,13 @@ class EventService {
         status: pagination.status,
       }
     }
-    if (pagination.byId) {
-      where = {
-        ...where,
-        creator_id: pagination.byId,
+    if (pagination.user_id) {
+      const user = await userService.getById(pagination.user_id)
+      if (user && user.role === ROLES.ORGANIZER) {
+        where = {
+          ...where,
+          creator_id: pagination.user_id,
+        }
       }
     }
     if (pagination.todayDate) {

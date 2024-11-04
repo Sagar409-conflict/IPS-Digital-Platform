@@ -4,6 +4,8 @@ import { ICreateNews, INews, INewsPagination, INewsResponse } from '../types/new
 import { IPagination, IResponseAndCount } from '../types/common.interface'
 import User from '../models/user.model'
 import NewsCategory from '../models/news_category.model'
+import userService from './user.service'
+import { ROLES } from '../helpers/constant'
 
 class NewsService {
   // Create a new News entry
@@ -30,10 +32,13 @@ class NewsService {
         status: pagination.status,
       }
     }
-    if (pagination.byId) {
-      where = {
-        ...where,
-        creator_id: pagination.byId,
+    if (pagination.user_id) {
+      const user = await userService.getById(pagination.user_id)
+      if (user && user.role === ROLES.ORGANIZER) {
+        where = {
+          ...where,
+          creator_id: pagination.user_id,
+        }
       }
     }
 

@@ -62,7 +62,7 @@ export interface IEventPagination {
   search?: string
   status?: string
   role?: string
-  byId?: string
+  user_id?: string
   todayDate?: boolean
   isUpcomingEvent?: boolean
 }

@@ -124,7 +124,7 @@ class UserService {
       where: {
         id: id,
       },
-      attributes: ['id', 'name', 'email', 'contact_number'],
+      attributes: ['id', 'first_name', 'last_name', 'email', 'mobile_number'],
     })
   }
 }
