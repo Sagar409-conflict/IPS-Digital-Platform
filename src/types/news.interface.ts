@@ -10,6 +10,7 @@ export interface INews {
 
 export interface ICreateNews {
   id?: string
+  creator_id?: string
   title: string
   news_description: string
   news_image: string
@@ -32,4 +33,16 @@ export interface INewsDetails {
   title: string
   news_description: string
   status: string
+}
+
+export interface INewsPagination {
+  limit: number
+  page: number
+  total_data?: number
+  search?: string
+  status?: string
+  role?: string
+  todayDate?: boolean
+  isUpcomingEvent?: boolean
+  byId?: string
 }

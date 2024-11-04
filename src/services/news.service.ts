@@ -1,7 +1,9 @@
 import { FindOptions, Op, WhereOptions } from 'sequelize'
 import News from '../models/news.models'
-import { ICreateNews, INews, INewsResponse } from '../types/news.interface'
+import { ICreateNews, INews, INewsPagination, INewsResponse } from '../types/news.interface'
 import { IPagination, IResponseAndCount } from '../types/common.interface'
+import User from '../models/user.model'
+import NewsCategory from '../models/news_category.model'
 
 class NewsService {
   // Create a new News entry
@@ -19,8 +21,21 @@ class NewsService {
   }
 
   // Find all news entries with optional search, pagination, and approval status
-  async findAll(pagination: IPagination): Promise<IResponseAndCount<INews[]>> {
+  async findAll(pagination: INewsPagination): Promise<IResponseAndCount<INews[]>> {
     let where: WhereOptions<ICreateNews> = {}
+
+    if (pagination.status) {
+      where = {
+        ...where,
+        status: pagination.status,
+      }
+    }
+    if (pagination.byId) {
+      where = {
+        ...where,
+        creator_id: pagination.byId,
+      }
+    }
 
     if (pagination.search) {
       where = {
@@ -31,9 +46,30 @@ class NewsService {
 
     const filter: FindOptions<ICreateNews> = {
       where,
+      include: [
+        {
+          model: NewsCategory,
+          as: 'news_category',
+          attributes: ['title', 'icon_image'],
+        },
+        {
+          model: User,
+          as: 'creator',
+          attributes: [
+            'first_name',
+            'last_name',
+            'email',
+            'country_code',
+            'mobile_number',
+            'profile_image',
+          ],
+        },
+      ],
       limit: pagination.limit || 10,
       offset: (pagination.page - 1) * pagination.limit || 0,
-      raw: true,
+      // raw: true,
+      order: [['createdAt', 'DESC']],
+      nest: true,
     }
     return await News.findAndCountAll(filter)
   }
@@ -57,7 +93,34 @@ class NewsService {
   async getById(id: string): Promise<INews | null> {
     return await News.findOne({
       where: { id },
-      attributes: ['id', 'title', 'news_description', 'news_image', 'status'],
+      attributes: [
+        'id',
+        'news_category_id',
+        'creator_id',
+        'title',
+        'news_description',
+        'news_image',
+        'status',
+      ],
+      include: [
+        {
+          model: NewsCategory,
+          as: 'news_category',
+          attributes: ['title', 'icon_image'],
+        },
+        {
+          model: User,
+          as: 'creator',
+          attributes: [
+            'first_name',
+            'last_name',
+            'email',
+            'country_code',
+            'mobile_number',
+            'profile_image',
+          ],
+        },
+      ],
     })
   }
 }

@@ -29,7 +29,7 @@ News.init(
       allowNull: false,
     },
     news_description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     news_image: {
@@ -55,7 +55,7 @@ News.init(
   {
     sequelize,
     modelName: 'news',
-    timestamps: false,
+    timestamps: true,
 
     hooks: {
       beforeCreate: (news) => {
@@ -79,28 +79,26 @@ News.init(
 
 // Associations
 News.belongsTo(NewsCategory, {
-  foreignKey: 'category_id',
-  as: 'category',
+  foreignKey: 'news_category_id',
+  as: 'news_category',
   onDelete: 'CASCADE',
 })
-
-News.belongsTo(User, {
-  foreignKey: 'creater_id',
-  as: 'creater',
-  onDelete: 'CASCADE',
-})
-
-// User Association
-User.hasMany(News, {
-  foreignKey: 'creater_id',
+NewsCategory.hasMany(News, {
+  foreignKey: 'news_category_id',
   as: 'news',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 })
 
-User.hasMany(NewsCategory, {
-  foreignKey: 'category_id',
-  as: 'newscateory',
+News.belongsTo(User, {
+  foreignKey: 'creator_id',
+  as: 'creator',
+  onDelete: 'CASCADE',
+})
+// User Association
+User.hasMany(News, {
+  foreignKey: 'creator_id',
+  as: 'news_data',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 })

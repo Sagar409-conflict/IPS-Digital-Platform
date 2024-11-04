@@ -16,7 +16,6 @@ eventRoutes.post(
 )
 
 eventRoutes.get('/', EventController.getAll)
-eventRoutes.put('/:id', validate('updateEvent'), EventController.update)
 
 eventRoutes.get('/:id', validate('id'), EventController.get)
 eventRoutes.delete(
@@ -25,6 +24,14 @@ eventRoutes.delete(
   AuthGuard,
   checkRole([ROLES.SUPER_ADMIN, ROLES.ORGANIZER]),
   EventController.delete
+)
+eventRoutes.put('/:id', AuthGuard, validate('updateEvent'), EventController.update)
+eventRoutes.put(
+  '/status/:id',
+  AuthGuard,
+  checkRole([ROLES.SUPER_ADMIN]),
+  validate('updateEventStatus'),
+  EventController.statusUpdate
 )
 
 export default eventRoutes

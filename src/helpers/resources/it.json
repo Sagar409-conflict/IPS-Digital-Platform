@@ -16,6 +16,7 @@
   "EVENT_IMAGE_REQUIRED": "Event image is required",
   "EVENT_NOT_EXIST": "Failure! Unable to find an requested event",
   "EVENT_LIST": "Event list retrieved successfully!",
+  "EVENT_STATUS_UPDATED_SUCCESSFULLY": "Event Status updated successfully",
   "DETAILS_OF_EVENT": "Success! Event details retrieved successfully",
   "Error deleting associated icon image": "facing issue to delete icone in to local folder",
 
@@ -23,7 +24,7 @@
 
   "INVALID_OTP": "The OTP you entered is incorrect. Please try again.",
   "INVALID_REQUEST_PARAMS": "The provided request parameters are invalid. Please check your request and try again.",
-  "INVALID_STATUS_FOR_": "Invalid status for login user",
+  "INVALID_STATUS_FOR_USER_ROLE": "Invalid status for login user",
   "IMAGE_REQUIRED": "Image is required",
   "INVALID_STATUS": "Invalid status",
 
@@ -36,7 +37,7 @@
   "NEWS_CATEGORY_EXIST": "This field is already exist",
 
   "NEWS_CATEGORY_CREATED": "News Category Created successfully",
-  "NEWS_CATEGORY_LIST": "Get All Data Successfully",
+  "NEWS_CATEGORY_LIST": "News category list retrieved successfully",
   "NEWS_CATEGORY_NOT_FOUND": "News Category Not Found",
   "NEWS_CATEGORY_FOUND": "Get Data Successfully",
   "NEWS_CATEGORY_DELETED_SUCCESSFULLY": "Delete data successfully",

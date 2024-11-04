@@ -1,12 +1,13 @@
 import { Request, Response, Router } from 'express'
 import { badRequest, internalServer, success, unAuthorized } from '../helpers/response'
-import { LANGUAGE_CODE, ROLES } from '../helpers/constant'
+import { LANGUAGE_CODE, NEWS_STATUS, ROLES } from '../helpers/constant'
 import newsService from '../services/news.service'
 import { statusCode } from '../config/statucCode'
 import { IPagination } from '../types/common.interface'
 import { removeFile, uploadFile } from '../helpers/fileUpload'
 import { metaDataForPaginations } from '../helpers/common'
 import path from 'path'
+import { INewsPagination } from '../types/news.interface'
 
 class NewsCategoryController {
   /**************************************************************************
@@ -43,7 +44,8 @@ class NewsCategoryController {
 
     try {
       let payload = req.body
-
+      // Set default values in payload
+      payload.creator_id = req.user.id
       const statusValidation = {
         [ROLES.ORGANIZER]: ['draft', 'pending'],
         [ROLES.SUPER_ADMIN]: ['draft', 'published'],
@@ -52,7 +54,7 @@ class NewsCategoryController {
       const userRole = req.user.role
 
       if (statusValidation[userRole] && !statusValidation[userRole].includes(payload.status)) {
-        return badRequest(res, languageCode, `INVALID_STATUS_FOR_${userRole}`)
+        return badRequest(res, languageCode, `INVALID_STATUS_FOR_USER_ROLE`)
       }
 
       if (!req.files || !req.files.news_image || Array.isArray(req.files.news_image)) {
@@ -80,13 +82,14 @@ class NewsCategoryController {
   async getAll(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
-      const { page, limit, search, status } = req.query
+      const { page, limit, search, status, byId } = req.query
 
-      const pagination: IPagination = {
+      const pagination: INewsPagination = {
         page: typeof page === 'undefined' ? 1 : Number(page),
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
         status: typeof status === 'undefined' ? undefined : String(status),
+        byId: typeof byId === 'undefined' ? undefined : String(byId),
         role: ROLES.ORGANIZER,
       }
       const { count, rows } = await newsService.findAll(pagination)
@@ -102,7 +105,7 @@ class NewsCategoryController {
   }
 
   /**************************************************************************
-   * REST API endpoint for create a new event category
+   * REST API endpoint for create a news category
    * @param req
    * @param res
    * @returns
@@ -126,7 +129,7 @@ class NewsCategoryController {
   }
 
   /************************************************
-   * REST API endpoint for delete an requested user
+   * REST API endpoint for delete an requested news
    * @param req
    * @param res
    ***********************************************/
@@ -159,7 +162,7 @@ class NewsCategoryController {
   }
 
   /************************************************
-   * REST API endpoint for update an event category
+   * REST API endpoint for update an news category
    * @param req
    * @param res
    * @returns
@@ -227,15 +230,11 @@ class NewsCategoryController {
    ************************************************/
   async statusUpdate(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
-    const validStatuses = ['published', 'rejected']
+    const validStatuses = [NEWS_STATUS.PUBLISHED, NEWS_STATUS.REJECTED]
 
     try {
       const { id } = req.params
       const { status } = req.body
-
-      if (req.user.role !== ROLES.SUPER_ADMIN) {
-        return unAuthorized(res, languageCode)
-      }
 
       if (!status || !validStatuses.includes(status)) {
         return badRequest(res, languageCode, 'INVALID_STATUS')
@@ -252,13 +251,7 @@ class NewsCategoryController {
       }
 
       const updatedNews = await newsService.getById(id)
-      return success(
-        res,
-        languageCode,
-        statusCode.SUCCESS,
-        'NEWS_STATUS_UPDATED_SUCCESSFULLY',
-        updatedNews
-      )
+      return success(res, languageCode, statusCode.SUCCESS, 'NEWS_STATUS_UPDATED_SUCCESSFULLY')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)

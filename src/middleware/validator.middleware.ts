@@ -4,6 +4,7 @@ import { internalServer, validationErrorResponse } from '../helpers/response'
 import {
   EVENT_STATUS,
   MODULE_IDENTIFIRES,
+  NEWS_STATUS,
   ROLES,
   ROLES_ARRAY,
   USER_STATUS,
@@ -252,15 +253,17 @@ const updateEventSchema = Joi.object({
       'any.required': 'Event date is required.',
     }),
 })
+const updateEventStatusSchema = Joi.object({
+  id: Joi.string().required(),
+  status: Joi.string().valid('published', 'rejected').required(),
+})
 const createNewsSchema = Joi.object({
   title: Joi.string().required(),
   news_description: Joi.string().required(),
-  status: Joi.string().valid('draft', 'pending', 'published').required(),
-  category_id: Joi.string()
-    .guid({ version: ['uuidv4'] })
+  status: Joi.string()
+    .valid(...Object.values(NEWS_STATUS))
     .required(),
-
-  creater_id: Joi.string()
+  news_category_id: Joi.string()
     .guid({ version: ['uuidv4'] })
     .required(),
 })
@@ -270,6 +273,10 @@ const updateNewsStatusSchema = Joi.object({
 })
 const updateNewsSchema = Joi.object({
   id: Joi.string().required(),
+  news_category_id: Joi.string().required().messages({
+    'string.empty': 'News category cannot be empty.',
+    'any.required': 'News category is required.',
+  }),
   title: Joi.string().required(),
   news_description: Joi.string().required(),
   status: Joi.string().valid('published', 'pending', 'draft').required(),
@@ -292,6 +299,7 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   updateNewsStatus: updateNewsStatusSchema,
   updateNews: updateNewsSchema,
   updateEvent: updateEventSchema,
+  updateEventStatus: updateEventStatusSchema,
 }
 
 export const validate = (schemaName: string) => {

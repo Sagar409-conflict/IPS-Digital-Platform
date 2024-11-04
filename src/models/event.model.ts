@@ -15,7 +15,7 @@ class Event extends Model<ICreateEvent> implements IEvent {
   public location_coordinates!: string
   public event_date!: Date
   public submittedAt!: Date
-  public publishedAt!: Date
+  public publishedAt!: Date | null
   public qr_code_image!: string
   public status!: string
   public readonly createdAt!: Date
@@ -81,6 +81,20 @@ Event.init(
     hooks: {
       beforeCreate: async (event) => {
         event.id = uuidv4()
+        if (event.status === EVENT_STATUS.PUBLISHED) {
+          event.publishedAt = new Date()
+        } else {
+          event.publishedAt = null
+        }
+      },
+      afterUpdate: (event) => {
+        if (event.status === EVENT_STATUS.PUBLISHED) {
+          console.log('Log TEst in side : 92 line')
+
+          event.publishedAt = new Date()
+        } else {
+          event.publishedAt = null
+        }
       },
     },
   }

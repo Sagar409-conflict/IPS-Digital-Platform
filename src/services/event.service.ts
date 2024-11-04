@@ -1,6 +1,6 @@
 import { FindOptions, Op, WhereOptions } from 'sequelize'
 import { IPagination, IResponseAndCount } from '../types/common.interface'
-import { ICreateEvent, IEvent, IResponseEvent } from '../types/event.interface'
+import { ICreateEvent, IEvent, IEventPagination, IResponseEvent } from '../types/event.interface'
 import Event from '../models/event.model'
 import EventAssets from '../models/event_assets.model'
 import { ICreateEventAssets, IEventAssets } from '../types/event_assets.interface'
@@ -52,13 +52,19 @@ class EventService {
     })
   }
 
-  async findAll(pagination: IPagination): Promise<IResponseAndCount<IEvent[]>> {
+  async findAll(pagination: IEventPagination): Promise<IResponseAndCount<IEvent[]>> {
     let where: WhereOptions<ICreateEvent> = {}
 
     if (pagination.status) {
       where = {
         ...where,
         status: pagination.status,
+      }
+    }
+    if (pagination.byId) {
+      where = {
+        ...where,
+        creator_id: pagination.byId,
       }
     }
     if (pagination.todayDate) {
@@ -135,7 +141,7 @@ class EventService {
     return await Event.findAndCountAll(filter)
   }
 
-  async update(id: string, payload: ICreateEvent): Promise<[affectedCount: number]> {
+  async update(id: string, payload: Partial<ICreateEvent>): Promise<[affectedCount: number]> {
     return await Event.update(payload, { where: { id } })
   }
 
@@ -144,6 +150,9 @@ class EventService {
   }
   async delete(id: string): Promise<number> {
     return await Event.destroy({ where: { id } })
+  }
+  async deleteEventAssets(payload: {}) {
+    return await EventAssets.destroy(payload)
   }
 }
 

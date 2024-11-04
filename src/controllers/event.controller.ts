@@ -15,7 +15,12 @@ import { UploadedFile } from 'express-fileupload'
 import { IPagination } from '../types/common.interface'
 import { metaDataForPaginations } from '../helpers/common'
 import { statusCode } from '../config/statucCode'
-import { AssetsStatus, IResponseEvent } from '../types/event.interface'
+import {
+  AssetsStatus,
+  ICreateEvent,
+  IEventPagination,
+  IResponseEvent,
+} from '../types/event.interface'
 import { where } from 'sequelize'
 
 class EventController {
@@ -34,9 +39,18 @@ class EventController {
 
       // Set default values in payload
       payload.creator_id = req.user.id
+      const statusValidation = {
+        [ROLES.ORGANIZER]: ['draft', 'pending'],
+        [ROLES.SUPER_ADMIN]: ['draft', 'published'],
+      }
+      const userRole = req.user.role
 
+      if (statusValidation[userRole] && !statusValidation[userRole].includes(payload.status)) {
+        return badRequest(res, languageCode, `INVALID_STATUS_FOR_USER_ROLE`)
+      }
       if (payload.status === EVENT_STATUS.PUBLISHED && req.user.role === ROLES.SUPER_ADMIN) {
         payload.status = EVENT_STATUS.PUBLISHED
+        payload.publishedAt = new Date()
       } else if (payload.status === EVENT_STATUS.PUBLISHED && req.user.role === ROLES.ORGANIZER) {
         return badRequest(res, languageCode, 'NOT_ALLOWED_TO_PUBLISH')
       } else if (payload.status === EVENT_STATUS.PENDING && req.user.role === ROLES.ORGANIZER) {
@@ -117,12 +131,12 @@ class EventController {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
     try {
-      const { page, limit, search, status, todayDate, isUpcomingEvent } = req.query
+      const { page, limit, search, status, todayDate, isUpcomingEvent, byId } = req.query
 
       console.log('🚀 ~ file: event.controller.ts:122 ~ EventController ~ getAll ~ page:', page)
 
       //Paginations Setup
-      const pagination: IPagination = {
+      const pagination: IEventPagination = {
         page: typeof page === 'undefined' ? 1 : Number(page),
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
@@ -130,6 +144,7 @@ class EventController {
         todayDate: typeof todayDate === 'string' ? todayDate === 'true' : undefined,
         isUpcomingEvent:
           typeof isUpcomingEvent === 'string' ? isUpcomingEvent === 'true' : undefined,
+        byId: typeof byId === 'undefined' ? undefined : String(byId),
       }
 
       //Get all customizations based on search and pagination
@@ -170,7 +185,18 @@ class EventController {
     try {
       const event_id = req.params.id
       const payload = req.body
+      const statusValidation = {
+        [ROLES.ORGANIZER]: ['draft', 'pending'],
+        [ROLES.SUPER_ADMIN]: ['draft', 'published'],
+      }
 
+      const userRole = req.user.role
+
+      if (payload.status) {
+        if (!statusValidation[userRole]?.includes(payload.status)) {
+          return badRequest(res, languageCode, `INVALID_STATUS_FOR_USER_ROLE`)
+        }
+      }
       const assetsUpdateStatus: AssetsStatus = {
         thumbnail_image: false,
         event_images: false,
@@ -226,6 +252,12 @@ class EventController {
               isExist.event_assets.map(async (media) => {
                 if (media.media_type === EVENT_MEDIA_TYPE.VIDEO) {
                   await removeFile(media.path)
+                  await eventService.deleteEventAssets({
+                    where: {
+                      event_id,
+                      path: media.path,
+                    },
+                  })
                 }
               })
             }
@@ -240,6 +272,12 @@ class EventController {
               isExist.event_assets.map(async (media) => {
                 if (media.media_type === EVENT_MEDIA_TYPE.IMAGE) {
                   await removeFile(media.path)
+                  await eventService.deleteEventAssets({
+                    where: {
+                      event_id,
+                      path: media.path,
+                    },
+                  })
                 }
               })
             }
@@ -300,6 +338,51 @@ class EventController {
       --------END------------------------------------------------------*/
 
       return success(res, languageCode, undefined, 'RECORD_SUCCESSFULLY_DELETED')
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
+
+  /**
+   * REST API endpoint for updating status of an event (Super admin can Approve/Reject Event Request)
+   * @param req
+   * @param res
+   * @returns
+   */
+  async statusUpdate(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+    const validStatuses = [EVENT_STATUS.PUBLISHED, EVENT_STATUS.REJECTED]
+
+    try {
+      const { id } = req.params
+      const { status } = req.body
+
+      if (!status || !validStatuses.includes(status)) {
+        return badRequest(res, languageCode, 'INVALID_STATUS')
+      }
+
+      const existingEvent = await eventService.findOne({ where: { id } })
+      if (!existingEvent) {
+        return badRequest(res, languageCode, 'EVENT_NOT_EXIST')
+      }
+
+      let payload: Partial<ICreateEvent> = {
+        status,
+      }
+      if (status === EVENT_STATUS.PUBLISHED) {
+        payload = {
+          ...payload,
+          publishedAt: new Date(),
+        }
+      }
+      const updateResult = await eventService.update(id, payload)
+      if (!updateResult) {
+        return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
+      }
+
+      const updatedEvent = await eventService.findOne({ where: { id } })
+      return success(res, languageCode, statusCode.SUCCESS, 'EVENT_STATUS_UPDATED_SUCCESSFULLY')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)

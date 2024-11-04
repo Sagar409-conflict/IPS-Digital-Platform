@@ -10,7 +10,7 @@ export interface IEvent {
   location_coordinates: string
   event_date: Date
   submittedAt: Date
-  publishedAt: Date
+  publishedAt: Date | null
   qr_code_image: string
   status: string
   createdAt: Date
@@ -19,6 +19,7 @@ export interface IEvent {
 
 export interface ICreateEvent {
   id?: string
+  creator_id?: string
   thumbnail_image: string
   title: string
   description: string
@@ -26,9 +27,9 @@ export interface ICreateEvent {
   location_coordinates: string
   event_date: Date
   submittedAt?: Date
-  publishedAt?: Date
+  publishedAt?: Date | null
   qr_code_image?: string
-  status: string
+  status?: string
   createdAt?: Date
   updatedAt?: Date
 }
@@ -41,7 +42,7 @@ export interface IResponseEvent {
   location_coordinates: string
   event_date: Date
   submittedAt: Date
-  publishedAt: Date
+  publishedAt: Date | null
   qr_code_image: string
   status: string
   event_assets?: ICreateEventAssets[]
@@ -52,4 +53,16 @@ export type AssetsStatus = {
   thumbnail_image: boolean
   event_images: boolean
   event_videos: boolean
+}
+
+export interface IEventPagination {
+  limit: number
+  page: number
+  total_data?: number
+  search?: string
+  status?: string
+  role?: string
+  byId?: string
+  todayDate?: boolean
+  isUpcomingEvent?: boolean
 }
