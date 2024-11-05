@@ -4,6 +4,7 @@ export interface INews {
   news_description: string
   news_image: string
   status: string
+  reason_description?: string
   submittedAt: Date
   publishedAt: Date | null
 }
@@ -15,6 +16,7 @@ export interface ICreateNews {
   news_description: string
   news_image: string
   status?: string
+  reason_description?: string
   submittedAt?: Date
   publishedAt?: Date | null
 }
@@ -24,6 +26,7 @@ export interface INewsResponse {
   title: string
   news_description: string
   status: string
+  reason_description: string
   submittedAt: Date
   publishedAt: Date | null
 }
@@ -33,6 +36,7 @@ export interface INewsDetails {
   title: string
   news_description: string
   status: string
+  reason_description: string
 }
 
 export interface INewsPagination {

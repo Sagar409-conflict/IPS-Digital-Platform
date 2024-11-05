@@ -7,6 +7,20 @@ import { validate } from '../middleware/validator.middleware'
 
 const commonRoutes = Router()
 
+commonRoutes.get(
+  '/rejection-reasons',
+  AuthGuard,
+  checkRole([ROLES.SUPER_ADMIN, ROLES.ORGANIZER]),
+  validate('getRejactionReasons'),
+  commonController.getRejectionReasonsList
+)
+commonRoutes.put(
+  '/modify-status',
+  AuthGuard,
+  checkRole([ROLES.SUPER_ADMIN]),
+  validate('updateStatus'),
+  commonController.modifyStatus
+)
 commonRoutes.put(
   '/update-status/:module/:id',
   AuthGuard,

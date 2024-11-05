@@ -106,6 +106,9 @@ class NewsService {
         'news_description',
         'news_image',
         'status',
+        'submittedAt',
+        'publishedAt',
+        'reason_description',
       ],
       include: [
         {

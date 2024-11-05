@@ -2,7 +2,6 @@ import { ICreateEventAssets, IEventAssets } from './event_assets.interface'
 
 export interface IEvent {
   id: string
-
   thumbnail_image: string
   title: string
   description: string
@@ -13,6 +12,7 @@ export interface IEvent {
   publishedAt: Date | null
   qr_code_image: string
   status: string
+  reason_description: string
   createdAt: Date
   updatedAt: Date
 }
@@ -20,6 +20,7 @@ export interface IEvent {
 export interface ICreateEvent {
   id?: string
   creator_id?: string
+  event_category_id?: string
   thumbnail_image: string
   title: string
   description: string
@@ -30,6 +31,7 @@ export interface ICreateEvent {
   publishedAt?: Date | null
   qr_code_image?: string
   status?: string
+  reason_description?: string
   createdAt?: Date
   updatedAt?: Date
 }
@@ -45,6 +47,7 @@ export interface IResponseEvent {
   publishedAt: Date | null
   qr_code_image: string
   status: string
+  reason_description: string
   event_assets?: ICreateEventAssets[]
   createdAt: Date
   updatedAt: Date
@@ -63,6 +66,7 @@ export interface IEventPagination {
   status?: string
   role?: string
   user_id?: string
+  event_category_id?: string
   todayDate?: boolean
   isUpcomingEvent?: boolean
 }

@@ -1,4 +1,6 @@
 {
+  "BANNER_IMAGE_REQUIRED": "Please attach a banner image",
+
   "DEFAULT": "Action successfully performed.",
   "DETAILS_OF_ORGANIZER": "Organizer details fetched successfully",
   "DETAILS_OF_EVENT_CATEGORY": "Event Category details fetched successfully",
@@ -33,9 +35,9 @@
 
   "MEDIA_EVENT_ICON_REQUIRED": "Please upload an icon image",
   "MEDIA_NEWS_ICON_REQUIRED": "Media file is required",
+  "MODULE_IDENTIFIER_NOT_ALLOWED": "Requested type identifier not allowed",
 
   "NEWS_CATEGORY_EXIST": "This field is already exist",
-
   "NEWS_CATEGORY_CREATED": "News Category Created successfully",
   "NEWS_CATEGORY_LIST": "News category list retrieved successfully",
   "NEWS_CATEGORY_NOT_FOUND": "News Category Not Found",
@@ -50,9 +52,11 @@
   "OTP_RESEND_SUCCESS": "A new verification code has been sent to your email",
 
   "PASSWORD_RESET_SUCCESS": "Your password has been successfully reset",
+  "PROFILE_UPDATED_SUCCESS": "Profile has been updated successfully",
+  "PAGE_SECTION_ALREADY_EXIST": "Requested page section for create content is already exists",
 
   "RECORD_SUCCESSFULLY_DELETED": "Record was successfully deleted from the system",
-  "PROFILE_UPDATED_SUCCESS": "Profile has been updated successfully",
+  "REJECTION_REASONS_LIST": "Rejection reasons list fethced successfully",
 
   "STATUS_UPDATED_SUCCESS": "Status has been successfully updated for requested record",
 
@@ -61,5 +65,6 @@
   "USER_INACTIVE": "Your account is currently inactive, Please contact support to reactivate",
   "USER_NOT_EXIST": "Unable to find an active account with the provided parameters",
   "UNABLE_TO_UPDATE": "The requested update operation could not be completed",
-  "UNABLE_TO_DELETE": "The requested delete operation could not be completed"
+  "UNABLE_TO_DELETE": "The requested delete operation could not be completed",
+  "UNABLE_TO_FETCH_REASONS_LIST": "Unable to retrieve the list of rejection reasons"
 }

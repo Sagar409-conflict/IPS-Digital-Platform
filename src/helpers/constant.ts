@@ -36,4 +36,14 @@ export const NEWS_STATUS = {
   DRAFT: 'draft',
 } as const
 
+export const ABOUT_US_PAGES = {
+  ABOUT: 'about',
+  BANNER_IMAGE: 'banner_image',
+  CULTURE: 'culture',
+  HISTORY: 'history',
+  TERRITORY: 'territory',
+  TOUR: 'tour',
+  TOURIST: 'tourist',
+}
+
 export type EventStatus = keyof typeof NEWS_STATUS

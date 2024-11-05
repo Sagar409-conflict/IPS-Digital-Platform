@@ -18,6 +18,7 @@ class Event extends Model<ICreateEvent> implements IEvent {
   public publishedAt!: Date | null
   public qr_code_image!: string
   public status!: string
+  public reason_description!: string
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
 }
@@ -71,6 +72,10 @@ Event.init(
       values: Object.values(EVENT_STATUS),
       defaultValue: EVENT_STATUS.DRAFT,
       allowNull: false,
+    },
+    reason_description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {

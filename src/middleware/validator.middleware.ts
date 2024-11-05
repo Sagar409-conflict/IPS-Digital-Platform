@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import Joi from 'joi'
 import { internalServer, validationErrorResponse } from '../helpers/response'
 import {
+  ABOUT_US_PAGES,
   EVENT_STATUS,
   MODULE_IDENTIFIRES,
   NEWS_STATUS,
@@ -257,6 +258,7 @@ const updateEventStatusSchema = Joi.object({
   id: Joi.string().required(),
   status: Joi.string().valid('published', 'rejected').required(),
 })
+
 const createNewsSchema = Joi.object({
   title: Joi.string().required(),
   news_description: Joi.string().required(),
@@ -271,6 +273,21 @@ const updateNewsStatusSchema = Joi.object({
   id: Joi.string().required(),
   status: Joi.string().valid('published', 'rejected').required(),
 })
+const updateStatusSchema = Joi.object({
+  id: Joi.string().required(),
+  type: Joi.string().valid(MODULE_IDENTIFIRES.EVENT, MODULE_IDENTIFIRES.NEWS).required().required(),
+  status: Joi.string().valid('published', 'rejected').required(),
+  reason: Joi.string()
+    .when('status', {
+      is: 'rejected',
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .messages({
+      'any.required': 'Reason is required when status is "rejected".',
+      'string.base': 'Reason must be a string.',
+    }),
+})
 const updateNewsSchema = Joi.object({
   id: Joi.string().required(),
   news_category_id: Joi.string().required().messages({
@@ -280,6 +297,30 @@ const updateNewsSchema = Joi.object({
   title: Joi.string().required(),
   news_description: Joi.string().required(),
   status: Joi.string().valid('published', 'pending', 'draft').required(),
+})
+
+const getRejactionReasonsSchema = Joi.object({
+  type: Joi.string().required().messages({
+    'string.empty': 'Type cannot be empty.',
+    'any.required': 'Type is required.',
+  }),
+})
+const createAboutUsSchema = Joi.object({
+  alias: Joi.string()
+    .valid(...Object.values(ABOUT_US_PAGES))
+    .required()
+    .messages({
+      'string.empty': 'Alias cannot be empty.',
+      'any.required': 'Alias is required.',
+    }),
+  title: Joi.string().required().messages({
+    'string.empty': 'Title cannot be empty.',
+    'any.required': 'Title is required.',
+  }),
+  description: Joi.string().required().messages({
+    'string.empty': 'Description cannot be empty.',
+    'any.required': 'Description is required.',
+  }),
 })
 
 const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
@@ -300,6 +341,9 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   updateNews: updateNewsSchema,
   updateEvent: updateEventSchema,
   updateEventStatus: updateEventStatusSchema,
+  updateStatus: updateStatusSchema,
+  getRejactionReasons: getRejactionReasonsSchema,
+  createAboutUs: createAboutUsSchema,
 }
 
 export const validate = (schemaName: string) => {

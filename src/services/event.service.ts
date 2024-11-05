@@ -72,6 +72,12 @@ class EventService {
         }
       }
     }
+    if (pagination.event_category_id) {
+      where = {
+        ...where,
+        event_category_id: pagination.event_category_id,
+      }
+    }
     if (pagination.todayDate) {
       const today = new Date()
 

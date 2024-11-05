@@ -191,11 +191,8 @@ class NewsCategoryController {
           return badRequest(res, languageCode, `INVALID_STATUS_FOR_USER_ROLE`)
         }
       }
-      if (payload.status === 'published') {
+      if (payload.status === NEWS_STATUS.PUBLISHED) {
         payload.publishedAt = new Date()
-      }
-      if (payload.status === 'published') {
-        payload.submittedAt = new Date()
       }
 
       if (req.files && req.files.news_image && !Array.isArray(req.files.news_image)) {

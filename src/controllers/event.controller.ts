@@ -131,7 +131,16 @@ class EventController {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
     try {
-      const { page, limit, search, status, todayDate, isUpcomingEvent, user_id } = req.query
+      const {
+        page,
+        limit,
+        search,
+        status,
+        todayDate,
+        isUpcomingEvent,
+        user_id,
+        event_category_id,
+      } = req.query
 
       console.log('🚀 ~ file: event.controller.ts:122 ~ EventController ~ getAll ~ page:', page)
 
@@ -145,6 +154,8 @@ class EventController {
         isUpcomingEvent:
           typeof isUpcomingEvent === 'string' ? isUpcomingEvent === 'true' : undefined,
         user_id: typeof user_id === 'undefined' ? undefined : String(user_id),
+        event_category_id:
+          typeof event_category_id === 'undefined' ? undefined : String(event_category_id),
       }
 
       //Get all customizations based on search and pagination
@@ -383,12 +394,24 @@ class EventController {
         return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
       }
 
-      const updatedEvent = await eventService.findOne({ where: { id } })
+      const getUpdatedEvent = await eventService.findOne({ where: { id } })
+
+      if (!getUpdatedEvent) return badRequest(res, languageCode, 'EVENT_NOT_EXIST')
+
+      // await generateQRCode(getUpdatedEvent.id, getUpdatedEvent.title)
+
       return success(res, languageCode, statusCode.SUCCESS, 'EVENT_STATUS_UPDATED_SUCCESSFULLY')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
     }
+  }
+
+  async genQR(req: Request, res: Response) {
+    // await generateQRCode(
+    //   '3137a1e6-88ae-4eba-ac6e-9c78cf83a6b1',
+    //   'Vijay Sales and Marketing Exhibition'
+    // )
   }
 }
 const eventController = new EventController()

@@ -42,6 +42,10 @@ News.init(
       defaultValue: NEWS_STATUS.DRAFT,
       allowNull: false,
     },
+    reason_description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     submittedAt: {
       type: DataTypes.DATE,
       allowNull: false,
