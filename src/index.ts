@@ -37,9 +37,10 @@ app.use(
 )
 // Enable file upload support
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(fileUpload())
+app.use(fileUpload({ parseNested: true }))
 
 app.use(bodyParser.urlencoded({ limit: '500mb', extended: false }))
+app.use(express.urlencoded({ limit: '500mb', extended: false }))
 
 // parse application/json
 app.use(bodyParser.json({ limit: '500mb' }))
