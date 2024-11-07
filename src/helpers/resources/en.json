@@ -4,6 +4,7 @@
   "ABOUT_US_SECTION_DETAILS": "Success! Requested section of About Us details fetched successfully",
   "ABOUT_US_ALIAS_DUPLICATION": "Failure! It seems like you are trying to set duplicate information",
   "ABOUT_US_ALLOW_MAX_7_IMAGES": "Maximum 7 images are allowed",
+  "ABOUT_US_UPDATE_SECTION": "Request for updating a section of About Us has been successfully completed",
 
   "BANNER_IMAGE_REQUIRED": "Please attach a banner image",
 
@@ -62,6 +63,7 @@
   "PROFILE_UPDATED_SUCCESS": "Profile has been updated successfully",
   "PAGE_SECTION_ALREADY_EXIST": "Requested page section for create content is already exists",
   "PASSWORD_CHANGE_SUCCESS": "Your password has been successfully change",
+  "PASSWORD_SEEMS_SAME": "Please choose a new password that’s different from the current one",
 
   "RECORD_SUCCESSFULLY_DELETED": "Record was successfully deleted from the system",
   "REJECTION_REASONS_LIST": "Rejection reasons list fethced successfully",

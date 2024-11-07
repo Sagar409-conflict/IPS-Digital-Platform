@@ -206,28 +206,34 @@ class AuthController {
     }
   }
 
-  /****************************************
-   * REST API endpoint for login user
+  /*************************************************************************
+   * REST API endpoint for change password (User has to mandatory logged in)
    * @param req
    * @param res
    * @returns
-   ***************************************/
+   ************************************************************************/
   async changePassword(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
       const { email } = req.user
-      const { oldPassword, newPassword } = req.body
+      const { old_password, new_password } = req.body
       const isExistUser = await userService.findOneWithPassword(email)
 
       if (!isExistUser) {
         return badRequest(res, languageCode, 'USER_NOT_EXIST', req.body)
       }
-      const isPasswordCorrect = await compareValue(oldPassword, isExistUser.password)
+      const isPasswordCorrect = await compareValue(old_password, isExistUser.password)
+
       if (!isPasswordCorrect) {
         return badRequest(res, languageCode, 'INCORRECT_OLD_PASSWORD', req.body)
       }
 
-      isExistUser.password = await encrypt(newPassword)
+      isExistUser.password = await encrypt(new_password)
+      const isOldSameToNew = await compareValue(old_password, isExistUser.password)
+
+      if (isOldSameToNew) {
+        return badRequest(res, languageCode, 'PASSWORD_SEEMS_SAME', req.body)
+      }
 
       await userService.changePassword(email, {
         password: isExistUser.password,

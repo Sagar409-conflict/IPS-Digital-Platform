@@ -64,6 +64,24 @@ const resetPasswordSchema = Joi.object({
     }),
 })
 
+const changePasswordSchema = Joi.object({
+  old_password: Joi.string().required(),
+  new_password: Joi.string()
+    .min(5)
+    .max(30)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).*$'))
+    .required()
+    .messages({
+      'string.base': 'New Password should be a type of text.',
+      'string.empty': 'New Password cannot be empty.',
+      'string.min': 'New Password must be at least 5 characters long.',
+      'string.max': 'New Password cannot exceed 30 characters.',
+      'string.pattern.base':
+        'New Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+      'any.required': 'New Password is required.',
+    }),
+})
+
 const createOrganiserSchema = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
@@ -350,6 +368,7 @@ const getRejactionReasonsSchema = Joi.object({
   }),
 })
 const createAboutUsSchema = Joi.object({
+  id: Joi.string().required(),
   alias: Joi.string()
     .valid(...Object.values(ABOUT_US_PAGES))
     .required()
@@ -377,16 +396,11 @@ const createAboutUsSchema = Joi.object({
       'string.empty': 'Description cannot be empty.',
       'any.required': 'Description is required.',
     }),
-  media: Joi.array()
-    .items({
-      title: Joi.string().required(),
-    })
-    .when('alias', {
-      is: ABOUT_US_PAGES.BANNER_IMAGE,
-      then: Joi.required(),
-      otherwise: Joi.optional(),
-    })
-    .required(),
+  // media: Joi.any().when('alias', {
+  //   is: ABOUT_US_PAGES.BANNER_IMAGE,
+  //   then: Joi.required(),
+  //   otherwise: Joi.optional(),
+  // }),
 })
 
 const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
@@ -411,6 +425,8 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   updateStatus: updateStatusSchema,
   getRejactionReasons: getRejactionReasonsSchema,
   createAboutUs: createAboutUsSchema,
+  updateAboutUs: createAboutUsSchema,
+  changePassword: changePasswordSchema,
 }
 
 export const validate = (schemaName: string) => {
