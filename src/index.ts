@@ -31,15 +31,23 @@ app.use(
   cors({
     origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'languageCode',
+    ],
     credentials: true,
   })
 )
 // Enable file upload support
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(fileUpload())
+app.use(fileUpload({ parseNested: true }))
 
 app.use(bodyParser.urlencoded({ limit: '500mb', extended: false }))
+app.use(express.urlencoded({ limit: '500mb', extended: false }))
 
 // parse application/json
 app.use(bodyParser.json({ limit: '500mb' }))

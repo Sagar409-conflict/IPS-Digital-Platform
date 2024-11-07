@@ -194,6 +194,9 @@ class NewsCategoryController {
       if (payload.status === NEWS_STATUS.PUBLISHED) {
         payload.publishedAt = new Date()
       }
+      if (payload.status === NEWS_STATUS.PENDING) {
+        payload.submittedAt = new Date()
+      }
 
       if (req.files && req.files.news_image && !Array.isArray(req.files.news_image)) {
         if (existingNews.news_image) {

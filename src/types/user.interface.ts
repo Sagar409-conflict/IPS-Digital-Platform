@@ -50,3 +50,7 @@ export interface IUserTokenPayload {
   email: string
   role: string
 }
+
+export interface ProfileImageStatus {
+  profile_image: boolean
+}

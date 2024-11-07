@@ -27,7 +27,12 @@ const loginSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 })
-
+const updateProfileSchema = Joi.object({
+  first_name: Joi.string().required(),
+  last_name: Joi.string().required(),
+  country_code: Joi.string().required(),
+  mobile_number: Joi.string().required(),
+})
 const idSchema = Joi.object({
   id: Joi.string().uuid().required(),
 })
@@ -106,45 +111,64 @@ const updatedOrganiserSchema = Joi.object({
 })
 
 const createEventCategorySchema = Joi.object({
-  title: Joi.string().required().messages({
-    'string.base': 'Title should be a type of text.',
-    'string.empty': 'Title cannot be empty.',
-    'any.required': 'Title is required.',
-  }),
+  title: Joi.string()
+    .pattern(/^[a-zA-Z0-9\s]*$/)
+    .required()
+    .messages({
+      'string.base': 'Title should be a type of text.',
+      'string.empty': 'Title cannot be empty.',
+      'any.required': 'Title is required.',
+      'string.pattern.base': 'Title can only contain alphanumeric characters and spaces',
+    }),
   icon_image: Joi.string().optional(),
 })
 
 const updateEventCategorySchema = Joi.object({
   id: Joi.string().uuid().required(),
-  title: Joi.string().optional().messages({
-    'string.base': 'Title should be a type of text.',
-    'string.empty': 'Title cannot be empty.',
-  }),
+  title: Joi.string()
+    .pattern(/^[a-zA-Z0-9\s]*$/)
+    .optional()
+    .messages({
+      'string.base': 'Title should be a type of text.',
+      'string.empty': 'Title cannot be empty.',
+      'string.pattern.base': 'Title can only contain alphanumeric characters and spaces',
+    }),
   icon_image: Joi.string().optional(),
 })
 const createNewsCategorySchema = Joi.object({
-  title: Joi.string().required().messages({
-    'string.base': 'Title should be a type of text.',
-    'string.empty': 'Title cannot be empty.',
-    'any.required': 'Title is required.',
-  }),
+  title: Joi.string()
+    .pattern(/^[a-zA-Z0-9\s]*$/)
+    .required()
+    .messages({
+      'string.base': 'Title should be a type of text.',
+      'string.empty': 'Title cannot be empty.',
+      'any.required': 'Title is required.',
+      'string.pattern.base': 'Title can only contain alphanumeric characters and spaces',
+    }),
   icon_image: Joi.string().optional(),
 })
 const updateNewsCategorySchema = Joi.object({
   id: Joi.string().uuid().required(),
-  title: Joi.string().required().messages({
-    'string.base': 'Title should be a type of text.',
-    'string.empty': 'Title cannot be empty.',
-    'any.required': 'Title is required.',
-  }),
+  title: Joi.string()
+    .pattern(/^[a-zA-Z0-9\s]*$/)
+    .optional()
+    .messages({
+      'string.base': 'Title should be a type of text.',
+      'string.empty': 'Title cannot be empty.',
+      'string.pattern.base': 'Title can only contain alphanumeric characters and spaces',
+    }),
   icon_image: Joi.string().optional(),
 })
 const createEventSchema = Joi.object({
-  title: Joi.string().required().messages({
-    'string.base': 'Title should be a type of text.',
-    'string.empty': 'Title cannot be empty.',
-    'any.required': 'Title is required.',
-  }),
+  title: Joi.string()
+    .pattern(/^[a-zA-Z0-9\s]*$/)
+    .required()
+    .messages({
+      'string.base': 'Title should be a type of text.',
+      'string.empty': 'Title cannot be empty.',
+      'any.required': 'Title is required.',
+      'string.pattern.base': 'Title can only contain alphanumeric characters and spaces',
+    }),
   event_category_id: Joi.string().required().messages({
     'string.empty': 'Event category cannot be empty.',
     'any.required': 'Event category is required.',
@@ -198,11 +222,15 @@ const createEventSchema = Joi.object({
 })
 const updateEventSchema = Joi.object({
   id: Joi.string().required(),
-  title: Joi.string().required().messages({
-    'string.base': 'Title should be a type of text.',
-    'string.empty': 'Title cannot be empty.',
-    'any.required': 'Title is required.',
-  }),
+  title: Joi.string()
+    .pattern(/^[a-zA-Z0-9\s]*$/)
+    .required()
+    .messages({
+      'string.base': 'Title should be a type of text.',
+      'string.empty': 'Title cannot be empty.',
+      'any.required': 'Title is required.',
+      'string.pattern.base': 'Title can only contain alphanumeric characters and spaces',
+    }),
   event_category_id: Joi.string().required().messages({
     'string.empty': 'Event category cannot be empty.',
     'any.required': 'Event category is required.',
@@ -260,7 +288,15 @@ const updateEventStatusSchema = Joi.object({
 })
 
 const createNewsSchema = Joi.object({
-  title: Joi.string().required(),
+  title: Joi.string()
+    .pattern(/^[a-zA-Z0-9\s]*$/)
+    .required()
+    .messages({
+      'string.base': 'Title should be a type of text.',
+      'string.empty': 'Title cannot be empty.',
+      'any.required': 'Title is required.',
+      'string.pattern.base': 'Title can only contain alphanumeric characters and spaces',
+    }),
   news_description: Joi.string().required(),
   status: Joi.string()
     .valid(...Object.values(NEWS_STATUS))
@@ -294,7 +330,15 @@ const updateNewsSchema = Joi.object({
     'string.empty': 'News category cannot be empty.',
     'any.required': 'News category is required.',
   }),
-  title: Joi.string().required(),
+  title: Joi.string()
+    .pattern(/^[a-zA-Z0-9\s]*$/)
+    .required()
+    .messages({
+      'string.base': 'Title should be a type of text.',
+      'string.empty': 'Title cannot be empty.',
+      'any.required': 'Title is required.',
+      'string.pattern.base': 'Title can only contain alphanumeric characters and spaces',
+    }),
   news_description: Joi.string().required(),
   status: Joi.string().valid('published', 'pending', 'draft').required(),
 })
@@ -313,14 +357,36 @@ const createAboutUsSchema = Joi.object({
       'string.empty': 'Alias cannot be empty.',
       'any.required': 'Alias is required.',
     }),
-  title: Joi.string().required().messages({
-    'string.empty': 'Title cannot be empty.',
-    'any.required': 'Title is required.',
-  }),
-  description: Joi.string().required().messages({
-    'string.empty': 'Description cannot be empty.',
-    'any.required': 'Description is required.',
-  }),
+  title: Joi.string()
+    .when('alias', {
+      not: ABOUT_US_PAGES.BANNER_IMAGE,
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .messages({
+      'any.required': 'Title is required when status is "baner_image".',
+      'string.base': 'Title must be a string.',
+    }),
+  description: Joi.string()
+    .when('alias', {
+      not: ABOUT_US_PAGES.BANNER_IMAGE,
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .messages({
+      'string.empty': 'Description cannot be empty.',
+      'any.required': 'Description is required.',
+    }),
+  media: Joi.array()
+    .items({
+      title: Joi.string().required(),
+    })
+    .when('alias', {
+      is: ABOUT_US_PAGES.BANNER_IMAGE,
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .required(),
 })
 
 const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
@@ -328,6 +394,7 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   statusUpdate: statusUpdateSchema,
   register: registerSchema,
   login: loginSchema,
+  updateProfile: updateProfileSchema,
   resetPassword: resetPasswordSchema,
   createOrganiser: createOrganiserSchema,
   updatedOrganiser: updatedOrganiserSchema,

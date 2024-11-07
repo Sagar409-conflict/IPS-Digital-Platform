@@ -142,8 +142,6 @@ class EventController {
         event_category_id,
       } = req.query
 
-      console.log('🚀 ~ file: event.controller.ts:122 ~ EventController ~ getAll ~ page:', page)
-
       //Paginations Setup
       const pagination: IEventPagination = {
         page: typeof page === 'undefined' ? 1 : Number(page),

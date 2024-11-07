@@ -48,8 +48,7 @@ News.init(
     },
     submittedAt: {
       type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
+      allowNull: true,
     },
     publishedAt: {
       type: DataTypes.DATE,
