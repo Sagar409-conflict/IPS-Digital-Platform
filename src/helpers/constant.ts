@@ -39,6 +39,7 @@ export const NEWS_STATUS = {
 export const ABOUT_US_PAGES = {
   ABOUT: 'about',
   BANNER_IMAGE: 'banner_image',
+  CHILD_BANNER_IMAGE: 'child_banner_image',
   CULTURE: 'culture',
   HISTORY: 'history',
   TERRITORY: 'territory',

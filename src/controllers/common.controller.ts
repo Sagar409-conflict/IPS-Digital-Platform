@@ -8,6 +8,7 @@ import { ICreateEvent } from '../types/event.interface'
 import { statusCode } from '../config/statucCode'
 import newsService from '../services/news.service'
 import { ICreateNews } from '../types/news.interface'
+import { generateQRCode } from '../helpers/fileUpload'
 
 class CommonController {
   async statusUpdate(req: Request, res: Response) {
@@ -69,7 +70,10 @@ class CommonController {
       }
 
       if (requestPayload.type === MODULE_IDENTIFIRES.EVENT) {
-        const existingEvent = await eventService.findOne({ where: { id: requestPayload.id } })
+        const existingEvent = await eventService.findOne({
+          where: { id: requestPayload.id },
+          raw: true,
+        })
         if (!existingEvent) {
           return badRequest(res, languageCode, 'EVENT_NOT_EXIST')
         }
@@ -77,8 +81,10 @@ class CommonController {
           status: requestPayload.status,
         }
         if (requestPayload.status === EVENT_STATUS.PUBLISHED) {
+          const path = await generateQRCode(requestPayload.id, existingEvent.title)
           payload = {
             ...payload,
+            qr_code_image: path,
             publishedAt: new Date(),
           }
         } else {

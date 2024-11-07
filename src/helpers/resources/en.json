@@ -5,6 +5,7 @@
   "ABOUT_US_ALIAS_DUPLICATION": "Failure! It seems like you are trying to set duplicate information",
   "ABOUT_US_ALLOW_MAX_7_IMAGES": "Maximum 7 images are allowed",
   "ABOUT_US_UPDATE_SECTION": "Request for updating a section of About Us has been successfully completed",
+  "ALIAS_SHOULD_BE_BANNER_IMAGE_OR_CHILD_BANNER_IMAGE": "Alias conflict occured",
 
   "BANNER_IMAGE_REQUIRED": "Please attach a banner image",
 
@@ -76,5 +77,6 @@
   "USER_NOT_EXIST": "Unable to find an active account with the provided parameters",
   "UNABLE_TO_UPDATE": "The requested update operation could not be completed",
   "UNABLE_TO_DELETE": "The requested delete operation could not be completed",
-  "UNABLE_TO_FETCH_REASONS_LIST": "Unable to retrieve the list of rejection reasons"
+  "UNABLE_TO_FETCH_REASONS_LIST": "Unable to retrieve the list of rejection reasons",
+  "UNABLE_TO_FETCH_LIST_DATA": "Unable to retrieve the data"
 }

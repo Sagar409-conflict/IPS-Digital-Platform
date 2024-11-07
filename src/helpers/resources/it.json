@@ -84,5 +84,6 @@
   "UNABLE_TO_UPDATE_STATUS": "Impossibile aggiornare lo stato",
   "UNAUTHORIZED": "Accesso negato. ",
   "USER_INACTIVE": "Il tuo account è attualmente inattivo, contatta l'assistenza per riattivarlo",
-  "USER_NOT_EXIST": "Impossibile trovare un account attivo con i parametri forniti"
+  "USER_NOT_EXIST": "Impossibile trovare un account attivo con i parametri forniti",
+  "UNABLE_TO_FETCH_LIST_DATA": "Impossibile recuperare i dati"
 }

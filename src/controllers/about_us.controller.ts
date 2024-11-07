@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { ABOUT_US_PAGES, LANGUAGE_CODE } from '../helpers/constant'
 import {
   badRequest,
+  customeResponse,
   internalServer,
   notFound,
   success,
@@ -9,10 +10,11 @@ import {
   validationErrorResponse,
 } from '../helpers/response'
 import AboutUsService from '../services/about_us.service'
-import { ICreateAboutUs } from '../types/about_us.interface'
-import { uploadFile } from '../helpers/fileUpload'
+import { IAboutUs, IAboutUsPagination, ICreateAboutUs } from '../types/about_us.interface'
+import { removeFile, uploadFile } from '../helpers/fileUpload'
 import { UploadedFile } from 'express-fileupload'
 import { statusCode } from '../config/statucCode'
+import aboutUsService from '../services/about_us.service'
 
 class AboutUsController {
   /**
@@ -82,10 +84,205 @@ class AboutUsController {
     }
   }
 
+  /**
+   * REST API endpoint for Get All Sections of About Us
+   * @param req
+   * @param res
+   * @returns
+   */
   async getAll(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
     try {
+      const { search } = req.query
+      const pagination: IAboutUsPagination = {
+        search: typeof search === 'undefined' ? undefined : String(search),
+      }
+      const rows = await aboutUsService.findAll(pagination)
+
+      if (rows.length <= 0) return badRequest(res, languageCode, 'UNABLE_TO_FETCH_LIST_DATA')
+
+      const data = {
+        result: rows,
+      }
+      return success(res, languageCode, statusCode.SUCCESS, 'ABOUT_US_LIST', data)
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
+
+  /**
+   * REST API endpoint for get details of specific section
+   * @param req
+   * @param res
+   * @returns
+   */
+  async get(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+
+    try {
+      const { id } = req.params
+
+      const data = await aboutUsService.getById(id)
+      if (!data)
+        return notFound(res, languageCode, undefined, undefined, 'ABOUT_US_SECTION_NOT_FOUND')
+
+      //If Banner Images then
+      if (data.alias === ABOUT_US_PAGES.BANNER_IMAGE) {
+        //Get Sub Images of Banners
+        const childBannerImages = await AboutUsService.find({
+          where: {
+            alias: ABOUT_US_PAGES.CHILD_BANNER_IMAGE,
+          },
+          attributes: ['id', 'alias', 'path'],
+          raw: true,
+        })
+
+        const mergedArray = data.path
+          ? [{ id: data.id, alias: data.alias, path: data.path }, ...childBannerImages]
+          : childBannerImages
+
+        const { path, ...result } = {
+          ...data,
+          banner_images: mergedArray,
+        }
+
+        return success(res, languageCode, undefined, 'ABOUT_US_SECTION_DETAILS', result)
+      }
+      return success(res, languageCode, undefined, 'ABOUT_US_SECTION_DETAILS', data)
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
+
+  async update(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+
+    try {
+      const { id } = req.params
+      const { alias, title, description } = req.body
+
+      // //Check if the record exists or not
+      const section = await AboutUsService.findOneById(id)
+
+      if (!section) return badRequest(res, languageCode, 'ABOUT_US_SECTION_NOT_FOUND')
+
+      // Alias won't be able to modify
+      // alias !== ABOUT_US_PAGES.BANNER_IMAGE &&
+      if (section.alias !== alias) {
+        return customeResponse(
+          res,
+          languageCode,
+          statusCode.INTERNAL_SERVER_ERROR,
+          'ABOUT_US_ALIAS_DUPLICATION'
+        )
+      }
+
+      if (alias === ABOUT_US_PAGES.BANNER_IMAGE && !req.files) {
+        return validationErrorResponse(res, 'BANNER_IMAGE_REQUIRED')
+      }
+
+      if (
+        req.files &&
+        req.files.banner_images &&
+        Array.isArray(req.files.banner_images) &&
+        alias === ABOUT_US_PAGES.BANNER_IMAGE
+      ) {
+        //Verify length of total images
+        if (!(req.files.banner_images.length <= 7))
+          return badRequest(res, languageCode, 'ABOUT_US_ALLOW_MAX_7_IMAGES')
+
+        //Get Sub Images of Banners
+        const childBannerImages = await AboutUsService.find({
+          where: {
+            alias: ABOUT_US_PAGES.CHILD_BANNER_IMAGE,
+          },
+        })
+
+        //Upload all Images to the server
+        const payload: ICreateAboutUs[] = await Promise.all(
+          req.files.banner_images.map(async (item, index) => {
+            const getFilePath = await uploadFile(item, `about_us/banner_images/`)
+            if (index > 0) {
+              const bannerPayload: ICreateAboutUs = {
+                alias: ABOUT_US_PAGES.CHILD_BANNER_IMAGE,
+                title: '',
+                path: getFilePath,
+              }
+              return bannerPayload
+            } else {
+              const bannerPayload: ICreateAboutUs = {
+                alias,
+                title: 'Banner Images',
+                path: getFilePath,
+              }
+              return bannerPayload
+            }
+          })
+        )
+        //Update Existing Image
+        const updateFirstBannerImage = await AboutUsService.update(id, payload[0])
+        const addRemainingImages = await AboutUsService.bulkCreate(payload.slice(1))
+
+        //Remove Unneccessary Old Files from the server
+        if (section.path !== null) {
+          await removeFile(section.path) // Main Image Remvoal
+          //Below line is commented due to an error (comment/uncomment based on your requirement)
+          // await AboutUsService.update(section.id, { path: null })
+        }
+        // Sub Images need to remove
+        if (childBannerImages && childBannerImages.length > 0) {
+          await Promise.all(
+            childBannerImages.map(async (item) => {
+              await removeFile(item.path)
+              await AboutUsService.delete(item.id)
+            })
+          )
+        }
+        return success(res, languageCode, undefined, 'ABOUT_US_UPDATE_SECTION')
+      } else {
+        // Update Record
+        const updateMainImage = (await AboutUsService.update(id, { title, description }))[0]
+        if (!updateMainImage)
+          return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
+
+        return success(res, languageCode, undefined, 'ABOUT_US_UPDATE_SECTION')
+      }
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
+
+  async delete(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+    try {
+      const { id } = req.params
+      //Check if the record exists or not
+      const section = await AboutUsService.findOneById(id)
+
+      if (!section) return badRequest(res, languageCode, 'ABOUT_US_SECTION_NOT_FOUND')
+
+      //Check alias should be banner_image OR child_banner_image
+      if (
+        [ABOUT_US_PAGES.BANNER_IMAGE, ABOUT_US_PAGES.CHILD_BANNER_IMAGE].includes(section.alias)
+      ) {
+        await removeFile(section.path)
+
+        let updatePromise: Promise<unknown>
+        if (section.alias === ABOUT_US_PAGES.BANNER_IMAGE) {
+          updatePromise = AboutUsService.update(id, { path: null })
+        } else {
+          updatePromise = AboutUsService.delete(section.id)
+        }
+
+        await updatePromise
+        return success(res, languageCode, undefined, 'ABOUT_US_DELETE_SECTION')
+      } else {
+        return badRequest(res, languageCode, 'ALIAS_SHOULD_BE_BANNER_IMAGE_OR_CHILD_BANNER_IMAGE')
+      }
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)

@@ -7,14 +7,22 @@ import { validate } from '../middleware/validator.middleware'
 
 const aboutUsRoutes = Router()
 
-aboutUsRoutes.post(
-  '/',
+aboutUsRoutes.put(
+  '/:id',
   AuthGuard,
   checkRole([ROLES.SUPER_ADMIN]),
-  validate('createAboutUs'),
-  aboutUsController.create
+  validate('updateAboutUs'),
+  aboutUsController.update
 )
-
+aboutUsRoutes.get('/', aboutUsController.getAll)
+aboutUsRoutes.get('/:id', aboutUsController.get)
+aboutUsRoutes.delete(
+  '/remove-banner-image/:id',
+  AuthGuard,
+  checkRole([ROLES.SUPER_ADMIN]),
+  validate('id'),
+  aboutUsController.delete
+)
 // aboutUsRoutes.get('/', aboutUsController.getAll)
 
 export default aboutUsRoutes

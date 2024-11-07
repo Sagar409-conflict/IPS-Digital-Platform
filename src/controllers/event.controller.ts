@@ -8,7 +8,13 @@ import {
 } from '../helpers/constant'
 import { badRequest, internalServer, success, unAuthorized } from '../helpers/response'
 import userService from '../services/user.service'
-import { removeFile, removeFolder, uploadAssetsHelper, uploadFile } from '../helpers/fileUpload'
+import {
+  generateQRCode,
+  removeFile,
+  removeFolder,
+  uploadAssetsHelper,
+  uploadFile,
+} from '../helpers/fileUpload'
 import eventService from '../services/event.service'
 import { ICreateEventAssets } from '../types/event_assets.interface'
 import { UploadedFile } from 'express-fileupload'
@@ -406,10 +412,13 @@ class EventController {
   }
 
   async genQR(req: Request, res: Response) {
-    // await generateQRCode(
-    //   '3137a1e6-88ae-4eba-ac6e-9c78cf83a6b1',
-    //   'Vijay Sales and Marketing Exhibition'
-    // )
+    const path = await generateQRCode(
+      '3137a1e6-88ae-4eba-ac6e-9c78cf83a6b1',
+      // 'Vijay Sales and Marketing Exhibition'
+      'Test New Event'
+    )
+
+    console.log('🚀 ~ file: event.controller.ts:421 ~ EventController ~ genQR ~ path:', path)
   }
 }
 const eventController = new EventController()

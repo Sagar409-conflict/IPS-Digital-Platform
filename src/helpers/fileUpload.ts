@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import QRCode from 'qrcode'
 import fsPromise from 'fs/promises'
 import { UploadedFile } from 'express-fileupload'
 import { IAllMediaFields } from '../types/common.interface'
@@ -116,7 +117,69 @@ export const uploadAssetsHelper = async (
     return await eventService.bulkCreateEventAssets(ArrayOfVideoPaths)
   }
 }
+export const generateQRCode = async (id: string, title: string) => {
+  try {
+    title = title.replace(/\s+/g, '_')
+    let generateFileName = await generateRandomString(16)
+    const destination = `/uploads/event_assets/${title}/qr_code/${generateFileName}.png`
+    const uploadDirPath: string = path.join(__dirname, `../public${destination}`)
 
+    const dirPath = path.dirname(uploadDirPath)
+
+    await removeFolder(`event_assets/${title}/qr_code/`)
+    try {
+      // Recursively create the directory, handling any issues that arise
+      await fs.promises.mkdir(dirPath, { recursive: true })
+      console.log('Directory created or already exists:', dirPath)
+    } catch (error) {
+      console.error('Error creating directory:', error)
+      return
+    }
+
+    const buffer = await QRCode.toBuffer(`https://www.itpathsolutions.com/${id}`, {
+      errorCorrectionLevel: 'H',
+      type: 'png',
+      width: 200,
+      margin: 2,
+      color: {
+        dark: '#7F0042',
+        light: '#ffffff',
+      },
+    })
+    // Write the buffer to the file
+    await fs.promises.writeFile(uploadDirPath, buffer)
+    console.log('QR code saved successfully', destination)
+
+    // Return the relative path after the QR code is saved
+    return destination
+
+    //***************BELOW is a callback version of buffer code (START)************ */
+    //   async (err, buffer) => {
+    //     if (err) {
+    //       console.error('Error generating QR code:', err)
+    //       return
+    //     }
+
+    //     // Write the Buffer to the file
+    //     try {
+    //       const r = await fs.promises.writeFile(uploadDirPath, buffer)
+
+    //       console.log('🚀 ~ file: fileUpload.ts:164 ~ r:', r)
+
+    //       console.log('QR code saved successfully')
+    //       return destination
+    //     } catch (writeError) {
+    //       console.error('Error saving QR code to file:', writeError)
+    //       return
+    //     }
+    //   }
+    // )
+    //***************BELOW is a callback version of buffer code (END)************ */
+  } catch (error) {
+    console.error('Error generating QR Code:', error)
+    throw error
+  }
+}
 // function isKeyOfIAllMediaFields(key: string): key is keyof IAllMediaFields {
 //   return ['icon_image', 'profile_image'].includes(key)
 // }

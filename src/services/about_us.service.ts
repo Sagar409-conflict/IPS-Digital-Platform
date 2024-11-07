@@ -6,8 +6,10 @@ import {
   INewsCategoryResponse,
 } from '../types/news_category.interface'
 import { IPagination, IResponseAndCount } from '../types/common.interface'
-import { IAboutUs, ICreateAboutUs } from '../types/about_us.interface'
+import { IAboutUs, IAboutUsPagination, ICreateAboutUs } from '../types/about_us.interface'
 import AboutUs from '../models/about_us.model'
+import { count } from 'console'
+import { ABOUT_US_PAGES } from '../helpers/constant'
 
 class AboutUsService {
   // Create a new News Category
@@ -27,68 +29,72 @@ class AboutUsService {
     if (data) return false
     return true
   }
-  // Find a single news category by title
-  async findOneByTitle(title: string): Promise<INewsCategory | null> {
-    const filter: FindOptions<INewsCategory> = {
-      where: { title },
-      raw: true,
-    }
-    return await NewsCategory.findOne(filter)
-  }
 
   // General find method (can be used with various filters)
-  async findOne(data: FindOptions<ICreateNewsCategory>): Promise<INewsCategory | null> {
-    return await NewsCategory.findOne(data)
+  async findOneById(id: string): Promise<IAboutUs | null> {
+    return await AboutUs.findOne({
+      where: { id },
+      raw: true,
+    })
   }
 
+  async find(payload: FindOptions<ICreateAboutUs>) {
+    return AboutUs.findAll(payload)
+  }
   // Find all news categories with optional search and pagination
-  async findAll(pagination: IPagination): Promise<IResponseAndCount<INewsCategory[]>> {
-    let where: WhereOptions<ICreateNewsCategory> = {}
+  async findAll(pagination: IAboutUsPagination): Promise<IAboutUs[]> {
+    let where: WhereOptions<ICreateAboutUs> = {
+      alias: {
+        [Op.ne]: ABOUT_US_PAGES.CHILD_BANNER_IMAGE,
+      },
+    }
 
     if (pagination.search) {
       where = {
         ...where,
-        [Op.or]: [{ title: { [Op.like]: `%${pagination.search}%` } }],
+        [Op.or]: [
+          { title: { [Op.like]: `%${pagination.search}%` } },
+          { description: { [Op.like]: `%${pagination.search}%` } },
+        ],
       }
     }
 
     const filter: FindOptions<ICreateNewsCategory> = {
       where,
-      limit: pagination.limit || 10,
-      offset: (pagination.page - 1) * pagination.limit || 0,
-      order: [['createdAt', 'DESC']],
+
+      order: [['createdAt', 'ASC']],
       raw: true,
     }
-    return await NewsCategory.findAndCountAll(filter)
+    return await AboutUs.findAll(filter)
   }
 
   // Delete a news category by ID
-  async delete(categoryId: string): Promise<number> {
-    const deleted = await NewsCategory.destroy({ where: { id: categoryId } })
+  async delete(id: string): Promise<number> {
+    const deleted = await AboutUs.destroy({ where: { id } })
     return deleted
   }
 
   // Update a news category by ID
-  async update(
-    id: string,
-    payload: Partial<ICreateNewsCategory>
-  ): Promise<[affectedCount: number]> {
-    return await NewsCategory.update(payload, { where: { id } })
+  async update(id: string, payload: Partial<ICreateAboutUs>): Promise<[affectedCount: number]> {
+    console.log('CREATE/UPDATE : ', payload)
+
+    return await AboutUs.update(payload, { where: { id } })
   }
 
   //   // Find a news category by ID and return specific fields
-  async getById(id: string): Promise<INewsCategory | null> {
-    return NewsCategory.findOne({
+  async getById(id: string): Promise<IAboutUs | null> {
+    return AboutUs.findOne({
       where: { id },
-      attributes: ['id', 'title', 'icon_image'],
+      attributes: ['id', 'alias', 'title', 'description', 'path'],
+      raw: true,
     })
   }
 
-  // Find a news category that includes soft-deleted records
-  async findOneWithDeleted(payload: Partial<ICreateNewsCategory>): Promise<INewsCategory | null> {
-    return await NewsCategory.findOne({
-      where: { ...payload },
-      paranoid: false,
+  async totalCountOfBnnerImages() {
+    return AboutUs.count({
+      where: {
+        alias: ABOUT_US_PAGES.BANNER_IMAGE,
+      },
     })
   }
 }
