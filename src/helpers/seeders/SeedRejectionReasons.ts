@@ -20,7 +20,6 @@ const seedRejectionReasons = async () => {
 
     // Seed data for Event model
     await RejectReasons.bulkCreate(reasons, { ignoreDuplicates: true })
-    console.log('Rejection reasons seeded successfully.')
   } catch (error) {
     console.error('Error seeding rejection reasons:', error)
   }

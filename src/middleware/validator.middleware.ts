@@ -27,7 +27,12 @@ const loginSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 })
-
+const updateProfileSchema = Joi.object({
+  first_name: Joi.string().required(),
+  last_name: Joi.string().required(),
+  country_code: Joi.string().required(),
+  mobile_number: Joi.string().required(),
+})
 const idSchema = Joi.object({
   id: Joi.string().uuid().required(),
 })
@@ -375,7 +380,11 @@ const createAboutUsSchema = Joi.object({
   media: Joi.array()
     .items({
       title: Joi.string().required(),
-      image: Joi.any().required(),
+    })
+    .when('alias', {
+      is: ABOUT_US_PAGES.BANNER_IMAGE,
+      then: Joi.required(),
+      otherwise: Joi.optional(),
     })
     .required(),
 })
@@ -385,6 +394,7 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   statusUpdate: statusUpdateSchema,
   register: registerSchema,
   login: loginSchema,
+  updateProfile: updateProfileSchema,
   resetPassword: resetPasswordSchema,
   createOrganiser: createOrganiserSchema,
   updatedOrganiser: updatedOrganiserSchema,

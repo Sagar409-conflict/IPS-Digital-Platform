@@ -34,7 +34,6 @@ class UserService {
     let where: WhereOptions<ICreateUser> = {}
 
     if (pagination.search) {
-      console.log('pagination.search : ', pagination.search)
       where = {
         ...where,
         [Op.or]: [
@@ -123,8 +122,17 @@ class UserService {
     return User.findOne({
       where: {
         id: id,
+        status: USER_STATUS.ACTIVE,
       },
-      attributes: ['id', 'role', 'first_name', 'last_name', 'email', 'mobile_number'],
+      attributes: [
+        'id',
+        'role',
+        'first_name',
+        'last_name',
+        'email',
+        'mobile_number',
+        'profile_image',
+      ],
     })
   }
 }

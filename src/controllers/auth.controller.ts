@@ -1,13 +1,15 @@
 import { Request, Response } from 'express'
 import { badRequest, internalServer, success } from '../helpers/response'
 import { statusCode } from '../config/statucCode'
-import { ICreateUser, IUser } from '../types/user.interface'
+import { ICreateUser, IUser, ProfileImageStatus } from '../types/user.interface'
 import { LANGUAGE_CODE } from '../helpers/constant'
 import userService from '../services/user.service'
 import { encrypt } from '../helpers/encrypt'
 import { generateToken, verifyUser } from '../middleware/userAuth'
 import { generateOtp, validateOtp, validateOtpExpiration } from '../helpers/common'
 import mailTemplateService from '../services/mail_template.service'
+import { removeFile, uploadFile } from '../helpers/fileUpload'
+import { UploadedFile } from 'express-fileupload'
 
 class AuthController {
   /****************************************
@@ -168,6 +170,12 @@ class AuthController {
     }
   }
 
+  /**
+   * REST API endpoint for reset the password in case user forgot
+   * @param req
+   * @param res
+   * @returns
+   */
   async resetPassword(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
@@ -192,6 +200,54 @@ class AuthController {
       }
       await mailTemplateService.sendPasswordResetACKEmail(mailBody)
       return success(res, languageCode, statusCode.SUCCESS, 'PASSWORD_RESET_SUCCESS', null)
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
+
+  /**
+   * REST API endpoint for login user can update their profile
+   * @param req
+   * @param res
+   */
+  async updateProfile(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+
+    try {
+      const { id } = req.user
+      const isExistUser = await userService.getById(id)
+
+      //Check User is exist or not
+      if (!isExistUser) {
+        return badRequest(res, languageCode, 'USER_NOT_EXIST')
+      }
+
+      const payload = req.body
+      const profileImageUpdateStatus: ProfileImageStatus = {
+        profile_image: false,
+      }
+      if (req.files && req.files.profile_image && !Array.isArray(req.files.profile_image)) {
+        payload.profile_image = await uploadFile(req.files.profile_image, `users/profile_images/`)
+        profileImageUpdateStatus.profile_image = true
+      }
+
+      const userUpdated = (await userService.update(id, payload))[0]
+      if (!userUpdated)
+        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+
+      // if (
+      //   isExistUser.profile_image &&
+      //   isExistUser.profile_image !== null &&
+      //   profileImageUpdateStatus.profile_image
+      // )
+      //   await removeFile(isExistUser.profile_image)
+
+      if (isExistUser.profile_image && profileImageUpdateStatus.profile_image) {
+        await removeFile(isExistUser.profile_image)
+      }
+
+      return success(res, languageCode, undefined, 'PROFILE_UPDATED_SUCCESS')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
