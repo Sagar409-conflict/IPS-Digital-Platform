@@ -1,4 +1,10 @@
 {
+  "ABOUT_US_LIST": "Elenco di tutte le sezioni di Chi siamo analizzate con successo",
+  "ABOUT_US_SECTION_NOT_FOUND": "Sezione richiesta di Chi siamo non trovata",
+  "ABOUT_US_SECTION_DETAILS": "La sezione richiesta dei dettagli Chi siamo è stata recuperata correttamente",
+  "ABOUT_US_ALIAS_DUPLICATION": "Errore. Sembra che tu stia tentando di impostare informazioni duplicate",
+  "ABOUT_US_ALLOW_MAX_7_IMAGES": "Sono consentite massimo 7 immagini",
+
   "BANNER_IMAGE_REQUIRED": "Si prega di allegare un'immagine banner",
 
   "DEFAULT": "Azione eseguita con successo.",
@@ -60,6 +66,7 @@
 
   "PASSWORD_RESET_SUCCESS": "La tua password è stata reimpostata con successo",
   "PROFILE_UPDATED_SUCCESS": "Il profilo è stato aggiornato con successo",
+  "PAGE_SECTION_ALREADY_EXIST": "La sezione della pagina richiesta per la creazione del contenuto esiste già",
 
   "RECORD_SUCCESSFULLY_DELETED": "Il record è stato eliminato con successo dal sistema",
   "REJECTION_REASONS_LIST": "Elenco dei motivi di rifiuto recuperato correttamente",

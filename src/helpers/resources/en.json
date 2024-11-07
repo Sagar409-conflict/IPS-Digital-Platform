@@ -1,4 +1,10 @@
 {
+  "ABOUT_US_LIST": "List of all sections from About Us fethced successfully",
+  "ABOUT_US_SECTION_NOT_FOUND": "Requested section of About Us not found",
+  "ABOUT_US_SECTION_DETAILS": "Success! Requested section of About Us details fetched successfully",
+  "ABOUT_US_ALIAS_DUPLICATION": "Failure! It seems like you are trying to set duplicate information",
+  "ABOUT_US_ALLOW_MAX_7_IMAGES": "Maximum 7 images are allowed",
+
   "BANNER_IMAGE_REQUIRED": "Please attach a banner image",
 
   "DEFAULT": "Action successfully performed.",
