@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import authController from '../controllers/auth.controller'
 import { validate } from '../middleware/validator.middleware'
+import { AuthGuard, checkRole } from '../middleware/auth.middleware'
+
 // import {
 //   invitationGuard,
 //   AuthGuard,
@@ -20,6 +22,7 @@ authRoutes.post('/forgot-password', authController.forgotPassword)
 authRoutes.post('/verify-reset-password', authController.verifyOTP)
 authRoutes.post('/resend-otp', authController.resendOTP)
 authRoutes.post('/reset-password', validate('resetPassword'), authController.resetPassword)
+authRoutes.put('/change-password', AuthGuard, authController.changePassword)
 
 // For Admin Plan Purchase Login
 // authRoutes.post('/adminlogin', validate('login'), authController.login)

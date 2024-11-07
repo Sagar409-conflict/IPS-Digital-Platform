@@ -4,7 +4,7 @@ import { statusCode } from '../config/statucCode'
 import { ICreateUser, IUser } from '../types/user.interface'
 import { LANGUAGE_CODE } from '../helpers/constant'
 import userService from '../services/user.service'
-import { encrypt } from '../helpers/encrypt'
+import { compareValue, encrypt } from '../helpers/encrypt'
 import { generateToken, verifyUser } from '../middleware/userAuth'
 import { generateOtp, validateOtp, validateOtpExpiration } from '../helpers/common'
 import mailTemplateService from '../services/mail_template.service'
@@ -192,6 +192,40 @@ class AuthController {
       }
       await mailTemplateService.sendPasswordResetACKEmail(mailBody)
       return success(res, languageCode, statusCode.SUCCESS, 'PASSWORD_RESET_SUCCESS', null)
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
+
+  /****************************************
+   * REST API endpoint for login user
+   * @param req
+   * @param res
+   * @returns
+   ***************************************/
+  async changePassword(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+    try {
+      const { email } = req.user
+      const { oldPassword, newPassword } = req.body
+      const isExistUser = await userService.findOneWithPassword(email)
+
+      if (!isExistUser) {
+        return badRequest(res, languageCode, 'USER_NOT_EXIST', req.body)
+      }
+      const isPasswordCorrect = await compareValue(oldPassword, isExistUser.password)
+      if (!isPasswordCorrect) {
+        return badRequest(res, languageCode, 'INCORRECT_OLD_PASSWORD', req.body)
+      }
+
+      isExistUser.password = await encrypt(newPassword)
+
+      await userService.changePassword(email, {
+        password: isExistUser.password,
+      })
+
+      return success(res, languageCode, statusCode.SUCCESS, 'PASSWORD_CHANGE_SUCCESS', null)
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
