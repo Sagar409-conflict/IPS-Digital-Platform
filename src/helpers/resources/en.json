@@ -35,6 +35,7 @@
   "INVALID_STATUS_FOR_USER_ROLE": "Invalid status for login user",
   "IMAGE_REQUIRED": "Image is required",
   "INVALID_STATUS": "Invalid status",
+  "INCORRECT_OLD_PASSWORD": "Your Old Password is incorrect",
 
   "LIST_OF_ORGANIZER": "Organizers list retrieved successfully",
   "LOGIN_SUCCESS": "Welcome back! You have successfully logged in",
@@ -60,6 +61,7 @@
   "PASSWORD_RESET_SUCCESS": "Your password has been successfully reset",
   "PROFILE_UPDATED_SUCCESS": "Profile has been updated successfully",
   "PAGE_SECTION_ALREADY_EXIST": "Requested page section for create content is already exists",
+  "PASSWORD_CHANGE_SUCCESS": "Your password has been successfully change",
 
   "RECORD_SUCCESSFULLY_DELETED": "Record was successfully deleted from the system",
   "REJECTION_REASONS_LIST": "Rejection reasons list fethced successfully",

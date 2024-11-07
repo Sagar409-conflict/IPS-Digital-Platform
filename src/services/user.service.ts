@@ -20,7 +20,7 @@ class UserService {
       },
       raw: true,
     }
-    return await User.scope('withPassword').findOne(filter)
+    return await User.findOne(filter)
   }
 
   async findOne(data: FindOptions<ICreateUser>): Promise<IUserResponse | null> {
@@ -134,6 +134,14 @@ class UserService {
         'profile_image',
       ],
     })
+  }
+
+  async changePassword(email: string, payload: { password: string }): Promise<void> {
+    await User.update(payload, {
+      where: { email: email },
+      returning: true,
+    })
+    return
   }
 }
 
