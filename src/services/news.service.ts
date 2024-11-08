@@ -171,7 +171,7 @@ class NewsService {
       ],
     })
 
-    return news ? news.get({ plain: true }) : null // Returns only plain data without metadata
+    return news ? news.get({ plain: true }) : null
   }
 }
 

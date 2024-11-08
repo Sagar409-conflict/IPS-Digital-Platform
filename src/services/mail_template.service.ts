@@ -114,7 +114,7 @@ class MailTemplateService {
     try {
       const emailCheckData = {
         to: body?.email,
-        subject: 'for news published email',
+        subject: `Notification: Your ${body.type} Submission Has Been Published`,
         html: SendPublishedTemplate.sendPublishedEmail(body),
       }
       const isMailSent = await sendMail(emailCheckData)
@@ -130,10 +130,9 @@ class MailTemplateService {
 
   async sendRejectedEmail(body: ISendRejectedemail) {
     try {
-      console.log(body)
       const emailCheckData = {
         to: body?.email,
-        subject: 'for news approvel or rejection',
+        subject: `Notification: ${body.type} Approval or Rejection Status Update`,
         html: SendRejectedTemplate.sendRejectedEmail(body),
       }
       const isMailSent = await sendMail(emailCheckData)

@@ -107,19 +107,46 @@ class CommonController {
         }
 
         if (requestPayload.status === EVENT_STATUS.PUBLISHED) {
-          // await mailTemplateService.sendPublishedEmail({
-          //   title: existingEvent.title,
-          //   publishedAt: payload.publishedAt,
-          //   creatorName: existingEvent.creatorName,
-          //   creatorEmail: existingEvent.creatorEmail,
-          // })
+          const event = await eventService.findEeventDetails({ id: req.body.id })
+          await mailTemplateService.sendPublishedEmail({
+            title: event?.title,
+            publishedAt:
+              event && event.publishedAt !== undefined && event.publishedAt !== null
+                ? event.publishedAt
+                : new Date(),
+            submittedAt:
+              event && event.submittedAt !== undefined && event.submittedAt !== null
+                ? event.submittedAt
+                : new Date(),
+            first_name: event && event.creator !== undefined ? event?.creator.first_name : '',
+
+            last_name: event && event.creator !== undefined ? event.creator.last_name : '',
+
+            email: event && event.creator !== undefined ? event?.creator.email : '',
+            status: event?.status,
+            type: req.body.type,
+          })
         } else if (requestPayload.status === EVENT_STATUS.REJECTED) {
-          // await mailTemplateService.sendRejectedEmail({
-          //   title: existingEvent.title,
-          //   reason: req.body.reason,
-          //   creatorName: existingEvent.creatorName,
-          //   creatorEmail: existingEvent.creatorEmail,
-          // })
+          const event = await eventService.findEeventDetails({ id: req.body.id })
+          await mailTemplateService.sendRejectedEmail({
+            title: event?.title,
+            reason: event?.reason_description,
+            publishedAt:
+              event && event.publishedAt !== undefined && event.publishedAt !== null
+                ? event.publishedAt
+                : new Date(),
+            submittedAt:
+              event && event.submittedAt !== undefined && event.submittedAt !== null
+                ? event.submittedAt
+                : new Date(),
+            first_name: event && event.creator !== undefined ? event?.creator.first_name : '',
+
+            last_name: event && event.creator !== undefined ? event.creator.last_name : '',
+
+            email: event && event.creator !== undefined ? event?.creator.email : '',
+            status: event?.status,
+            type: req.body.type,
+          })
         }
 
         return success(res, languageCode, statusCode.SUCCESS, 'EVENT_STATUS_UPDATED_SUCCESSFULLY')
@@ -145,6 +172,48 @@ class CommonController {
         const updateResult = await newsService.update(requestPayload.id, payload)
         if (!updateResult) {
           return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
+        }
+        if (requestPayload.status === NEWS_STATUS.PUBLISHED) {
+          const news = await newsService.getById(req.body.id)
+          await mailTemplateService.sendPublishedEmail({
+            title: news?.title,
+            publishedAt:
+              news && news.publishedAt !== undefined && news.publishedAt !== null
+                ? news.publishedAt
+                : new Date(),
+            submittedAt:
+              news && news.submittedAt !== undefined && news.submittedAt !== null
+                ? news.submittedAt
+                : new Date(),
+            first_name: news && news.creator !== undefined ? news?.creator.first_name : '',
+
+            last_name: news && news.creator !== undefined ? news.creator.last_name : '',
+
+            email: news && news.creator !== undefined ? news?.creator.email : '',
+            status: news?.status,
+            type: req.body.type,
+          })
+        } else if (requestPayload.status === NEWS_STATUS.REJECTED) {
+          const news = await newsService.getById(req.body.id)
+          await mailTemplateService.sendRejectedEmail({
+            title: news?.title,
+            reason: news?.reason_description,
+            publishedAt:
+              news && news.publishedAt !== undefined && news.publishedAt !== null
+                ? news.publishedAt
+                : new Date(),
+            submittedAt:
+              news && news.submittedAt !== undefined && news.submittedAt !== null
+                ? news.submittedAt
+                : new Date(),
+            first_name: news && news.creator !== undefined ? news?.creator.first_name : '',
+
+            last_name: news && news.creator !== undefined ? news.creator.last_name : '',
+
+            email: news && news.creator !== undefined ? news?.creator.email : '',
+            status: news?.status,
+            type: req.body.type,
+          })
         }
 
         return success(res, languageCode, statusCode.SUCCESS, 'NEWS_STATUS_UPDATED_SUCCESSFULLY')

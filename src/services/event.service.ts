@@ -24,7 +24,7 @@ class EventService {
     return await Event.findOne(data)
   }
 
-  async findEeventDetails(options: {}): Promise<IResponseEvent | null> {
+  async findEeventDetails(options: {}): Promise<ICreateEvent | null> {
     return await Event.findOne({
       where: options,
       include: [
@@ -51,6 +51,8 @@ class EventService {
           attributes: ['id', 'media_type', 'path'],
         },
       ],
+      raw: true,
+      nest: true,
     })
   }
 

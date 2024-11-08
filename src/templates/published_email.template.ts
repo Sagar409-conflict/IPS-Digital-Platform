@@ -37,14 +37,14 @@ class SendPublishedtemplate {
                 Hi ${body.first_name} ${body.last_name} 👋,
               </div>
               <div style="font-weight:normal;padding:16px 24px 0px 24px">
-                We are pleased to inform you that your news submission titled
-                &quot;[News Title]&quot; has been successfully published.
+                We are pleased to inform you that your ${body.type} submission titled
+                &quot;${body.title}&quot; has been successfully published.
               </div>
               <div
                 style='font-family:"Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;font-weight:normal;text-align:left;padding:0px 24px 0px 24px'
               >
                 <h4>
-                  News Title: ${body.newsTitle} <br />
+                  ${body.type} Title: ${body.title} <br />
                   Published On: ${body.publishedAt}  <br />
                   Status: ${body.status}
                 </h4>
@@ -52,7 +52,7 @@ class SendPublishedtemplate {
               <div style="font-weight:normal;padding:0px 24px 4px 24px">
                 <p>
                   Thank you for your contribution. You can view the published
-                  news on the platform.
+                  ${body.type} on the platform.
                 </p>
                 <p>
                   If you have any further updates or submissions, feel free to

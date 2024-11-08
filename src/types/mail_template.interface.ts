@@ -37,16 +37,19 @@ export interface ISendPublishedemail {
   email: string
   first_name: string
   last_name: string
-  newsTitle?: string
+  title?: string
   status?: string
+  type?: string
 }
 
 export interface ISendRejectedemail {
   email: string
   first_name: string
   last_name: string
-  newsTitle?: string
+  title?: string
   submittedAt?: Date
   publishedAt?: Date
   status?: string
+  reason?: string
+  type?: string
 }

@@ -1,4 +1,5 @@
 import { ICreateEventAssets, IEventAssets } from './event_assets.interface'
+import { IUserResponse } from './user.interface'
 
 export interface IEvent {
   id: string
@@ -34,6 +35,7 @@ export interface ICreateEvent {
   reason_description?: string
   createdAt?: Date
   updatedAt?: Date
+  creator?: IUserResponse
 }
 export interface IResponseEvent {
   id: string

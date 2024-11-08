@@ -37,16 +37,17 @@ class SendRejectedtemplate {
                 Hi ${body.first_name} ${body.last_name} 👋,
               </div>
               <div style="font-weight:normal;padding:16px 24px 0px 24px">
-                We regret to inform you that your news submission titled
-                &quot;${body.newsTitle}&quot; has been reviewed and was not approved
+                We regret to inform you that your ${body.type} submission titled
+                &quot;${body.title}&quot; has been reviewed and was not approved
                 for publication.
               </div>
               <div
                 style='font-family:"Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;font-weight:normal;text-align:left;padding:0px 24px 0px 24px'
               >
                 <h4>
-                  News Title: ${body.newsTitle} <br />
-                  Reviewed On: ${body.publishedAt}<br />
+                  ${body.type} Title: ${body.title} <br />
+                  Reviewed On: ${body.publishedAt} <br />
+                  Reason : ${body.reason} <br />
                   Status: Rejected
                 </h4>
               </div>

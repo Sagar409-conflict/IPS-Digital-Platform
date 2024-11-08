@@ -126,7 +126,9 @@ export const generateQRCode = async (id: string, title: string) => {
 
     const dirPath = path.dirname(uploadDirPath)
 
-    await removeFolder(`event_assets/${title}/qr_code/`)
+    if (fs.existsSync(uploadDirPath)) {
+      await removeFolder(`event_assets/${title}/qr_code/`)
+    }
     try {
       // Recursively create the directory, handling any issues that arise
       await fs.promises.mkdir(dirPath, { recursive: true })
