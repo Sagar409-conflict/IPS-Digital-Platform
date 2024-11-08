@@ -15,6 +15,7 @@ import { removeFile, uploadFile } from '../helpers/fileUpload'
 import { UploadedFile } from 'express-fileupload'
 import { statusCode } from '../config/statucCode'
 import aboutUsService from '../services/about_us.service'
+import { Op } from 'sequelize'
 
 class AboutUsController {
   /**
@@ -194,6 +195,19 @@ class AboutUsController {
         if (!(req.files.banner_images.length <= 7))
           return badRequest(res, languageCode, 'ABOUT_US_ALLOW_MAX_7_IMAGES')
 
+        // Verify Already Exist Banner Image
+        const alreadyExistImages = await AboutUsService.countRecords({
+          where: {
+            alias: {
+              [Op.in]: [ABOUT_US_PAGES.BANNER_IMAGE, ABOUT_US_PAGES.CHILD_BANNER_IMAGE],
+            },
+          },
+        })
+
+        // DB Total Images Exist and New Images summation should be less than or equal to 7
+        if (alreadyExistImages + req.files.banner_images.length > 7)
+          return badRequest(res, languageCode, 'ABOUT_US_ALLOW_MAX_7_IMAGES')
+
         //Get Sub Images of Banners
         const childBannerImages = await AboutUsService.find({
           where: {
@@ -205,17 +219,17 @@ class AboutUsController {
         const payload: ICreateAboutUs[] = await Promise.all(
           req.files.banner_images.map(async (item, index) => {
             const getFilePath = await uploadFile(item, `about_us/banner_images/`)
-            if (index > 0) {
+            if (section.path === null && index === 0) {
               const bannerPayload: ICreateAboutUs = {
-                alias: ABOUT_US_PAGES.CHILD_BANNER_IMAGE,
-                title: '',
+                alias,
+                title: 'Banner Images',
                 path: getFilePath,
               }
               return bannerPayload
             } else {
               const bannerPayload: ICreateAboutUs = {
-                alias,
-                title: 'Banner Images',
+                alias: ABOUT_US_PAGES.CHILD_BANNER_IMAGE,
+                title: '',
                 path: getFilePath,
               }
               return bannerPayload
@@ -223,12 +237,16 @@ class AboutUsController {
           })
         )
         //Update Existing Image
-        const updateFirstBannerImage = await AboutUsService.update(id, payload[0])
-        const addRemainingImages = await AboutUsService.bulkCreate(payload.slice(1))
+        if (payload[0].alias === ABOUT_US_PAGES.BANNER_IMAGE) {
+          const updateFirstBannerImage = await AboutUsService.update(id, payload[0]) //(comment due to unable to replace old images)
+          const addRemainingImages = await AboutUsService.bulkCreate(payload.slice(1))
+        } else {
+          const addRemainingImages = await AboutUsService.bulkCreate(payload)
+        }
 
         //Remove Unneccessary Old Files from the server
         if (section.path !== null) {
-          await removeFile(section.path) // Main Image Remvoal
+          // await removeFile(section.path) // Main Image Remvoal
           //Below line is commented due to an error (comment/uncomment based on your requirement)
           // await AboutUsService.update(section.id, { path: null })
         }
@@ -236,8 +254,8 @@ class AboutUsController {
         if (childBannerImages && childBannerImages.length > 0) {
           await Promise.all(
             childBannerImages.map(async (item) => {
-              await removeFile(item.path)
-              await AboutUsService.delete(item.id)
+              // await removeFile(item.path)
+              // await AboutUsService.delete(item.id)
             })
           )
         }

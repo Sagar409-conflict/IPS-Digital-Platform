@@ -59,7 +59,7 @@ class AboutUsService {
       }
     }
 
-    const filter: FindOptions<ICreateNewsCategory> = {
+    const filter: FindOptions<ICreateAboutUs> = {
       where,
 
       order: [['createdAt', 'ASC']],
@@ -96,6 +96,10 @@ class AboutUsService {
         alias: ABOUT_US_PAGES.BANNER_IMAGE,
       },
     })
+  }
+
+  async countRecords(payload: FindOptions<ICreateAboutUs>) {
+    return AboutUs.count(payload)
   }
 }
 
