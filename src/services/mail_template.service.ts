@@ -1,9 +1,11 @@
 import { sendMail } from '../helpers/mail'
+import sendContactInquiryTemplate from '../templates/contact_inquiry.template'
 import sendForgotPasswordTemplate from '../templates/frogot_password.template'
 import sendNewOrganizerTemplate from '../templates/new_organizer.template'
 import sendPasswordResetACKTemplate from '../templates/password_reset_ack.template'
 import sendResendOTPTemplate from '../templates/resend_otp.template'
 import {
+  ISendContactInquiry,
   ISendForgotPassword,
   ISendOrganizerCredentials,
   ISendPasswordResetSucessful,
@@ -73,6 +75,25 @@ class MailTemplateService {
         to: body?.email,
         subject: 'Password Reset Successful',
         html: sendPasswordResetACKTemplate.sendPasswordResetACKEmail(body),
+      }
+      const isMailSent = await sendMail(emailCheckData)
+      if (!isMailSent) {
+        console.error('Failed to send email.')
+        return isMailSent
+      }
+      return isMailSent
+    } catch (error) {
+      console.error('Failed to send email.', error)
+      throw error
+    }
+  }
+
+  async sendContactInquiryEmail(body: ISendContactInquiry) {
+    try {
+      const emailCheckData = {
+        to: body?.email,
+        subject: `Thank You for Reaching Out to ${process.env.COMPANY_NAME}`,
+        html: sendContactInquiryTemplate.sendContactInquiryEmail(body),
       }
       const isMailSent = await sendMail(emailCheckData)
       if (!isMailSent) {

@@ -13,6 +13,7 @@ import { statusCode } from '../config/statucCode'
 import contactUsService from '../services/contact_us.service'
 import { IContactUsPagination } from '../types/contact_us.interface'
 import { metaDataForPaginations } from '../helpers/common'
+import mailTemplateService from '../services/mail_template.service'
 
 class ContactUsController {
   /**
@@ -25,9 +26,15 @@ class ContactUsController {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
     try {
-      console.log(req.body)
+      const { full_name, email } = req.body
       await contactUsService.create(req.body)
 
+      // Send mail
+      const mailBody = {
+        email,
+        full_name,
+      }
+      await mailTemplateService.sendContactInquiryEmail(mailBody)
       return success(res, languageCode, undefined, 'CONTACT_CREATE_SUCCESS')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)

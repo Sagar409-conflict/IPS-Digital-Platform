@@ -22,3 +22,7 @@ export interface ISendPasswordResetSucessful {
   first_name: string
   last_name: string
 }
+export interface ISendContactInquiry {
+  full_name: string
+  email: string
+}
