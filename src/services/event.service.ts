@@ -78,7 +78,7 @@ class EventService {
         event_category_id: pagination.event_category_id,
       }
     }
-    if (pagination.todayDate) {
+    if (pagination.isTodayEvent) {
       const today = new Date()
 
       const startOfDay = new Date(
@@ -101,13 +101,13 @@ class EventService {
 
     if (pagination.isUpcomingEvent) {
       const today = new Date()
-      const todayDate = new Date(
+      const isTodayEvent = new Date(
         Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59, 999)
       )
       where = {
         ...where,
         event_date: {
-          [Op.gt]: todayDate,
+          [Op.gt]: isTodayEvent,
         },
       }
     }

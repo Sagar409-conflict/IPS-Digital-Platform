@@ -46,7 +46,7 @@ export interface INewsPagination {
   search?: string
   status?: string
   role?: string
-  todayDate?: boolean
+  isTodayEvent?: boolean
   isUpcomingEvent?: boolean
   user_id?: string
 }

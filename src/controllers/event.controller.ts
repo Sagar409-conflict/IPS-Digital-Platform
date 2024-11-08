@@ -142,7 +142,7 @@ class EventController {
         limit,
         search,
         status,
-        todayDate,
+        isTodayEvent,
         isUpcomingEvent,
         user_id,
         event_category_id,
@@ -154,7 +154,7 @@ class EventController {
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
         status: typeof status === 'undefined' ? undefined : String(status),
-        todayDate: typeof todayDate === 'string' ? todayDate === 'true' : undefined,
+        isTodayEvent: typeof isTodayEvent === 'string' ? isTodayEvent === 'true' : undefined,
         isUpcomingEvent:
           typeof isUpcomingEvent === 'string' ? isUpcomingEvent === 'true' : undefined,
         user_id: typeof user_id === 'undefined' ? undefined : String(user_id),

@@ -67,6 +67,6 @@ export interface IEventPagination {
   role?: string
   user_id?: string
   event_category_id?: string
-  todayDate?: boolean
+  isTodayEvent?: boolean
   isUpcomingEvent?: boolean
 }

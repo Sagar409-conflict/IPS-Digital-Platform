@@ -1,14 +1,21 @@
 import { Request, Response } from 'express'
-import { EVENT_STATUS, LANGUAGE_CODE, MODULE_IDENTIFIRES, ROLES } from '../helpers/constant'
+import {
+  EVENT_STATUS,
+  LANGUAGE_CODE,
+  MODULE_IDENTIFIRES,
+  NEWS_STATUS,
+  ROLES,
+} from '../helpers/constant'
 import { badRequest, internalServer, notFound, success, unAuthorized } from '../helpers/response'
 import userService from '../services/user.service'
 import RejectReasons from '../models/reject_reasons.model'
 import eventService from '../services/event.service'
-import { ICreateEvent } from '../types/event.interface'
+import { ICreateEvent, IEventPagination } from '../types/event.interface'
 import { statusCode } from '../config/statucCode'
 import newsService from '../services/news.service'
-import { ICreateNews } from '../types/news.interface'
+import { ICreateNews, INewsPagination } from '../types/news.interface'
 import { generateQRCode } from '../helpers/fileUpload'
+import { metaDataForPaginations } from '../helpers/common'
 
 class CommonController {
   async statusUpdate(req: Request, res: Response) {
@@ -128,6 +135,78 @@ class CommonController {
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
+
+  async mobileHomeScreen(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+    try {
+      const {
+        page,
+        limit,
+        search,
+        status,
+        // isTodayEvent,
+        // isUpcomingEvent,
+        // user_id,
+        // event_category_id,
+      } = req.query
+
+      const responsePayload = {
+        today_events: {},
+        upcoming_events: {},
+        news: {},
+      }
+      //Fetch Today's Eevent Data------------[STARTED]
+      const pagination: IEventPagination = {
+        page: 1,
+        limit: 5,
+        search: typeof search === 'undefined' ? undefined : String(search),
+        status: EVENT_STATUS.PUBLISHED,
+        isTodayEvent: true,
+      }
+      const { count: todayEventsCount, rows: todayEventsrows } = await eventService.findAll(
+        pagination
+      )
+      const todayEventsDataPayload = {
+        result: todayEventsrows,
+      }
+      responsePayload.today_events = todayEventsDataPayload
+      //Fetch Today's Eevent Data------------[END]
+      //*************************************************************************
+
+      //Fetch Upcoming's Eevent Data------------[STARTED]
+      delete pagination.isTodayEvent
+      pagination.isUpcomingEvent = true
+      const { count: upcomingEventsCount, rows: upcomingEventsrows } = await eventService.findAll(
+        pagination
+      )
+      const upcomingEventsDataPayload = {
+        result: upcomingEventsrows,
+      }
+      responsePayload.upcoming_events = upcomingEventsDataPayload
+      //Fetch Upcoming's Eevent Data------------[END]
+      //*************************************************************************
+      // Fetch News Data------------[STARTED]
+      const newsPagination: INewsPagination = {
+        page: typeof page === 'undefined' ? 1 : Number(page),
+        limit: typeof limit === 'undefined' ? 10 : Number(limit),
+        search: typeof search === 'undefined' ? undefined : String(search),
+        status: NEWS_STATUS.PUBLISHED,
+      }
+      const { count: newsCount, rows: newsRows } = await newsService.findAll(newsPagination)
+      const newsDataPayload = {
+        result: newsRows,
+        pagination: await metaDataForPaginations(pagination?.page, pagination.limit, newsCount),
+      }
+      responsePayload.news = newsDataPayload
+      // Fetch News Data------------[END]
+      //*************************************************************************
+
+      return success(res, languageCode, undefined, 'MOBILE_HOME_SCREEN_DATA', responsePayload)
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, LANGUAGE_CODE.IT, req.body, undefined, (error as Error).message)
     }
   }
 }

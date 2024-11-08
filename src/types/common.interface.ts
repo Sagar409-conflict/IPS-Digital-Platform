@@ -51,7 +51,7 @@ export interface IPagination {
   search?: string
   status?: string
   role?: string
-  todayDate?: boolean
+  isTodayEvent?: boolean
   isUpcomingEvent?: boolean
 }
 export interface IAllMediaFields {

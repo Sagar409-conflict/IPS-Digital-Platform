@@ -45,7 +45,11 @@ class NewsService {
     if (pagination.search) {
       where = {
         ...where,
-        [Op.or]: [{ title: { [Op.like]: `%${pagination.search}%` } }],
+        [Op.or]: [
+          { title: { [Op.like]: `%${pagination.search}%` } },
+          { news_description: { [Op.like]: `%${pagination.search}%` } },
+          { '$creator.email$': { [Op.like]: `%${pagination.search}%` } },
+        ],
       }
     }
 

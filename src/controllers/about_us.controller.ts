@@ -201,6 +201,9 @@ class AboutUsController {
             alias: {
               [Op.in]: [ABOUT_US_PAGES.BANNER_IMAGE, ABOUT_US_PAGES.CHILD_BANNER_IMAGE],
             },
+            path: {
+              [Op.not]: null,
+            },
           },
         })
 

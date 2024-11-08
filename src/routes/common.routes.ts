@@ -7,6 +7,7 @@ import { validate } from '../middleware/validator.middleware'
 
 const commonRoutes = Router()
 
+commonRoutes.get('/home', commonController.mobileHomeScreen)
 commonRoutes.get(
   '/rejection-reasons',
   AuthGuard,
