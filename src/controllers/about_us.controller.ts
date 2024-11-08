@@ -161,6 +161,14 @@ class AboutUsController {
   async update(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
 
+    if (
+      req.files &&
+      req.files.banner_images !== undefined &&
+      !Array.isArray(req.files.banner_images)
+    ) {
+      req.files.banner_images = [req.files.banner_images]
+    }
+
     try {
       const { id } = req.params
       const { alias, title, description } = req.body
