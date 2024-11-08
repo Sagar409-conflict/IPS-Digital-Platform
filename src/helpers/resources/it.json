@@ -8,6 +8,10 @@
 
   "BANNER_IMAGE_REQUIRED": "Si prega di allegare un'immagine banner",
 
+  "CONTACT_CREATE_SUCCESS": "Abbiamo memorizzato con successo i dettagli della tua richiesta, il nostro membro del team ti contatterà",
+  "CONTACT_INQUIRY_LIST": "Elenco delle richieste di contatto recuperato correttamente",
+  "CONTACT_INQUIRY_FOUND": "Richiedi i dettagli della richiesta di contatto recuperati con successo",
+
   "DEFAULT": "Azione eseguita con successo.",
 
   "DETAILS_OF_EVENT": "Successo! ",
