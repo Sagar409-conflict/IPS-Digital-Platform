@@ -99,8 +99,44 @@ class NewsService {
   }
 
   // Find a news entry by ID
-  async getById(id: string): Promise<INews | null> {
-    return await News.findOne({
+  // async getById(id: string): Promise<ICreateNews | null> {
+  //   return await News.findOne({
+  //     where: { id },
+  //     attributes: [
+  //       'id',
+  //       'news_category_id',
+  //       'creator_id',
+  //       'title',
+  //       'news_description',
+  //       'news_image',
+  //       'status',
+  //       'submittedAt',
+  //       'publishedAt',
+  //       'reason_description',
+  //     ],
+  //     include: [
+  //       {
+  //         model: NewsCategory,
+  //         as: 'news_category',
+  //         attributes: ['title', 'icon_image'],
+  //       },
+  //       {
+  //         model: User,
+  //         as: 'creator',
+  //         attributes: [
+  //           'first_name',
+  //           'last_name',
+  //           'email',
+  //           'country_code',
+  //           'mobile_number',
+  //           'profile_image',
+  //         ],
+  //       },
+  //     ],
+  //   })
+  // }
+  async getById(id: string): Promise<ICreateNews | null> {
+    const news = await News.findOne({
       where: { id },
       attributes: [
         'id',
@@ -134,6 +170,8 @@ class NewsService {
         },
       ],
     })
+
+    return news ? news.get({ plain: true }) : null // Returns only plain data without metadata
   }
 }
 

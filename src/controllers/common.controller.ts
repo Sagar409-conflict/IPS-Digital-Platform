@@ -16,6 +16,7 @@ import newsService from '../services/news.service'
 import { ICreateNews, INewsPagination } from '../types/news.interface'
 import { generateQRCode } from '../helpers/fileUpload'
 import { metaDataForPaginations } from '../helpers/common'
+import mailTemplateService from '../services/mail_template.service'
 
 class CommonController {
   async statusUpdate(req: Request, res: Response) {
@@ -103,6 +104,22 @@ class CommonController {
         const updateResult = await eventService.update(requestPayload.id, payload)
         if (!updateResult) {
           return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
+        }
+
+        if (requestPayload.status === EVENT_STATUS.PUBLISHED) {
+          // await mailTemplateService.sendPublishedEmail({
+          //   title: existingEvent.title,
+          //   publishedAt: payload.publishedAt,
+          //   creatorName: existingEvent.creatorName,
+          //   creatorEmail: existingEvent.creatorEmail,
+          // })
+        } else if (requestPayload.status === EVENT_STATUS.REJECTED) {
+          // await mailTemplateService.sendRejectedEmail({
+          //   title: existingEvent.title,
+          //   reason: req.body.reason,
+          //   creatorName: existingEvent.creatorName,
+          //   creatorEmail: existingEvent.creatorEmail,
+          // })
         }
 
         return success(res, languageCode, statusCode.SUCCESS, 'EVENT_STATUS_UPDATED_SUCCESSFULLY')

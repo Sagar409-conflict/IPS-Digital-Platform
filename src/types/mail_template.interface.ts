@@ -22,3 +22,31 @@ export interface ISendPasswordResetSucessful {
   first_name: string
   last_name: string
 }
+export interface ISendApprovalemail {
+  email: string
+  admin_first_name: string
+  admin_last_name: string
+  first_name: string
+  last_name: string
+  title: string
+  organizer_email: string
+}
+export interface ISendPublishedemail {
+  submittedAt?: Date
+  publishedAt?: Date
+  email: string
+  first_name: string
+  last_name: string
+  newsTitle?: string
+  status?: string
+}
+
+export interface ISendRejectedemail {
+  email: string
+  first_name: string
+  last_name: string
+  newsTitle?: string
+  submittedAt?: Date
+  publishedAt?: Date
+  status?: string
+}

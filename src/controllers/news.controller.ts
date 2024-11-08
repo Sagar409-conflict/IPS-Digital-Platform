@@ -8,6 +8,10 @@ import { removeFile, uploadFile } from '../helpers/fileUpload'
 import { metaDataForPaginations } from '../helpers/common'
 import path from 'path'
 import { INewsPagination } from '../types/news.interface'
+import mailTemplateService from '../services/mail_template.service'
+import User from '../models/user.model'
+import e from 'cors'
+import News from '../models/news.models'
 
 class NewsCategoryController {
   /**************************************************************************
@@ -44,7 +48,6 @@ class NewsCategoryController {
 
     try {
       let payload = req.body
-      // Set default values in payload
       payload.creator_id = req.user.id
       const statusValidation = {
         [ROLES.ORGANIZER]: ['draft', 'pending'],
@@ -63,7 +66,26 @@ class NewsCategoryController {
 
       payload.news_image = await uploadFile(req.files.news_image, `news_images/`)
 
-      const data = await newsService.create(payload)
+      await newsService.create(payload)
+
+      if (payload.status === 'pending') {
+        const superAdmin = await User.findOne({ where: { role: 'super_admin' } })
+        if (!superAdmin?.email) {
+          console.error('Super admin email is undefined.')
+          return badRequest(res, languageCode, 'SUPER_ADMIN_EMAIL_REQUIRED')
+        }
+        const mailBody = {
+          email: superAdmin?.email,
+          admin_first_name: superAdmin?.first_name,
+          admin_last_name: superAdmin?.last_name,
+          first_name: req.user.first_name,
+          last_name: req.user.last_name,
+          title: req.body.title,
+          organizer_email: req.user.email,
+          // submited: data.news._previousDataValues.submittedAt
+        }
+        await mailTemplateService.sendPendingApprovalEmail(mailBody)
+      }
 
       return success(res, languageCode, statusCode.SUCCESS, 'NEWS_CREATED_SUCCESSFULLY')
     } catch (error) {
@@ -253,7 +275,48 @@ class NewsCategoryController {
         return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
       }
 
-      const updatedNews = await newsService.getById(id)
+      const news = await newsService.getById(id)
+      const newsDAta = news
+
+      if (status === NEWS_STATUS.PUBLISHED) {
+        const mailBody = {
+          submittedAt:
+            news && news.submittedAt !== undefined && news.submittedAt !== null
+              ? news.submittedAt
+              : new Date(),
+          publishedAt:
+            news && news.publishedAt !== undefined && news.publishedAt !== null
+              ? news.publishedAt
+              : new Date(),
+          first_name:
+            newsDAta && newsDAta.creator !== undefined ? newsDAta?.creator.first_name : '',
+          last_name: newsDAta && newsDAta.creator !== undefined ? newsDAta.creator.last_name : '',
+          email: newsDAta && newsDAta.creator !== undefined ? newsDAta?.creator.email : '',
+          newsTitle: news?.title,
+          status: news?.status,
+        }
+
+        await mailTemplateService.sendPublishedEmail(mailBody)
+      } else if (status === NEWS_STATUS.REJECTED) {
+        const mailBody = {
+          submittedAt:
+            news && news.submittedAt !== undefined && news.submittedAt !== null
+              ? news.submittedAt
+              : new Date(),
+          publishedAt:
+            news && news.publishedAt !== undefined && news.publishedAt !== null
+              ? news.publishedAt
+              : new Date(),
+          first_name: newsDAta && newsDAta.creator !== undefined ? newsDAta.creator.first_name : '',
+          last_name: newsDAta && newsDAta.creator !== undefined ? newsDAta.creator.last_name : '',
+          email: newsDAta && newsDAta.creator !== undefined ? newsDAta?.creator.email : '',
+          newsTitle: news?.title,
+          status: news?.status,
+          // rejectionReason: rejectionReason || 'No specific reason provided.',
+        }
+        await mailTemplateService.sendRejectedEmail(mailBody)
+      }
+
       return success(res, languageCode, statusCode.SUCCESS, 'NEWS_STATUS_UPDATED_SUCCESSFULLY')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)

@@ -1,3 +1,6 @@
+import User from '../models/user.model'
+import { IUserResponse } from './user.interface'
+
 export interface INews {
   id: string
   title: string
@@ -19,6 +22,7 @@ export interface ICreateNews {
   reason_description?: string
   submittedAt?: Date
   publishedAt?: Date | null
+  creator?: IUserResponse
 }
 
 export interface INewsResponse {
