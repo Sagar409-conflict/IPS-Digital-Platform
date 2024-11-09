@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import sharp from 'sharp'
 import QRCode from 'qrcode'
 import fsPromise from 'fs/promises'
 import { UploadedFile } from 'express-fileupload'
@@ -26,14 +27,23 @@ export const uploadFile = async (file: UploadedFile, uploadDir: string): Promise
   }
 
   let generateFileName = await generateRandomString(16)
+
+  console.log('🚀 ~ file: fileUpload.ts:31 ~ uploadFile ~ generateFileName:', generateFileName)
+
   const uploadPath = path.join(uploadDirPath, `${generateFileName}${path.extname(file.name)}`)
 
   return new Promise((resolve, reject) => {
     // Move the file to the upload directory
-    file.mv(uploadPath, (err) => {
+    file.mv(uploadPath, async (err) => {
       if (err) {
         return reject(new Error('File upload failed: ' + err.message))
       }
+      if (path.extname(file.name) === '.svg') {
+        await convertSvgToPng(uploadPath, path.join(uploadDirPath, `${generateFileName}.png`))
+        const pathDirection = path.join(uploadDirPath, `${generateFileName}.png`)
+        return resolve(pathDirection.split('public')[1].replace(/\\/g, '/'))
+      }
+
       return resolve(uploadPath.split('public')[1].replace(/\\/g, '/'))
     })
   })
@@ -182,40 +192,13 @@ export const generateQRCode = async (id: string, title: string) => {
     throw error
   }
 }
-// function isKeyOfIAllMediaFields(key: string): key is keyof IAllMediaFields {
-//   return ['icon_image', 'profile_image'].includes(key)
-// }
 
-// export const removeFilesWithOptions = async (
-//   mediaStatus: MediaStatus,
-//   payload: IAllMediaFields
-// ) => {
-//   const results = await Promise.all(
-//     Object.entries(mediaStatus).map(async ([key, value]) => {
-//       if (value) {
-//         if (isKeyOfIAllMediaFields(key)) {
-//           const filePath = payload[key] as string | undefined
-//           if (filePath) {
-//             return fsPromise
-//               .unlink(path.join(__dirname, `../public${payload[key]}`))
-//               .then(() => ({
-//                 error: false,
-//                 message: `File deleted successfully: ${path}`,
-//               }))
-//               .catch((err) => ({
-//                 error: true,
-//                 message: `Error deleting file: ${err.message}`,
-//               }))
-//           }
-//         }
-//       } else {
-//         return Promise.resolve({
-//           error: false,
-//           message: `File not deleted (mediaStatus is false)`,
-//         })
-//       }
-//     })
-//   )
-
-//   return results // Return all results as an array
-// }
+export const convertSvgToPng = async (svgPath: string, outputPngPath: string) => {
+  try {
+    await sharp(svgPath).png().toFile(outputPngPath)
+    await removeFile(svgPath.split('public')[1].replace(/\\/g, '/'))
+    console.log('SVG successfully converted to PNG.')
+  } catch (error) {
+    console.error('Error converting SVG to PNG:', error)
+  }
+}
