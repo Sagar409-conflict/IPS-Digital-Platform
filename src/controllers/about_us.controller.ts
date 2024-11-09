@@ -101,8 +101,6 @@ class AboutUsController {
       }
       const rows = await aboutUsService.findAll(pagination)
 
-      if (rows.length <= 0) return badRequest(res, languageCode, 'UNABLE_TO_FETCH_LIST_DATA')
-
       const data = {
         result: rows,
       }

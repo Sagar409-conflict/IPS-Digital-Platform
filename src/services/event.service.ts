@@ -51,7 +51,7 @@ class EventService {
           attributes: ['id', 'media_type', 'path'],
         },
       ],
-      raw: true,
+      raw: false,
       nest: true,
     })
   }

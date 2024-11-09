@@ -10,13 +10,15 @@ import { badRequest, internalServer, notFound, success, unAuthorized } from '../
 import userService from '../services/user.service'
 import RejectReasons from '../models/reject_reasons.model'
 import eventService from '../services/event.service'
-import { ICreateEvent, IEventPagination } from '../types/event.interface'
+import { ICreateEvent, IEvent, IEventPagination } from '../types/event.interface'
 import { statusCode } from '../config/statucCode'
 import newsService from '../services/news.service'
 import { ICreateNews, INewsPagination } from '../types/news.interface'
 import { generateQRCode } from '../helpers/fileUpload'
 import { metaDataForPaginations } from '../helpers/common'
 import mailTemplateService from '../services/mail_template.service'
+import { ICreateUser } from '../types/user.interface'
+import { ISendPublishedemail, ISendRejectedemail } from '../types/mail_template.interface'
 
 class CommonController {
   async statusUpdate(req: Request, res: Response) {
@@ -106,49 +108,37 @@ class CommonController {
           return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
         }
 
-        if (requestPayload.status === EVENT_STATUS.PUBLISHED) {
-          const event = await eventService.findEeventDetails({ id: req.body.id })
-          await mailTemplateService.sendPublishedEmail({
-            title: event?.title,
-            publishedAt:
-              event && event.publishedAt !== undefined && event.publishedAt !== null
-                ? event.publishedAt
-                : new Date(),
-            submittedAt:
-              event && event.submittedAt !== undefined && event.submittedAt !== null
-                ? event.submittedAt
-                : new Date(),
-            first_name: event && event.creator !== undefined ? event?.creator.first_name : '',
+        //Fetching Updated Event Data to create email payload
+        const event = await eventService.findEeventDetails({ id: req.body.id })
+        const creator = await userService.getById(String(event?.creator_id))
 
-            last_name: event && event.creator !== undefined ? event.creator.last_name : '',
-
-            email: event && event.creator !== undefined ? event?.creator.email : '',
-            status: event?.status,
-            type: req.body.type,
-          })
-        } else if (requestPayload.status === EVENT_STATUS.REJECTED) {
-          const event = await eventService.findEeventDetails({ id: req.body.id })
-          await mailTemplateService.sendRejectedEmail({
-            title: event?.title,
-            reason: event?.reason_description,
-            publishedAt:
-              event && event.publishedAt !== undefined && event.publishedAt !== null
-                ? event.publishedAt
-                : new Date(),
-            submittedAt:
-              event && event.submittedAt !== undefined && event.submittedAt !== null
-                ? event.submittedAt
-                : new Date(),
-            first_name: event && event.creator !== undefined ? event?.creator.first_name : '',
-
-            last_name: event && event.creator !== undefined ? event.creator.last_name : '',
-
-            email: event && event.creator !== undefined ? event?.creator.email : '',
-            status: event?.status,
-            type: req.body.type,
-          })
+        //Send Email Payload
+        const emailPayload = {
+          title: event?.title,
+          reason: '',
+          publishedAt:
+            event && event.publishedAt !== undefined && event.publishedAt !== null
+              ? event.publishedAt
+              : new Date(),
+          submittedAt:
+            event && event.submittedAt !== undefined && event.submittedAt !== null
+              ? event.submittedAt
+              : new Date(),
+          first_name: creator && creator !== undefined ? creator?.first_name : '',
+          last_name: creator && creator !== undefined ? creator?.last_name : '',
+          email: creator && creator !== undefined ? creator?.email : '',
+          status: event?.status,
+          type: req.body.type,
         }
 
+        //Sending Event Email Payload ------ [START]
+        if (requestPayload.status === EVENT_STATUS.PUBLISHED) {
+          await mailTemplateService.sendPublishedEmail(emailPayload)
+        } else if (requestPayload.status === EVENT_STATUS.REJECTED) {
+          emailPayload.reason = event?.reason_description ? event?.reason_description : ''
+          await mailTemplateService.sendRejectedEmail(emailPayload)
+        }
+        //Sending Event Email Payload ------ [END]
         return success(res, languageCode, statusCode.SUCCESS, 'EVENT_STATUS_UPDATED_SUCCESSFULLY')
       } else if (requestPayload.type === MODULE_IDENTIFIRES.NEWS) {
         const existingNews = await newsService.getById(requestPayload.id)
@@ -158,7 +148,7 @@ class CommonController {
         let payload: Partial<ICreateNews> = {
           status: requestPayload.status,
         }
-        if (requestPayload.status === EVENT_STATUS.PUBLISHED) {
+        if (requestPayload.status === NEWS_STATUS.PUBLISHED) {
           payload = {
             ...payload,
             publishedAt: new Date(),
@@ -173,49 +163,38 @@ class CommonController {
         if (!updateResult) {
           return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
         }
-        if (requestPayload.status === NEWS_STATUS.PUBLISHED) {
-          const news = await newsService.getById(req.body.id)
-          await mailTemplateService.sendPublishedEmail({
-            title: news?.title,
-            publishedAt:
-              news && news.publishedAt !== undefined && news.publishedAt !== null
-                ? news.publishedAt
-                : new Date(),
-            submittedAt:
-              news && news.submittedAt !== undefined && news.submittedAt !== null
-                ? news.submittedAt
-                : new Date(),
-            first_name: news && news.creator !== undefined ? news?.creator.first_name : '',
 
-            last_name: news && news.creator !== undefined ? news.creator.last_name : '',
+        //Fetching Updated News Data to create email payload
+        const news = await newsService.getById(req.body.id)
+        const creator = await userService.getById(String(news?.creator_id))
+        const newsPayload = {
+          title: news?.title,
+          reason: '',
+          publishedAt:
+            news && news.publishedAt !== undefined && news.publishedAt !== null
+              ? news.publishedAt
+              : new Date(),
+          submittedAt:
+            news && news.submittedAt !== undefined && news.submittedAt !== null
+              ? news.submittedAt
+              : new Date(),
+          first_name: creator && creator !== undefined ? creator?.first_name : '',
 
-            email: news && news.creator !== undefined ? news?.creator.email : '',
-            status: news?.status,
-            type: req.body.type,
-          })
-        } else if (requestPayload.status === NEWS_STATUS.REJECTED) {
-          const news = await newsService.getById(req.body.id)
-          await mailTemplateService.sendRejectedEmail({
-            title: news?.title,
-            reason: news?.reason_description,
-            publishedAt:
-              news && news.publishedAt !== undefined && news.publishedAt !== null
-                ? news.publishedAt
-                : new Date(),
-            submittedAt:
-              news && news.submittedAt !== undefined && news.submittedAt !== null
-                ? news.submittedAt
-                : new Date(),
-            first_name: news && news.creator !== undefined ? news?.creator.first_name : '',
+          last_name: creator && creator !== undefined ? creator?.last_name : '',
 
-            last_name: news && news.creator !== undefined ? news.creator.last_name : '',
-
-            email: news && news.creator !== undefined ? news?.creator.email : '',
-            status: news?.status,
-            type: req.body.type,
-          })
+          email: creator && creator !== undefined ? creator?.email : '',
+          status: news?.status,
+          type: req.body.type,
         }
 
+        //Sending News Email Payload ------ [START]
+        if (requestPayload.status === NEWS_STATUS.PUBLISHED) {
+          await mailTemplateService.sendPublishedEmail(newsPayload)
+        } else if (requestPayload.status === NEWS_STATUS.REJECTED) {
+          newsPayload.reason = news?.reason_description ? news?.reason_description : ''
+          await mailTemplateService.sendRejectedEmail(newsPayload)
+        }
+        //Sending News Email Payload ------ [EN]
         return success(res, languageCode, statusCode.SUCCESS, 'NEWS_STATUS_UPDATED_SUCCESSFULLY')
       }
     } catch (error) {

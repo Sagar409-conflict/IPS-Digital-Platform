@@ -1,4 +1,6 @@
+import fs from 'fs'
 import sequelize from '../config/database'
+import { removeFolder } from '../helpers/fileUpload'
 import seedAboutUsSections from '../helpers/seeders/SeedAboutUsSections'
 import seedRejectionReasons from '../helpers/seeders/SeedRejectionReasons'
 import AboutUs from './about_us.model'
@@ -21,6 +23,9 @@ const connectDB = async () => {
     const aboutUsCount = await AboutUs.count()
     if (aboutUsCount === 0) {
       await seedAboutUsSections()
+      if (fs.existsSync(`event_assets/about_us/banner_images`)) {
+        await removeFolder(`event_assets/about_us/banner_images`)
+      }
       console.log('Seeding completed About Us Sections.')
     }
   } catch (error) {
