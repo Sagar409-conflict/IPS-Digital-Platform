@@ -402,7 +402,20 @@ const createAboutUsSchema = Joi.object({
   //   otherwise: Joi.optional(),
   // }),
 })
-
+const createContactUsSchema = Joi.object({
+  full_name: Joi.string().required().messages({
+    'string.empty': 'Full Name cannot be empty.',
+    'any.required': 'Full Name is required.',
+  }),
+  email: Joi.string().email().required().messages({
+    'string.empty': 'Email cannot be empty.',
+    'any.required': 'Email is required.',
+  }),
+  message: Joi.string().required().messages({
+    'string.empty': 'Message cannot be empty.',
+    'any.required': 'Message is required.',
+  }),
+})
 const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   id: idSchema,
   statusUpdate: statusUpdateSchema,
@@ -427,6 +440,7 @@ const schemas: { [key: string]: Joi.ObjectSchema | Joi.ArraySchema } = {
   createAboutUs: createAboutUsSchema,
   updateAboutUs: createAboutUsSchema,
   changePassword: changePasswordSchema,
+  createContactUs: createContactUsSchema,
 }
 
 export const validate = (schemaName: string) => {

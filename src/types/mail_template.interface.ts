@@ -53,3 +53,7 @@ export interface ISendRejectedemail {
   reason?: string
   type?: string
 }
+export interface ISendContactInquiry {
+  full_name: string
+  email: string
+}

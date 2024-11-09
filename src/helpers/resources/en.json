@@ -9,6 +9,10 @@
 
   "BANNER_IMAGE_REQUIRED": "Please attach a banner image",
 
+  "CONTACT_CREATE_SUCCESS": "We have successfully stored your inquiry details, Our team member will reach you out",
+  "CONTACT_INQUIRY_LIST": "Contact inquiry list retrieved successfully",
+  "CONTACT_INQUIRY_FOUND": "Reqeust contact inquiry details retrieved successfully",
+
   "DEFAULT": "Action successfully performed.",
   "DETAILS_OF_ORGANIZER": "Organizer details fetched successfully",
   "DETAILS_OF_EVENT_CATEGORY": "Event Category details fetched successfully",

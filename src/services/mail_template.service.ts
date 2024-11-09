@@ -1,4 +1,5 @@
 import { sendMail } from '../helpers/mail'
+import sendContactInquiryTemplate from '../templates/contact_inquiry.template'
 import sendForgotPasswordTemplate from '../templates/frogot_password.template'
 import sendNewOrganizerTemplate from '../templates/new_organizer.template'
 import sendPasswordResetACKTemplate from '../templates/password_reset_ack.template'
@@ -7,6 +8,7 @@ import SendApprovalaTemplate from '../templates/approval_email.template'
 import SendPublishedTemplate from '../templates/published_email.template'
 import SendRejectedTemplate from '../templates/rejected_email.template'
 import {
+  ISendContactInquiry,
   ISendForgotPassword,
   ISendOrganizerCredentials,
   ISendPasswordResetSucessful,
@@ -161,6 +163,25 @@ class MailTemplateService {
       }
     } catch (error) {
       console.log('Failed to send email.', error)
+      throw error
+    }
+  }
+
+  async sendContactInquiryEmail(body: ISendContactInquiry) {
+    try {
+      const emailCheckData = {
+        to: body?.email,
+        subject: `Thank You for Reaching Out to ${process.env.COMPANY_NAME}`,
+        html: sendContactInquiryTemplate.sendContactInquiryEmail(body),
+      }
+      const isMailSent = await sendMail(emailCheckData)
+      if (!isMailSent) {
+        console.error('Failed to send email.')
+        return isMailSent
+      }
+      return isMailSent
+    } catch (error) {
+      console.error('Failed to send email.', error)
       throw error
     }
   }
