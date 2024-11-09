@@ -14,6 +14,7 @@ import {
   ISendPublishedemail,
   ISendRejectedemail,
 } from '../types/mail_template.interface'
+import SendPendingApprovalaTemplate from '../templates/pending_event.template'
 
 class MailTemplateService {
   async sendNewOrganizerMail(body: ISendOrganizerCredentials) {
@@ -138,6 +139,24 @@ class MailTemplateService {
       const isMailSent = await sendMail(emailCheckData)
       if (!isMailSent) {
         console.error('Failed to send email.')
+        return isMailSent
+      }
+    } catch (error) {
+      console.log('Failed to send email.', error)
+      throw error
+    }
+  }
+
+  async sendEventPendingApprovalEmail(body: ISendApprovalemail) {
+    try {
+      const emailCheckData = {
+        to: body?.email,
+        subject: 'Pending Event submission: Publish or Reject',
+        html: SendPendingApprovalaTemplate.sendPendingApprovalEmail(body),
+      }
+      const isMailSent = await sendMail(emailCheckData)
+      if (!isMailSent) {
+        console.error('Failed to send email')
         return isMailSent
       }
     } catch (error) {

@@ -28,6 +28,8 @@ import {
   IResponseEvent,
 } from '../types/event.interface'
 import { where } from 'sequelize'
+import User from '../models/user.model'
+import mailTemplateService from '../services/mail_template.service'
 
 class EventController {
   /***************************************
@@ -118,6 +120,24 @@ class EventController {
 
       if (!bulkCreationStatusImage.length) {
         console.log('Something went wrong in image upload function')
+      }
+
+      if (payload.status === 'pending') {
+        const superAdmin = await User.findOne({ where: { role: 'super_admin' } })
+        if (!superAdmin?.email) {
+          console.error('Super admin email is undefined.')
+          return badRequest(res, languageCode, 'SUPER_ADMIN_EMAIL_REQUIRED')
+        }
+        const mailbody = {
+          email: superAdmin?.email,
+          admin_first_name: superAdmin?.first_name,
+          admin_last_name: superAdmin?.last_name,
+          first_name: req.user.first_name,
+          last_name: req.user.last_name,
+          title: req.body.title,
+          organizer_email: req.user.email,
+        }
+        await mailTemplateService.sendEventPendingApprovalEmail(mailbody)
       }
 
       return success(res, languageCode, undefined, 'EVENT_CREATION_SUCCESS')

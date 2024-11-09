@@ -65,6 +65,13 @@ class NewsCategoryController {
       }
 
       payload.news_image = await uploadFile(req.files.news_image, `news_images/`)
+      if (payload.status === NEWS_STATUS.PUBLISHED && req.user.role === ROLES.SUPER_ADMIN) {
+        payload.publishedAt = new Date()
+      } else if (payload.status === NEWS_STATUS.PUBLISHED && req.user.role === ROLES.ORGANIZER) {
+        return badRequest(res, languageCode, 'NOT_ALLOWED_TO_PUBLISH')
+      } else if (payload.status === NEWS_STATUS.PENDING && req.user.role === ROLES.ORGANIZER) {
+        payload.submittedAt = new Date()
+      }
 
       await newsService.create(payload)
 

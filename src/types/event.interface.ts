@@ -36,6 +36,7 @@ export interface ICreateEvent {
   createdAt?: Date
   updatedAt?: Date
   creator?: IUserResponse
+  event_assets?: IEventAssets[]
 }
 export interface IResponseEvent {
   id: string
