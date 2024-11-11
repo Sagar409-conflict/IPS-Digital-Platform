@@ -1,3 +1,5 @@
+import { ICreateRejectReasons } from './reject_reasons.interface'
+
 export interface ISendOrganizerCredentials {
   email: string
   first_name: string
@@ -30,10 +32,11 @@ export interface ISendApprovalemail {
   last_name: string
   title: string
   organizer_email: string
+  submitted_date?: string
 }
 export interface ISendPublishedemail {
-  submittedAt?: Date
-  publishedAt?: Date
+  submittedAt?: string
+  publishedAt?: string
   email: string
   first_name: string
   last_name: string
@@ -47,10 +50,10 @@ export interface ISendRejectedemail {
   first_name: string
   last_name: string
   title?: string
-  submittedAt?: Date
-  publishedAt?: Date
+  submittedAt?: string
+  publishedAt?: string
   status?: string
-  reason?: string
+  reason?: string[]
   type?: string
 }
 export interface ISendContactInquiry {

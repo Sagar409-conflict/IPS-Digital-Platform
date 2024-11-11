@@ -34,7 +34,9 @@ class SendApprovaltemplate {
                 /></a>
               </div>
               <div style="font-weight:normal;padding:0px 24px 16px 24px">
-                Hi ${body.admin_first_name} ${body.admin_last_name} 👋,
+                Hi <b>${body.first_name.charAt(0).toUpperCase() + body.first_name.slice(1)} ${
+      body.admin_last_name
+    }</b>,
               </div>
               <div style="font-weight:normal;padding:16px 24px 0px 24px">
                 A new news item has been created and is awaiting your approval.
@@ -43,11 +45,12 @@ class SendApprovaltemplate {
               <div
                 style='font-family:"Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;font-weight:normal;padding:0px 24px 0px 24px'
               >
-                <h4>
-                  News Title: ${body.title}  <br />
-                  Created By: ${body.first_name} ${body.last_name} <br />
-                  Organizer Email: ${body.organizer_email}
-                </h4>
+                <p>
+                  <b>News Title:</b> ${body.title}  <br />
+                  <b>Created By:</b> ${body.first_name} ${body.last_name} <br />
+                  <b>Organizer Email:</b> ${body.organizer_email} <br />
+                  <b>Submitted On:</b> ${body.submitted_date}
+                </p>
               </div>
               <div style="font-weight:normal;padding:0px 24px 4px 24px">
                 <p>

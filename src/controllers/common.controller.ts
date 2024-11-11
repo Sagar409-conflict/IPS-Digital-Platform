@@ -15,7 +15,7 @@ import { statusCode } from '../config/statucCode'
 import newsService from '../services/news.service'
 import { ICreateNews, INewsPagination } from '../types/news.interface'
 import { generateQRCode } from '../helpers/fileUpload'
-import { metaDataForPaginations } from '../helpers/common'
+import { formatDate, metaDataForPaginations } from '../helpers/common'
 import mailTemplateService from '../services/mail_template.service'
 import { ICreateUser } from '../types/user.interface'
 import { ISendPublishedemail, ISendRejectedemail } from '../types/mail_template.interface'
@@ -115,15 +115,17 @@ class CommonController {
         //Send Email Payload
         const emailPayload = {
           title: event?.title,
-          reason: '',
-          publishedAt:
+          reason: event?.reason_description ? event?.reason_description.split(',') : [],
+          publishedAt: formatDate(
             event && event.publishedAt !== undefined && event.publishedAt !== null
               ? event.publishedAt
-              : new Date(),
-          submittedAt:
+              : new Date()
+          ),
+          submittedAt: formatDate(
             event && event.submittedAt !== undefined && event.submittedAt !== null
               ? event.submittedAt
-              : new Date(),
+              : new Date()
+          ),
           first_name: creator && creator !== undefined ? creator?.first_name : '',
           last_name: creator && creator !== undefined ? creator?.last_name : '',
           email: creator && creator !== undefined ? creator?.email : '',
@@ -135,7 +137,8 @@ class CommonController {
         if (requestPayload.status === EVENT_STATUS.PUBLISHED) {
           await mailTemplateService.sendPublishedEmail(emailPayload)
         } else if (requestPayload.status === EVENT_STATUS.REJECTED) {
-          emailPayload.reason = event?.reason_description ? event?.reason_description : ''
+          emailPayload.reason =
+            event?.reason_description !== undefined ? event?.reason_description.split(',') : ['']
           await mailTemplateService.sendRejectedEmail(emailPayload)
         }
         //Sending Event Email Payload ------ [END]
@@ -169,15 +172,17 @@ class CommonController {
         const creator = await userService.getById(String(news?.creator_id))
         const newsPayload = {
           title: news?.title,
-          reason: '',
-          publishedAt:
+          reason: [''],
+          publishedAt: formatDate(
             news && news.publishedAt !== undefined && news.publishedAt !== null
               ? news.publishedAt
-              : new Date(),
-          submittedAt:
+              : new Date()
+          ),
+          submittedAt: formatDate(
             news && news.submittedAt !== undefined && news.submittedAt !== null
               ? news.submittedAt
-              : new Date(),
+              : new Date()
+          ),
           first_name: creator && creator !== undefined ? creator?.first_name : '',
 
           last_name: creator && creator !== undefined ? creator?.last_name : '',
@@ -191,7 +196,8 @@ class CommonController {
         if (requestPayload.status === NEWS_STATUS.PUBLISHED) {
           await mailTemplateService.sendPublishedEmail(newsPayload)
         } else if (requestPayload.status === NEWS_STATUS.REJECTED) {
-          newsPayload.reason = news?.reason_description ? news?.reason_description : ''
+          newsPayload.reason =
+            news?.reason_description !== undefined ? news?.reason_description.split(',') : ['']
           await mailTemplateService.sendRejectedEmail(newsPayload)
         }
         //Sending News Email Payload ------ [EN]
