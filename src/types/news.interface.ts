@@ -15,6 +15,7 @@ export interface INews {
 export interface ICreateNews {
   id?: string
   creator_id?: string
+  news_category_id?: string
   title: string
   news_description: string
   news_image: string
@@ -53,4 +54,5 @@ export interface INewsPagination {
   isTodayEvent?: boolean
   isUpcomingEvent?: boolean
   user_id?: string
+  news_category_ids?: string[]
 }

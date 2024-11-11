@@ -59,13 +59,13 @@ class EventService {
   async findAll(pagination: IEventPagination): Promise<IResponseAndCount<IEvent[]>> {
     let where: WhereOptions<ICreateEvent> = {}
 
-    if (pagination.status) {
+    if (pagination.status !== undefined) {
       where = {
         ...where,
         status: pagination.status,
       }
     }
-    if (pagination.user_id) {
+    if (pagination.user_id !== undefined) {
       const user = await userService.getById(pagination.user_id)
       if (user && user.role === ROLES.ORGANIZER) {
         where = {
@@ -74,13 +74,18 @@ class EventService {
         }
       }
     }
-    if (pagination.event_category_id) {
+    if (
+      pagination.event_category_ids !== undefined &&
+      pagination.event_category_ids[0] !== undefined
+    ) {
       where = {
         ...where,
-        event_category_id: pagination.event_category_id,
+        event_category_id: {
+          [Op.in]: pagination.event_category_ids,
+        },
       }
     }
-    if (pagination.isTodayEvent) {
+    if (pagination.isTodayEvent !== undefined) {
       const today = new Date()
 
       const startOfDay = new Date(
@@ -101,7 +106,7 @@ class EventService {
       }
     }
 
-    if (pagination.isUpcomingEvent) {
+    if (pagination.isUpcomingEvent !== undefined) {
       const today = new Date()
       const isTodayEvent = new Date(
         Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59, 999)
@@ -113,7 +118,7 @@ class EventService {
         },
       }
     }
-    if (pagination.search) {
+    if (pagination.search !== undefined) {
       where = {
         ...where,
         [Op.or]: [

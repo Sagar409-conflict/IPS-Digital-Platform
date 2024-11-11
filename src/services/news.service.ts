@@ -24,21 +24,32 @@ class NewsService {
 
   // Find all news entries with optional search, pagination, and approval status
   async findAll(pagination: INewsPagination): Promise<IResponseAndCount<INews[]>> {
+    console.log('🚀 ~ file: news.service.ts:28 ~ NewsService ~ findAll ~ pagination:', pagination)
+
     let where: WhereOptions<ICreateNews> = {}
 
-    if (pagination.status) {
+    if (pagination.status !== undefined) {
       where = {
         ...where,
         status: pagination.status,
       }
     }
-    if (pagination.user_id) {
+    if (pagination.user_id !== undefined) {
       const user = await userService.getById(pagination.user_id)
       if (user && user.role === ROLES.ORGANIZER) {
         where = {
           ...where,
           creator_id: pagination.user_id,
         }
+      }
+    }
+
+    if (pagination.news_category_ids !== undefined && pagination.news_category_ids[0] !== '') {
+      where = {
+        ...where,
+        news_category_id: {
+          [Op.in]: pagination.news_category_ids,
+        },
       }
     }
 

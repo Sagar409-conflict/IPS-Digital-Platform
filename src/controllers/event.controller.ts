@@ -165,7 +165,7 @@ class EventController {
         isTodayEvent,
         isUpcomingEvent,
         user_id,
-        event_category_id,
+        event_category_ids,
       } = req.query
 
       //Paginations Setup
@@ -178,8 +178,10 @@ class EventController {
         isUpcomingEvent:
           typeof isUpcomingEvent === 'string' ? isUpcomingEvent === 'true' : undefined,
         user_id: typeof user_id === 'undefined' ? undefined : String(user_id),
-        event_category_id:
-          typeof event_category_id === 'undefined' ? undefined : String(event_category_id),
+        event_category_ids:
+          typeof event_category_ids === 'undefined'
+            ? undefined
+            : String(event_category_ids).split(','),
       }
 
       //Get all customizations based on search and pagination

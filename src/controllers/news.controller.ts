@@ -111,7 +111,7 @@ class NewsCategoryController {
   async getAll(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
-      const { page, limit, search, status, user_id } = req.query
+      const { page, limit, search, status, user_id, news_category_ids } = req.query
 
       const pagination: INewsPagination = {
         page: typeof page === 'undefined' ? 1 : Number(page),
@@ -119,6 +119,11 @@ class NewsCategoryController {
         search: typeof search === 'undefined' ? undefined : String(search),
         status: typeof status === 'undefined' ? undefined : String(status),
         user_id: typeof user_id === 'undefined' ? undefined : String(user_id),
+        news_category_ids:
+          typeof news_category_ids === 'undefined'
+            ? undefined
+            : String(news_category_ids).split(','),
+
         role: ROLES.ORGANIZER,
       }
       const { count, rows } = await newsService.findAll(pagination)
