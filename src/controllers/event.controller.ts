@@ -9,6 +9,7 @@ import {
 import { badRequest, internalServer, success, unAuthorized } from '../helpers/response'
 import userService from '../services/user.service'
 import {
+  folderMoveOperation,
   generateQRCode,
   removeFile,
   removeFolder,
@@ -249,7 +250,7 @@ class EventController {
         if (req.files.thumbnail_image && !Array.isArray(req.files.thumbnail_image)) {
           payload.thumbnail_image = await uploadFile(
             req.files.thumbnail_image,
-            `event_assets/${payload.title}/thumbnail_image/`
+            `event_assets/${isExist.title}/thumbnail_image/`
           )
           assetsUpdateStatus.thumbnail_image = true
         }
@@ -259,7 +260,7 @@ class EventController {
             req.files.event_videos,
             event_id,
             EVENT_MEDIA_TYPE.VIDEO,
-            `event_assets/${payload.title}/event_videos/`
+            `event_assets/${isExist.title}/event_videos/`
           )
           assetsUpdateStatus.event_videos = true
         }
@@ -271,7 +272,7 @@ class EventController {
             req.files.event_images,
             event_id,
             EVENT_MEDIA_TYPE.IMAGE,
-            `event_assets/${payload.title}/event_images/`
+            `event_assets/${isExist.title}/event_images/`
           )
           assetsUpdateStatus.event_images = true
         }
@@ -279,50 +280,60 @@ class EventController {
 
       const updateRecord = (await eventService.update(event_id, payload))[0]
       if (updateRecord) {
+        if (assetsUpdateStatus.thumbnail_image) await removeFile(isExist.thumbnail_image)
         if (isExist.title === payload.title) {
-          if (assetsUpdateStatus.thumbnail_image) await removeFile(isExist.thumbnail_image)
-
-          if (assetsUpdateStatus.event_videos) {
-            if (
-              isExist.event_assets &&
-              isExist.event_assets !== undefined &&
-              isExist.event_assets !== null
-            ) {
-              isExist.event_assets.map(async (media) => {
-                if (media.media_type === EVENT_MEDIA_TYPE.VIDEO) {
-                  await removeFile(media.path)
-                  await eventService.deleteEventAssets({
-                    where: {
-                      event_id,
-                      path: media.path,
-                    },
-                  })
-                }
-              })
-            }
-          }
-
-          if (assetsUpdateStatus.event_images) {
-            if (
-              isExist.event_assets &&
-              isExist.event_assets !== undefined &&
-              isExist.event_assets !== null
-            ) {
-              isExist.event_assets.map(async (media) => {
-                if (media.media_type === EVENT_MEDIA_TYPE.IMAGE) {
-                  await removeFile(media.path)
-                  await eventService.deleteEventAssets({
-                    where: {
-                      event_id,
-                      path: media.path,
-                    },
-                  })
-                }
-              })
-            }
-          }
+          // Below code is in comment due to (we do not need to remove)
+          // We will have to append medias
+          // if (assetsUpdateStatus.event_videos) {
+          //   if (
+          //     isExist.event_assets &&
+          //     isExist.event_assets !== undefined &&
+          //     isExist.event_assets !== null
+          //   ) {
+          //     isExist.event_assets.map(async (media) => {
+          //       if (media.media_type === EVENT_MEDIA_TYPE.VIDEO) {
+          //         await removeFile(media.path)
+          //         await eventService.deleteEventAssets({
+          //           where: {
+          //             event_id,
+          //             path: media.path,
+          //           },
+          //         })
+          //       }
+          //     })
+          //   }
+          // }
+          // if (assetsUpdateStatus.event_images) {
+          //   if (
+          //     isExist.event_assets &&
+          //     isExist.event_assets !== undefined &&
+          //     isExist.event_assets !== null
+          //   ) {
+          //     isExist.event_assets.map(async (media) => {
+          //       if (media.media_type === EVENT_MEDIA_TYPE.IMAGE) {
+          //         await removeFile(media.path)
+          //         await eventService.deleteEventAssets({
+          //           where: {
+          //             event_id,
+          //             path: media.path,
+          //           },
+          //         })
+          //       }
+          //     })
+          //   }
+          // }
         } else {
+          // Copy contents to the new directory
+          await folderMoveOperation(
+            `event_assets/${isExist.title}`,
+            `event_assets/${payload.title}`
+          )
           await removeFolder(`event_assets/${isExist.title}`)
+
+          //Replace Title (Folder Name) all Old Path Folder to New Path Folder
+          const oldString = isExist['title'].replace(/\s+/g, '_')
+          const newString = payload['title'].replace(/\s+/g, '_')
+          await eventService.replaceAssetsPathFolderName(event_id, oldString, newString)
         }
 
         return success(res, languageCode, undefined, 'EVENT_UPDATED_SUCCESS')
@@ -383,6 +394,46 @@ class EventController {
     }
   }
 
+  async removeEventAssets(req: Request, res: Response) {
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
+    try {
+      const { id } = req.params
+      const isExistAsset = await eventService.getEventAsset({
+        where: {
+          id,
+        },
+        raw: true,
+      })
+
+      if (!isExistAsset) return badRequest(res, languageCode, 'EVENT_ASSET_NOT_EXIST')
+      if (req.user.role === ROLES.ORGANIZER) {
+        // Get event details
+        const isExistEvent = await eventService.findOne({
+          where: {
+            id: isExistAsset.event_id,
+            creator_id: req.user.id,
+          },
+          raw: true,
+        })
+
+        if (!isExistEvent) return badRequest(res, languageCode, 'EVENT_ASSET_PREVENTION')
+      }
+      // let path: string | null = null
+      await removeFile(isExistAsset.path)
+
+      const isDeleted = await eventService.deleteEventAssets({
+        where: {
+          id,
+        },
+      })
+      if (!isDeleted) return internalServer(res, languageCode, undefined, 'UNABLE_TO_DELETE')
+
+      return success(res, languageCode, undefined, 'EVENT_ASSET_SUCCESSFULLY_REMOVED')
+    } catch (error) {
+      console.error('🐛 ERROR 🐛', error)
+      return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
+    }
+  }
   /**
    * REST API endpoint for updating status of an event (Super admin can Approve/Reject Event Request)
    * @param req

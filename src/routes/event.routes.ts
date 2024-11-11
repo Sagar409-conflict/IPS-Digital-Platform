@@ -18,6 +18,15 @@ eventRoutes.post(
 eventRoutes.get('/', EventController.getAll)
 
 eventRoutes.get('/:id', validate('id'), EventController.get)
+
+eventRoutes.delete(
+  '/remove-event-assets/:id',
+  AuthGuard,
+  checkRole([ROLES.SUPER_ADMIN, ROLES.ORGANIZER]),
+  validate('id'),
+  EventController.removeEventAssets
+)
+
 eventRoutes.delete(
   '/:id',
   validate('id'),

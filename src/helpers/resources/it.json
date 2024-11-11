@@ -18,6 +18,9 @@
   "DETAILS_OF_EVENT_CATEGORY": "Dettagli della categoria evento recuperati correttamente",
   "DETAILS_OF_ORGANIZER": "Dettagli dell'organizzatore recuperati correttamente",
 
+  "EVENT_ASSET_NOT_EXIST": "Risorsa evento non trovata",
+  "EVENT_ASSET_SUCCESSFULLY_REMOVED": "Risorsa evento rimossa con successo",
+  "EVENT_ASSET_PREVENTION": "Questa risorsa dell'evento non può essere rimossa poiché non sei autorizzato a rimuovere questa risorsa",
   "EMAIL_EXIST": "L'e-mail è già in uso, riprova con un'e-mail diversa",
   "EVENT_CATEGORY_CREATED": "Categoria evento creata con successo!",
   "EVENT_CATEGORY_EXIST": "La categoria evento esiste già",

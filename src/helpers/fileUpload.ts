@@ -91,6 +91,23 @@ export const removeFolder = async (folderPath: string) => {
     }
   )
 }
+export const folderMoveOperation = async (oldPath: string, newPath: string) => {
+  oldPath = oldPath.replace(/\s+/g, '_')
+
+  newPath = newPath.replace(/\s+/g, '_')
+
+  await fsPromise.cp(
+    path.join(__dirname, `../public/uploads/${oldPath}`),
+    path.join(__dirname, `../public/uploads/${newPath}`),
+    { recursive: true }
+  )
+
+  // Delete the old directory after copying
+  await fsPromise.rm(path.join(__dirname, `../public/uploads/${oldPath}`), {
+    recursive: true,
+    force: true,
+  })
+}
 export const uploadAssetsHelper = async (
   files: Array<UploadedFile> | UploadedFile,
   event_id: string,

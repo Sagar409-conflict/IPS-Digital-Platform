@@ -17,6 +17,9 @@
   "DETAILS_OF_ORGANIZER": "Organizer details fetched successfully",
   "DETAILS_OF_EVENT_CATEGORY": "Event Category details fetched successfully",
 
+  "EVENT_ASSET_NOT_EXIST": "Event asset not found",
+  "EVENT_ASSET_SUCCESSFULLY_REMOVED": "Event asset successfully removed",
+  "EVENT_ASSET_PREVENTION": "This event asset cannot be removed as you are not authorized to remove this asset",
   "EMAIL_EXIST": "Email is already in use, please try again with different email",
   "EVENT_CATEGORY_EXIST": "Event category is already exist",
   "EVENT_CATEGORY_CREATED": "Event category created successfully!",

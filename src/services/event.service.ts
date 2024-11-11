@@ -1,4 +1,4 @@
-import { FindOptions, Op, WhereOptions } from 'sequelize'
+import { col, FindOptions, fn, Op, WhereOptions } from 'sequelize'
 import { IPagination, IResponseAndCount } from '../types/common.interface'
 import { ICreateEvent, IEvent, IEventPagination, IResponseEvent } from '../types/event.interface'
 import Event from '../models/event.model'
@@ -163,14 +163,33 @@ class EventService {
     return await Event.update(payload, { where: { id } })
   }
 
+  async getEventAsset(options: {}): Promise<ICreateEventAssets | null> {
+    return await EventAssets.findOne(options)
+  }
   async getAssets(options: {}): Promise<ICreateEventAssets[]> {
     return await EventAssets.findAll(options)
   }
   async delete(id: string): Promise<number> {
     return await Event.destroy({ where: { id } })
   }
-  async deleteEventAssets(payload: {}) {
+  async deleteEventAssets(payload: {}): Promise<number> {
     return await EventAssets.destroy(payload)
+  }
+  async replaceAssetsPathFolderName(
+    event_id: string,
+    old_string: string,
+    new_string: string
+  ): Promise<[affectedCount: number]> {
+    return await EventAssets.update(
+      {
+        path: fn('REPLACE', col('path'), old_string, new_string),
+      },
+      {
+        where: {
+          event_id,
+        },
+      }
+    )
   }
 }
 
