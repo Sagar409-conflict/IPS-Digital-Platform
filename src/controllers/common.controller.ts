@@ -211,6 +211,8 @@ class CommonController {
         limit,
         search,
         status,
+        event_category_ids,
+        news_category_ids,
         // isTodayEvent,
         // isUpcomingEvent,
         // user_id,
@@ -227,6 +229,10 @@ class CommonController {
         page: 1,
         limit: 5,
         search: typeof search === 'undefined' ? undefined : String(search),
+        event_category_ids:
+          typeof event_category_ids === 'undefined'
+            ? undefined
+            : String(event_category_ids).split(','),
         status: EVENT_STATUS.PUBLISHED,
         isTodayEvent: true,
       }
@@ -257,6 +263,10 @@ class CommonController {
         page: typeof page === 'undefined' ? 1 : Number(page),
         limit: typeof limit === 'undefined' ? 10 : Number(limit),
         search: typeof search === 'undefined' ? undefined : String(search),
+        news_category_ids:
+          typeof news_category_ids === 'undefined'
+            ? undefined
+            : String(news_category_ids).split(','),
         status: NEWS_STATUS.PUBLISHED,
       }
       const { count: newsCount, rows: newsRows } = await newsService.findAll(newsPagination)

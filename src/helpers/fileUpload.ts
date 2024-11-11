@@ -1,5 +1,7 @@
 import path from 'path'
 import fs from 'fs'
+import ffmpeg from 'fluent-ffmpeg'
+import ffmpegPath from 'ffmpeg-static'
 import sharp from 'sharp'
 import QRCode from 'qrcode'
 import fsPromise from 'fs/promises'
@@ -7,8 +9,10 @@ import { UploadedFile } from 'express-fileupload'
 import { IAllMediaFields } from '../types/common.interface'
 import { generateRandomString } from './common'
 import eventService from '../services/event.service'
-import { ICreateEventAssets } from '../types/event_assets.interface'
+import { AssetPayload, ICreateEventAssets } from '../types/event_assets.interface'
+import { EVENT_MEDIA_TYPE } from './constant'
 
+ffmpeg.setFfmpegPath(ffmpegPath)
 /**
  * Upload a single file to the specified directory.
  * @param file - The uploaded file from the request.
@@ -46,6 +50,41 @@ export const uploadFile = async (file: UploadedFile, uploadDir: string): Promise
 
       return resolve(uploadPath.split('public')[1].replace(/\\/g, '/'))
     })
+  })
+}
+
+export const generateVideoThumbnailImage = async (
+  videoFilePath: string,
+  thumbnailPath: string,
+  time: string = '00:00:01'
+): Promise<string> => {
+  return new Promise(async (resolve, reject) => {
+    let generateFileName = await generateRandomString(16)
+    const thumbnailFolderPath = path.join(thumbnailPath, `${generateFileName}.png`)
+
+    if (!fs.existsSync(thumbnailPath)) {
+      fs.mkdirSync(thumbnailPath, { recursive: true })
+    }
+    // console.log('///////////////////////////////////////////')
+    // console.log('thumbnailPath : : : : ,', thumbnailPath)
+    // console.log('path.dirname(thumbnailPath) : : : : ,', path.dirname(thumbnailPath))
+    // console.log('///////////////////////////////////////////')
+
+    ffmpeg(videoFilePath)
+      .screenshots({
+        timestamps: [time], // Time to capture the screenshot (format 'HH:MM:SS')
+        filename: `${generateFileName}.png`, // Output filename
+        folder: thumbnailPath, // Folder to save the thumbnail
+        size: '320x240', // Resize thumbnail to desired dimensions
+      })
+      .on('end', () => {
+        console.log('Thumbnail generated successfully!')
+        resolve(thumbnailFolderPath)
+      })
+      .on('error', (err: Error) => {
+        console.log('Error generating thumbnail: ', err.message)
+        reject(err)
+      })
   })
 }
 
@@ -118,17 +157,35 @@ export const uploadAssetsHelper = async (
 
   destinationLocation = destinationLocation.replace(/\s+/g, '_')
 
-  console.log('🚀 ~ file: fileUpload.ts:78 ~ destinationLocation:', destinationLocation)
-
   if (Array.isArray(files)) {
     const assetsPromise = files.map(async (video) => {
       const uploadedAssetpath = await uploadFile(video, `${destinationLocation}`)
 
-      ArrayOfVideoPaths.push({
+      const assetPayload: AssetPayload = {
         event_id,
         media_type: mediaType,
         path: uploadedAssetpath,
-      })
+        video_thumbnail_path: null,
+      }
+      if (
+        mediaType === EVENT_MEDIA_TYPE.VIDEO &&
+        fs.existsSync(path.join(__dirname, `../public${uploadedAssetpath}`))
+      ) {
+        await generateVideoThumbnailImage(
+          path.join(__dirname, `../public${uploadedAssetpath}`),
+          path.join(__dirname, `../public/uploads/${destinationLocation}video_thumbnail_images/`)
+        )
+          .then((fullThumbnailPath) => {
+            assetPayload.video_thumbnail_path =
+              fullThumbnailPath.replace(/\\/g, '/').split('public')[1] || null
+            ArrayOfVideoPaths.push(assetPayload)
+          })
+          .catch((err) => {
+            console.log('Unbale to Generate Thumbnail Image for a Video', err)
+          })
+      } else {
+        ArrayOfVideoPaths.push(assetPayload)
+      }
     })
 
     // Wait for all uploads to complete
@@ -136,11 +193,46 @@ export const uploadAssetsHelper = async (
     return await eventService.bulkCreateEventAssets(ArrayOfVideoPaths)
   } else {
     const uploadedAssetpath = await uploadFile(files, `${destinationLocation}`)
-    ArrayOfVideoPaths.push({
+    const assetPayload: AssetPayload = {
       event_id,
       media_type: mediaType,
       path: uploadedAssetpath,
-    })
+      video_thumbnail_path: null,
+    }
+    // console.log('*****************************************')
+
+    // console.log(
+    //   'fs.existsSync(path.join(__dirname, `../public${uploadedAssetpath}`))',
+    //   fs.existsSync(path.join(__dirname, `../public${uploadedAssetpath}`))
+    // )
+    // console.log('*****************************************')
+    if (
+      mediaType === EVENT_MEDIA_TYPE.VIDEO &&
+      fs.existsSync(path.join(__dirname, `../public${uploadedAssetpath}`))
+    ) {
+      //TRUE from both
+      // console.log('*****************************************')
+      // console.log('uploadedAssetpath >> : ', uploadedAssetpath)
+      // console.log('ONLY destination >> : ', `${destinationLocation}`)
+      // console.log('destination >> : ', `${destinationLocation}video_thumbnail_images/`)
+      // console.log('*****************************************')
+
+      await generateVideoThumbnailImage(
+        path.join(__dirname, `../public${uploadedAssetpath}`),
+        path.join(__dirname, `../public/uploads/${destinationLocation}video_thumbnail_images/`)
+      )
+        .then((fullThumbnailPath) => {
+          assetPayload.video_thumbnail_path =
+            fullThumbnailPath.replace(/\\/g, '/').split('public')[1] || null
+          ArrayOfVideoPaths.push(assetPayload)
+        })
+        .catch((err) => {
+          console.log('Unbale to Generate Thumbnail Image for a Video', err)
+        })
+    } else {
+      ArrayOfVideoPaths.push(assetPayload)
+    }
+
     return await eventService.bulkCreateEventAssets(ArrayOfVideoPaths)
   }
 }

@@ -12,6 +12,7 @@ class EventAssets extends Model<ICreateEventAssets> implements IEventAssets {
   public id!: string
   public media_type!: MediaType
   public path!: string
+  public video_thumbnail_path!: string
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
 }
@@ -33,6 +34,10 @@ EventAssets.init(
     path: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    video_thumbnail_path: {
+      type: DataTypes.STRING, // Store the path to the generated thumbnail
+      allowNull: true,
     },
   },
   {
