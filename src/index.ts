@@ -9,6 +9,7 @@ import route from './routes'
 import connectDB from './models'
 import { Server } from 'http'
 import fileUpload from 'express-fileupload'
+import { logUrl } from './middleware/url-logger.middleware'
 
 const app: Application = express()
 
@@ -52,6 +53,8 @@ app.use(express.urlencoded({ limit: '500mb', extended: false }))
 // parse application/json
 app.use(bodyParser.json({ limit: '500mb' }))
 app.use(express.json({ limit: '500mb' }))
+
+app.use(logUrl)
 
 //Routes initialization
 app.use('/api', route)
