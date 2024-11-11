@@ -4,7 +4,7 @@ import sendForgotPasswordTemplate from '../templates/frogot_password.template'
 import sendNewOrganizerTemplate from '../templates/new_organizer.template'
 import sendPasswordResetACKTemplate from '../templates/password_reset_ack.template'
 import sendResendOTPTemplate from '../templates/resend_otp.template'
-import SendApprovalaTemplate from '../templates/approval_email.template'
+import SendApprovalaTemplate from '../templates/pending_news.template'
 import SendPublishedTemplate from '../templates/published_email.template'
 import SendRejectedTemplate from '../templates/rejected_email.template'
 import {

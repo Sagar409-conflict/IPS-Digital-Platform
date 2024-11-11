@@ -19,7 +19,7 @@ import eventService from '../services/event.service'
 import { ICreateEventAssets } from '../types/event_assets.interface'
 import { UploadedFile } from 'express-fileupload'
 import { IPagination } from '../types/common.interface'
-import { metaDataForPaginations } from '../helpers/common'
+import { formatDate, metaDataForPaginations } from '../helpers/common'
 import { statusCode } from '../config/statucCode'
 import {
   AssetsStatus,
@@ -93,6 +93,7 @@ class EventController {
       console.log('payload : ', payload)
 
       const recordCreated = await eventService.create(payload)
+      console.log(recordCreated.id)
 
       if (!recordCreated) {
         console.log('Error In Creation of Event')
@@ -136,6 +137,7 @@ class EventController {
           last_name: req.user.last_name,
           title: req.body.title,
           organizer_email: req.user.email,
+          submitted_date: formatDate(payload.submittedAt),
         }
         await mailTemplateService.sendEventPendingApprovalEmail(mailbody)
       }

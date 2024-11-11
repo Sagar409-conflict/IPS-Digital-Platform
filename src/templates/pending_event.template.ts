@@ -4,6 +4,7 @@ class SendPendingApprovaltemplate {
   sendPendingApprovalEmail(body: ISendApprovalemail) {
     return `<!doctype html>
 <!doctype html>
+<!doctype html>
 <html>
   <body>
     <div
@@ -34,26 +35,29 @@ class SendPendingApprovaltemplate {
                 /></a>
               </div>
               <div style="font-weight:normal;padding:0px 24px 16px 24px">
-                Hi Anna 👋,
+                Hi <b>${body.first_name.charAt(0).toUpperCase() + body.first_name.slice(1)} ${
+      body.admin_last_name
+    }</b>,
               </div>
               <div style="font-weight:normal;padding:16px 24px 0px 24px">
-                A new event has been submitted and is awaiting your approval.
+                A new event item has been created and is awaiting your approval.
                 Here are the details:
               </div>
               <div
                 style='font-family:"Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;font-weight:normal;padding:0px 24px 0px 24px'
               >
-                <h4>
-                  Event Title: ${body.title} <br />
-                  Created By: ${body.first_name} ${body.last_name} <br />
-                  Organizer Email: ${body.organizer_email}
-                </h4>
+                <p>
+                  <b>Event Title:</b> ${body.title}  <br />
+                  <b>Created By:</b> ${body.first_name} ${body.last_name} <br />
+                  <b>Organizer Email:</b> ${body.organizer_email} <br />
+                  <b>Submitted On:</b> ${body.submitted_date}
+                </p>
               </div>
               <div style="font-weight:normal;padding:0px 24px 4px 24px">
                 <p>
-                  Please review the pending event submission and take the
-                  necessary actions. You can log into the admin dashboard to
-                  view, approve, or reject the submission.
+                  Please review the pending event item and take the necessary
+                  actions. You can log into the admin dashboard to view and
+                  approve or reject the submission.
                 </p>
                 <p>
                   For your reference, you will receive similar notifications for

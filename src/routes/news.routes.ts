@@ -11,12 +11,12 @@ newsRoutes.get('/', newsController.getAll)
 newsRoutes.get('/:id', newsController.getById)
 newsRoutes.delete('/:id', AuthGuard, newsController.delete)
 newsRoutes.put('/:id', AuthGuard, validate('updateNews'), newsController.update)
-newsRoutes.put(
-  '/status/:id',
-  AuthGuard,
-  checkRole([ROLES.SUPER_ADMIN]),
-  validate('updateNewsStatus'),
-  newsController.statusUpdate
-)
+// newsRoutes.put(
+//   '/status/:id',
+//   AuthGuard,
+//   checkRole([ROLES.SUPER_ADMIN]),
+//   validate('updateNewsStatus'),
+//   newsController.statusUpdate
+// )
 
 export default newsRoutes

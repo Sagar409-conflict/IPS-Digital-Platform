@@ -34,20 +34,27 @@ class SendPublishedtemplate {
                 /></a>
               </div>
               <div style="font-weight:normal;padding:0px 24px 16px 24px">
-                Hi ${body.first_name} ${body.last_name} 👋,
+                Hi <b> ${body.first_name.charAt(0).toUpperCase() + body.first_name.slice(1)} ${
+      body.last_name
+    } </b> ,
               </div>
               <div style="font-weight:normal;padding:16px 24px 0px 24px">
                 We are pleased to inform you that your ${body.type} submission titled
-                &quot;${body.title}&quot; has been successfully published.
+                <b>${body.title}</b> has been successfully published.
               </div>
               <div
                 style='font-family:"Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;font-weight:normal;text-align:left;padding:0px 24px 0px 24px'
               >
-                <h4>
-                  ${body.type} Title: ${body.title} <br />
-                  Published On: ${body.publishedAt}  <br />
-                  Status: ${body.status}
-                </h4>
+                <p>
+                  <b>${
+                    body.type && body.type !== undefined
+                      ? body.type.charAt(0).toUpperCase() + body.type.slice(1)
+                      : ''
+                  } Title:</b> ${body.title} <br />
+                  <b>Submitted On:</b> ${body.submittedAt} <br />
+                  <b>Published On:</b> ${body.publishedAt} <br />
+                  <b>Status:</b> <span style="color:green;">Published</span>
+                </p>
               </div>
               <div style="font-weight:normal;padding:0px 24px 4px 24px">
                 <p>
