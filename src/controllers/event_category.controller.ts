@@ -154,7 +154,7 @@ class EventCategoryController {
       const userUpdated = (await eventCategoryService.update(eventCategoryId, payload))[0]
 
       // Check weather it was updated or not
-      if (!userUpdated) return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')
+      if (!userUpdated) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       // Fetch an updated record and send as a response
       const result = await userService.findOne({ where: { id: eventCategoryId }, raw: true })
@@ -183,14 +183,14 @@ class EventCategoryController {
 
       // Check Request has necessary parameters or not
       if (!req.params.id)
-        return internalServer(res, languageCode, req.body, 'INVALID_REQUEST_PARAMS')
+        return internalServer(res, languageCode, undefined, 'INVALID_REQUEST_PARAMS')
 
       const { id } = req.params
       const record = await eventCategoryService.findOne({ where: { id }, raw: true })
 
       if (!record) return badRequest(res, languageCode, 'EVENT_CATEGORY_NOT_EXIST')
       const result = await eventCategoryService.delete(id)
-      if (!result) return internalServer(res, languageCode, req.body, 'UNABLE_TO_DELETE')
+      if (!result) return internalServer(res, languageCode, undefined, 'UNABLE_TO_DELETE')
 
       await removeFile(record?.icon_image)
       return success(res, languageCode, undefined, 'RECORD_SUCCESSFULLY_DELETED')

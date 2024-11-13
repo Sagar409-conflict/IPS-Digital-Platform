@@ -73,8 +73,7 @@ class AboutUsController {
           description,
         }
         const created = await AboutUsService.create(aboutUsPayload)
-        if (!created)
-          return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_CREATE')
+        if (!created) return internalServer(res, languageCode, undefined, 'UNABLE_TO_CREATE')
         return success(res, languageCode, undefined, 'ABOUT_US_SECTION_CREATED')
       } else {
         return badRequest(res, languageCode, 'ACCESS_DENIED')

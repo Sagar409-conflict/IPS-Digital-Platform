@@ -89,8 +89,7 @@ class AuthController {
       // await sendEmail(body.email, 'Password Reset Request - Your OTP for PICKUP TIME', emailContent)
       const updateRecord = (await userService.updateViaEmail(email, { otp, otp_expire_time }))[0]
 
-      if (!updateRecord)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!updateRecord) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       const isExistUser = await userService.findOneByEmail(email)
 
@@ -131,8 +130,7 @@ class AuthController {
         })
       )[0]
 
-      if (!recordUpdate)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!recordUpdate) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       return success(res, languageCode, statusCode.SUCCESS, 'OTP_VALIDATE_SUCCESSFULLY', null)
     } catch (error) {
@@ -152,8 +150,7 @@ class AuthController {
 
       const updateRecord = (await userService.updateViaEmail(email, { otp, otp_expire_time }))[0]
 
-      if (!updateRecord)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!updateRecord) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       // Send mail
       const mailBody = {
@@ -189,8 +186,7 @@ class AuthController {
         await userService.updateViaEmail(email, { password: encryptedPassword })
       )[0]
 
-      if (!updateRecord)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!updateRecord) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       // Send mail
       const mailBody = {
@@ -272,8 +268,7 @@ class AuthController {
       }
 
       const userUpdated = (await userService.update(id, payload))[0]
-      if (!userUpdated)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!userUpdated) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       // if (
       //   isExistUser.profile_image &&

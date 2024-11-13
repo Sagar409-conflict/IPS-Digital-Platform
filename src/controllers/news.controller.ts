@@ -241,7 +241,7 @@ class NewsCategoryController {
 
       const updateResult = await newsService.update(id, payload)
       if (!updateResult) {
-        return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')
+        return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
       }
 
       const updatedNews = await newsService.getById(id)
