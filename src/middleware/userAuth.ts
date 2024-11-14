@@ -2,9 +2,10 @@ import User from '../models/user.model'
 import bcrypt from 'bcrypt'
 import { IUser } from '../types/user.interface'
 import jwt from 'jsonwebtoken'
+import { USER_STATUS } from '../helpers/constant'
 
 export const verifyUser = async (email: string, password: string) => {
-  let userInfo = await User.findOne({ where: { email }, raw: true })
+  let userInfo = await User.findOne({ where: { email, status: USER_STATUS.ACTIVE }, raw: true })
 
   if (userInfo) {
     const isMatch = await bcrypt.compare(password, userInfo.password)
