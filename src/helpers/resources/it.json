@@ -83,6 +83,7 @@
   "REJECTION_REASONS_LIST": "Elenco dei motivi di rifiuto recuperato correttamente",
 
   "STATUS_UPDATED_SUCCESS": "Lo stato è stato aggiornato con successo per il record richiesto",
+  "TOO_MANY_REQUESTS": "Hai superato il numero massimo di invii consentiti, riprova più tardi",
 
   "UNABLE_TO_DELETE": "Impossibile completare l'operazione di eliminazione richiesta",
   "UNABLE_TO_FETCH_REASONS_LIST": "Impossibile recuperare l'elenco dei motivi del rifiuto",

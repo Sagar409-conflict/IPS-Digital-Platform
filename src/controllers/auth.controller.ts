@@ -19,7 +19,7 @@ class AuthController {
    * @returns
    ***************************************/
   async register(req: Request, res: Response) {
-    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.EN
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
       const userPayload: ICreateUser = req.body
       // Encrypt a password & store it into encrypted manner
@@ -44,7 +44,7 @@ class AuthController {
    * @returns
    ***************************************/
   async login(req: Request, res: Response) {
-    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.EN
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
       // Check credentials in authorization from Header
       if (req.headers.authorization?.split(' ')[1] === '')

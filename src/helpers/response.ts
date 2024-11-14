@@ -146,7 +146,21 @@ export const validationErrorResponse = (
   }
   return res.status(status_code).json(resData)
 }
+export const tooManyRequests = (
+  res: Response,
+  languageCode = LANGUAGE_CODE.EN,
+  code = 'TOO_MANY_REQUESTS',
+  message = getMessage(code, 'DEFAULT', languageCode),
 
+  status_code = statusCode.TOO_MANY_REQUESTS
+) => {
+  console.log('🚀 ~ file: response.ts:155 ~ message:', message)
+  const resData = {
+    message: message,
+    statusCode: status_code,
+  }
+  return res.status(status_code).json(resData)
+}
 export const customeResponse = (
   res: Response,
   languageCode = LANGUAGE_CODE.EN,

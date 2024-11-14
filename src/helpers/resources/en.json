@@ -78,6 +78,8 @@
 
   "STATUS_UPDATED_SUCCESS": "Status has been successfully updated for requested record",
 
+  "TOO_MANY_REQUESTS": "You have exceeded the maximum number of allowed submissions. Please try again later.",
+
   "UNAUTHORIZED": "Access denied. You do not have the necessary permissions to access this resource",
   "UNABLE_TO_FOUND_A_RECORD": "Unable to find the requested record in the system",
   "USER_INACTIVE": "Your account is currently inactive, Please contact support to reactivate",
