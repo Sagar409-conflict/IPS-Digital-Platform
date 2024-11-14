@@ -33,7 +33,7 @@ class CommonController {
           // Update user status
           if (req.user.role === ROLES.ORGANIZER) return unAuthorized(res, languageCode)
           const userUpdated = (await userService.update(id, { status }))[0]
-          if (!userUpdated) return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')
+          if (!userUpdated) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
           const result = await userService.findOne({ where: { id }, raw: true })
           return success(res, languageCode, undefined, 'STATUS_UPDATED_SUCCESS', result)
 
@@ -105,7 +105,7 @@ class CommonController {
         }
         const updateResult = await eventService.update(requestPayload.id, payload)
         if (!updateResult) {
-          return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
+          return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE_STATUS')
         }
 
         //Fetching Updated Event Data to create email payload
@@ -164,7 +164,7 @@ class CommonController {
         }
         const updateResult = await newsService.update(requestPayload.id, payload)
         if (!updateResult) {
-          return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
+          return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE_STATUS')
         }
 
         //Fetching Updated News Data to create email payload

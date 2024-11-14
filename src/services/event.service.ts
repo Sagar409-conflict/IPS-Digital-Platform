@@ -48,7 +48,7 @@ class EventService {
         {
           model: EventAssets,
           as: 'event_assets',
-          attributes: ['id', 'media_type', 'path', 'video_thumbnail_path'],
+          attributes: ['id', 'media_type', 'path', 'video_thumbnail_path', 'file_name'],
         },
       ],
       raw: false,

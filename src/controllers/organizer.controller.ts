@@ -137,7 +137,7 @@ class OrganizerController {
       const userUpdated = (await userService.update(userId, req.body))[0]
 
       // Check weather it was updated or not
-      if (!userUpdated) return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')
+      if (!userUpdated) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
       // Fetch an updated record and send as a response
       const result = await userService.findOne({ where: { id: userId }, raw: true })
       return success(res, languageCode, undefined, 'PROFILE_UPDATED_SUCCESS', result)
@@ -158,10 +158,10 @@ class OrganizerController {
       if (req.user.role !== ROLES.SUPER_ADMIN) return unAuthorized(res, languageCode)
 
       if (!req.params.id)
-        return internalServer(res, languageCode, req.body, 'INVALID_REQUEST_PARAMS')
+        return internalServer(res, languageCode, undefined, 'INVALID_REQUEST_PARAMS')
       const { id } = req.params
       const result = await userService.delete(id)
-      if (!result) return internalServer(res, languageCode, req.body, 'UNABLE_TO_DELETE')
+      if (!result) return internalServer(res, languageCode, undefined, 'UNABLE_TO_DELETE')
       return success(res, languageCode, undefined, 'RECORD_SUCCESSFULLY_DELETED')
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)

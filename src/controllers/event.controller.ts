@@ -324,7 +324,7 @@ class EventController {
 
         return success(res, languageCode, undefined, 'EVENT_UPDATED_SUCCESS')
       } else {
-        return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')
+        return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
       }
     } catch (error) {
       console.error('🐛 ERROR 🐛', error)
@@ -454,7 +454,7 @@ class EventController {
       }
       const updateResult = await eventService.update(id, payload)
       if (!updateResult) {
-        return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE_STATUS')
+        return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE_STATUS')
       }
 
       const getUpdatedEvent = await eventService.findOne({ where: { id } })

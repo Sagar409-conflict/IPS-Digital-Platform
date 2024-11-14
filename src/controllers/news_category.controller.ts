@@ -163,7 +163,7 @@ class NewsCategoryController {
       }
       const userUpdated = (await newsCategoryService.update(newsCategoryId, payload))[0]
 
-      if (!userUpdated) return internalServer(res, languageCode, req.body, 'UNABLE_TO_UPDATE')
+      if (!userUpdated) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       const result = await newsCategoryService.findOne({ where: { id: newsCategoryId }, raw: true })
 

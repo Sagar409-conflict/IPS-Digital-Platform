@@ -19,7 +19,7 @@ class AuthController {
    * @returns
    ***************************************/
   async register(req: Request, res: Response) {
-    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.EN
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
       const userPayload: ICreateUser = req.body
       // Encrypt a password & store it into encrypted manner
@@ -44,7 +44,7 @@ class AuthController {
    * @returns
    ***************************************/
   async login(req: Request, res: Response) {
-    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.EN
+    const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
     try {
       // Check credentials in authorization from Header
       if (req.headers.authorization?.split(' ')[1] === '')
@@ -88,8 +88,7 @@ class AuthController {
 
       const updateRecord = (await userService.updateViaEmail(email, { otp, otp_expire_time }))[0]
 
-      if (!updateRecord)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!updateRecord) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       const isExistUser = await userService.findOneByEmail(email)
 
@@ -130,8 +129,7 @@ class AuthController {
         })
       )[0]
 
-      if (!recordUpdate)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!recordUpdate) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       return success(res, languageCode, statusCode.SUCCESS, 'OTP_VALIDATE_SUCCESSFULLY', null)
     } catch (error) {
@@ -151,8 +149,7 @@ class AuthController {
 
       const updateRecord = (await userService.updateViaEmail(email, { otp, otp_expire_time }))[0]
 
-      if (!updateRecord)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!updateRecord) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       // Send mail
       const mailBody = {
@@ -188,8 +185,7 @@ class AuthController {
         await userService.updateViaEmail(email, { password: encryptedPassword })
       )[0]
 
-      if (!updateRecord)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!updateRecord) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       // Send mail
       const mailBody = {
@@ -271,8 +267,7 @@ class AuthController {
       }
 
       const userUpdated = (await userService.update(id, payload))[0]
-      if (!userUpdated)
-        return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
+      if (!userUpdated) return internalServer(res, languageCode, undefined, 'UNABLE_TO_UPDATE')
 
       if (isExistUser.profile_image && profileImageUpdateStatus.profile_image) {
         await removeFile(isExistUser.profile_image)

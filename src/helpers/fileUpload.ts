@@ -161,6 +161,7 @@ export const uploadAssetsHelper = async (
         media_type: mediaType,
         path: uploadedAssetpath,
         video_thumbnail_path: null,
+        file_name: video.name,
       }
       if (
         mediaType === EVENT_MEDIA_TYPE.VIDEO &&
@@ -193,6 +194,7 @@ export const uploadAssetsHelper = async (
       media_type: mediaType,
       path: uploadedAssetpath,
       video_thumbnail_path: null,
+      file_name: files.name,
     }
     if (
       mediaType === EVENT_MEDIA_TYPE.VIDEO &&
