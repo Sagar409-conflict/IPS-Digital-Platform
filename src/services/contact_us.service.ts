@@ -1,5 +1,5 @@
 import { FindOptions, Op, WhereOptions } from 'sequelize'
-import { IPagination, IResponseAndCount } from '../types/common.interface'
+import { IResponseAndCount } from '../types/common.interface'
 import { IContactUs, IContactUsPagination, ICreateContactUs } from '../types/contact_us.interface'
 import ContactUs from '../models/contact_us.model'
 

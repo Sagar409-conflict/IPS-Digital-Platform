@@ -1,13 +1,6 @@
 import { Request, Response } from 'express'
-import {
-  EVENT_MEDIA_TYPE,
-  EVENT_STATUS,
-  LANGUAGE_CODE,
-  MODULE_IDENTIFIRES,
-  ROLES,
-} from '../helpers/constant'
-import { badRequest, internalServer, success, unAuthorized } from '../helpers/response'
-import userService from '../services/user.service'
+import { EVENT_MEDIA_TYPE, EVENT_STATUS, LANGUAGE_CODE, ROLES } from '../helpers/constant'
+import { badRequest, internalServer, success } from '../helpers/response'
 import {
   folderMoveOperation,
   generateQRCode,
@@ -17,18 +10,9 @@ import {
   uploadFile,
 } from '../helpers/fileUpload'
 import eventService from '../services/event.service'
-import { ICreateEventAssets } from '../types/event_assets.interface'
-import { UploadedFile } from 'express-fileupload'
-import { IPagination } from '../types/common.interface'
 import { formatDate, metaDataForPaginations } from '../helpers/common'
 import { statusCode } from '../config/statucCode'
-import {
-  AssetsStatus,
-  ICreateEvent,
-  IEventPagination,
-  IResponseEvent,
-} from '../types/event.interface'
-import { where } from 'sequelize'
+import { AssetsStatus, ICreateEvent, IEventPagination } from '../types/event.interface'
 import User from '../models/user.model'
 import mailTemplateService from '../services/mail_template.service'
 

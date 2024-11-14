@@ -1,5 +1,5 @@
 import { col, FindOptions, fn, Op, WhereOptions } from 'sequelize'
-import { IPagination, IResponseAndCount } from '../types/common.interface'
+import { IResponseAndCount } from '../types/common.interface'
 import { ICreateEvent, IEvent, IEventPagination, IResponseEvent } from '../types/event.interface'
 import Event from '../models/event.model'
 import EventAssets from '../models/event_assets.model'

@@ -1,8 +1,6 @@
 import { DataTypes, Model } from 'sequelize'
 import { v4 as uuidv4 } from 'uuid'
 import sequelize from '../config/database'
-import { ROLES, ROLES_ARRAY } from '../helpers/constant'
-import { ICreateUser, IUser } from '../types/user.interface'
 import { ICreateNewsCategory, INewsCategory } from '../types/news_category.interface'
 // import Agent from '../models/agent.model'
 

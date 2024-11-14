@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { badRequest, internalServer, success, unAuthorized } from '../helpers/response'
 import { LANGUAGE_CODE, ROLES } from '../helpers/constant'
-import organizerService from '../services/organizer.service'
 import { generateRandomString, metaDataForPaginations } from '../helpers/common'
 import userService from '../services/user.service'
 import { encrypt } from '../helpers/encrypt'

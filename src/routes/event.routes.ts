@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import EventController from '../controllers/event.controller'
-
 import { AuthGuard, checkRole } from '../middleware/auth.middleware'
 import { ROLES } from '../helpers/constant'
 import { validate } from '../middleware/validator.middleware'

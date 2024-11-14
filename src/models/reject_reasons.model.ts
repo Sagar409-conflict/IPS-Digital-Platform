@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
 import { v4 as uuidv4 } from 'uuid'
 import sequelize from '../config/database'
-import { EVENT_MEDIA_TYPE, MODULE_IDENTIFIRES } from '../helpers/constant'
+import { MODULE_IDENTIFIRES } from '../helpers/constant'
 import { ICreateRejectReasons, IRejectReasons } from '../types/reject_reasons.interface'
 
 class RejectReasons extends Model<ICreateRejectReasons> implements IRejectReasons {

@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 import sequelize from '../config/database'
 import { ROLES, ROLES_ARRAY, USER_STATUS } from '../helpers/constant'
 import { ICreateUser, IUser } from '../types/user.interface'
-// import Agent from '../models/agent.model'
 
 class User extends Model<ICreateUser> implements IUser {
   public id!: string

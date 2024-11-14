@@ -65,7 +65,7 @@ class AuthController {
         if (isValidUser.status) {
           // User is active then generate a token for the user
           let token = await generateToken(isValidUser)
-          const user = await userService.findOneByEmail(email)
+
           return success(res, languageCode, statusCode.SUCCESS, 'LOGIN_SUCCESS', {
             token,
           })
@@ -85,8 +85,7 @@ class AuthController {
     try {
       const { email } = req.body
       const { otp, otp_expire_time } = await generateOtp()
-      // let emailContent = getForgotPasswordEmail(otp)
-      // await sendEmail(body.email, 'Password Reset Request - Your OTP for PICKUP TIME', emailContent)
+
       const updateRecord = (await userService.updateViaEmail(email, { otp, otp_expire_time }))[0]
 
       if (!updateRecord)
@@ -274,13 +273,6 @@ class AuthController {
       const userUpdated = (await userService.update(id, payload))[0]
       if (!userUpdated)
         return internalServer(res, languageCode, req.body, undefined, 'UNABLE_TO_UPDATE')
-
-      // if (
-      //   isExistUser.profile_image &&
-      //   isExistUser.profile_image !== null &&
-      //   profileImageUpdateStatus.profile_image
-      // )
-      //   await removeFile(isExistUser.profile_image)
 
       if (isExistUser.profile_image && profileImageUpdateStatus.profile_image) {
         await removeFile(isExistUser.profile_image)

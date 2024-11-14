@@ -1,9 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
 import { v4 as uuidv4 } from 'uuid'
 import sequelize from '../config/database'
-import { EVENT_MEDIA_TYPE, EVENT_STATUS } from '../helpers/constant'
-import EventCategory from './event_category.model'
-import User from './user.model'
+import { EVENT_MEDIA_TYPE } from '../helpers/constant'
 import { ICreateEventAssets, IEventAssets } from '../types/event_assets.interface'
 import Event from './event.model'
 

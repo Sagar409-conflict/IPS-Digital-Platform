@@ -1,13 +1,7 @@
-import { NextFunction, Request, Response } from 'express'
 import User from '../models/user.model'
 import bcrypt from 'bcrypt'
 import { IUser } from '../types/user.interface'
 import jwt from 'jsonwebtoken'
-import userService from '../services/user.service'
-import { statusCode } from '../config/statucCode'
-import { unAuthorized } from '../helpers/response'
-import { LANGUAGE_CODE } from '../helpers/constant'
-import { CONFIG } from '../config/config'
 
 export const verifyUser = async (email: string, password: string) => {
   let userInfo = await User.findOne({ where: { email }, raw: true })

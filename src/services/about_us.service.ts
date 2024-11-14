@@ -1,14 +1,6 @@
 import { FindOptions, Op, WhereOptions } from 'sequelize'
-import NewsCategory from '../models/news_category.model'
-import {
-  ICreateNewsCategory,
-  INewsCategory,
-  INewsCategoryResponse,
-} from '../types/news_category.interface'
-import { IPagination, IResponseAndCount } from '../types/common.interface'
 import { IAboutUs, IAboutUsPagination, ICreateAboutUs } from '../types/about_us.interface'
 import AboutUs from '../models/about_us.model'
-import { count } from 'console'
 import { ABOUT_US_PAGES } from '../helpers/constant'
 
 class AboutUsService {

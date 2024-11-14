@@ -6,7 +6,6 @@ import sharp from 'sharp'
 import QRCode from 'qrcode'
 import fsPromise from 'fs/promises'
 import { UploadedFile } from 'express-fileupload'
-import { IAllMediaFields } from '../types/common.interface'
 import { generateRandomString } from './common'
 import eventService from '../services/event.service'
 import { AssetPayload, ICreateEventAssets } from '../types/event_assets.interface'
@@ -65,10 +64,6 @@ export const generateVideoThumbnailImage = async (
     if (!fs.existsSync(thumbnailPath)) {
       fs.mkdirSync(thumbnailPath, { recursive: true })
     }
-    // console.log('///////////////////////////////////////////')
-    // console.log('thumbnailPath : : : : ,', thumbnailPath)
-    // console.log('path.dirname(thumbnailPath) : : : : ,', path.dirname(thumbnailPath))
-    // console.log('///////////////////////////////////////////')
 
     ffmpeg(videoFilePath)
       .screenshots({
@@ -199,24 +194,10 @@ export const uploadAssetsHelper = async (
       path: uploadedAssetpath,
       video_thumbnail_path: null,
     }
-    // console.log('*****************************************')
-
-    // console.log(
-    //   'fs.existsSync(path.join(__dirname, `../public${uploadedAssetpath}`))',
-    //   fs.existsSync(path.join(__dirname, `../public${uploadedAssetpath}`))
-    // )
-    // console.log('*****************************************')
     if (
       mediaType === EVENT_MEDIA_TYPE.VIDEO &&
       fs.existsSync(path.join(__dirname, `../public${uploadedAssetpath}`))
     ) {
-      //TRUE from both
-      // console.log('*****************************************')
-      // console.log('uploadedAssetpath >> : ', uploadedAssetpath)
-      // console.log('ONLY destination >> : ', `${destinationLocation}`)
-      // console.log('destination >> : ', `${destinationLocation}video_thumbnail_images/`)
-      // console.log('*****************************************')
-
       await generateVideoThumbnailImage(
         path.join(__dirname, `../public${uploadedAssetpath}`),
         path.join(__dirname, `../public/uploads/${destinationLocation}video_thumbnail_images/`)

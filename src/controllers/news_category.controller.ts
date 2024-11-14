@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { badRequest, internalServer, success, unAuthorized } from '../helpers/response'
 import { LANGUAGE_CODE, ROLES } from '../helpers/constant'
-import { generateRandomString, metaDataForPaginations } from '../helpers/common'
+import { metaDataForPaginations } from '../helpers/common'
 import newsCategoryService from '../services/news_category.service'
 import { statusCode } from '../config/statucCode'
 import { IPagination } from '../types/common.interface'
