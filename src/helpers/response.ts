@@ -6,7 +6,6 @@ import { LANGUAGE_CODE } from './constant'
 
 const getMessage = (code: string, defaultcode: string, languageCode: string = LANGUAGE_CODE.EN) => {
   if (languageCode === LANGUAGE_CODE.EN) {
-    // return en[code] ? en[code] : en[defaultcode]
     return en[code as keyof typeof en]
       ? en[code as keyof typeof en]
       : en[defaultcode as keyof typeof en]
@@ -31,20 +30,15 @@ export const success = (
 ) => {
   if (data !== null) {
     const resData = {
-      // error: false,
       message: message,
       statusCode: status_code,
-      // messageCode: code,
       data,
     }
     return res.status(status_code).json(resData)
   } else {
     const resData = {
-      // error: false,
       message: message,
       statusCode: status_code,
-      // messageCode: code,
-      // data,
     }
     return res.status(status_code).json(resData)
   }
@@ -60,12 +54,8 @@ export const notFound = (
   data = null
 ) => {
   const resData = {
-    // error: true,
     message: message,
     statusCode: status_code,
-    // messageCode: code,
-    // data,
-    // reqBody,
   }
   return res.status(status_code).json(resData)
 }
@@ -83,12 +73,8 @@ export const badRequest = (
   data = null
 ) => {
   const resData = {
-    // error: true,
     message: message,
     statusCode: status_code,
-    // messageCode: code,
-    // data,
-    // reqBody,
   }
   return res.status(status_code).json(resData)
 }
@@ -123,11 +109,8 @@ export const internalServer = (
   data = null
 ) => {
   const resData = {
-    // error: true,
     message: message,
     statusCode: status_code,
-    // messageCode: code,
-    // data,
     reqBody,
   }
   return res.status(status_code).json(resData)
@@ -139,16 +122,14 @@ export const validationErrorResponse = (
   status_code = statusCode.UNPROCESSABLE_ENTITY
 ) => {
   const resData = {
-    // error: true,
     message,
     statusCode: status_code,
-    // messageCode: 'VALIDATION_ERROR',
   }
   return res.status(status_code).json(resData)
 }
 export const tooManyRequests = (
   res: Response,
-  languageCode = LANGUAGE_CODE.EN,
+  languageCode = LANGUAGE_CODE.IT,
   code = 'TOO_MANY_REQUESTS',
   message = getMessage(code, 'DEFAULT', languageCode),
 
@@ -170,10 +151,8 @@ export const customeResponse = (
   data = null
 ) => {
   const resData = {
-    // error: true,
     message: message,
     statusCode: status_code,
-    // messageCode: code,
     data,
   }
   return res.status(status_code).json(resData)
