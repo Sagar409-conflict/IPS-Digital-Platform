@@ -26,7 +26,7 @@ export const setupMiddlewareAndRoutes = (app: Application) => {
 
   // File upload and static file serving
   app.use(fileUpload({ parseNested: true }))
-  app.use(express.static(path.join(__dirname, 'public')))
+  app.use(express.static(path.join(__dirname, '../public')))
 
   // Parsing requests
   app.use(express.urlencoded({ limit: '500mb', extended: false }))
