@@ -46,7 +46,6 @@ class UserService {
     }
 
     if (pagination.role) {
-      console.log('pagination.role : ', pagination.role)
       where = {
         ...where,
         role: pagination.role,
@@ -54,7 +53,6 @@ class UserService {
     }
 
     if (pagination.status) {
-      console.log('pagination.status : ', pagination.status)
       where = {
         ...where,
         status: pagination.status,
@@ -88,8 +86,6 @@ class UserService {
   }
 
   async update(id: string, payload: Partial<ICreateUser>): Promise<[affectedCount: number]> {
-    console.log(id, payload)
-
     return await User.update(payload, { where: { id } })
   }
 

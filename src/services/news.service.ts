@@ -24,8 +24,6 @@ class NewsService {
 
   // Find all news entries with optional search, pagination, and approval status
   async findAll(pagination: INewsPagination): Promise<IResponseAndCount<INews[]>> {
-    console.log('🚀 ~ file: news.service.ts:28 ~ NewsService ~ findAll ~ pagination:', pagination)
-
     let where: WhereOptions<ICreateNews> = {}
 
     if (pagination.status !== undefined) {

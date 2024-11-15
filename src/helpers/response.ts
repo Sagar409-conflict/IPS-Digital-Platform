@@ -135,7 +135,6 @@ export const tooManyRequests = (
 
   status_code = statusCode.TOO_MANY_REQUESTS
 ) => {
-  console.log('🚀 ~ file: response.ts:155 ~ message:', message)
   const resData = {
     message: message,
     statusCode: status_code,

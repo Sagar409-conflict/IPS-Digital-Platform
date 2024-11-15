@@ -123,7 +123,6 @@ class EventCategoryController {
    ************************************************/
   async update(req: Request, res: Response) {
     const languageCode: string = (req.headers.languagecode as string) ?? LANGUAGE_CODE.IT
-    console.log('dfsdfsdfs')
 
     try {
       let eventCategoryId = req.params.id

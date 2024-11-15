@@ -31,8 +31,6 @@ export const uploadFile = async (file: UploadedFile, uploadDir: string): Promise
 
   let generateFileName = await generateRandomString(16)
 
-  console.log('🚀 ~ file: fileUpload.ts:31 ~ uploadFile ~ generateFileName:', generateFileName)
-
   const uploadPath = path.join(uploadDirPath, `${generateFileName}${path.extname(file.name)}`)
 
   return new Promise((resolve, reject) => {
@@ -267,10 +265,6 @@ export const generateQRCode = async (id: string, title: string) => {
     //     // Write the Buffer to the file
     //     try {
     //       const r = await fs.promises.writeFile(uploadDirPath, buffer)
-
-    //       console.log('🚀 ~ file: fileUpload.ts:164 ~ r:', r)
-
-    //       console.log('QR code saved successfully')
     //       return destination
     //     } catch (writeError) {
     //       console.error('Error saving QR code to file:', writeError)

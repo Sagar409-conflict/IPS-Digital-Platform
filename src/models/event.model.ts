@@ -94,8 +94,6 @@ Event.init(
       },
       afterUpdate: (event) => {
         if (event.status === EVENT_STATUS.PUBLISHED) {
-          console.log('Log TEst in side : 92 line')
-
           event.publishedAt = new Date()
         } else {
           event.publishedAt = null

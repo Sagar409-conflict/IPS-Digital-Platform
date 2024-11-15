@@ -68,8 +68,6 @@ class AboutUsService {
 
   // Update a news category by ID
   async update(id: string, payload: Partial<ICreateAboutUs>): Promise<[affectedCount: number]> {
-    console.log('CREATE/UPDATE : ', payload)
-
     return await AboutUs.update(payload, { where: { id } })
   }
 

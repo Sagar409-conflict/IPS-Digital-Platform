@@ -54,8 +54,6 @@ class EventCategoryService {
     id: string,
     payload: Partial<ICreateEventCatgory>
   ): Promise<[affectedCount: number]> {
-    console.log(id, payload)
-
     return await EventCategory.update(payload, { where: { id } })
   }
 

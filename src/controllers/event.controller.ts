@@ -75,10 +75,8 @@ class EventController {
       }
 
       // Create an event using basic details
-      console.log('payload : ', payload)
 
       const recordCreated = await eventService.create(payload)
-      console.log(recordCreated.id)
 
       if (!recordCreated) {
         console.log('Error In Creation of Event')
@@ -468,16 +466,6 @@ class EventController {
       console.error('🐛 ERROR 🐛', error)
       return internalServer(res, languageCode, req.body, undefined, (error as Error).message)
     }
-  }
-
-  async genQR(req: Request, res: Response) {
-    const path = await generateQRCode(
-      '3137a1e6-88ae-4eba-ac6e-9c78cf83a6b1',
-      // 'Vijay Sales and Marketing Exhibition'
-      'Test New Event'
-    )
-
-    console.log('🚀 ~ file: event.controller.ts:421 ~ EventController ~ genQR ~ path:', path)
   }
 }
 const eventController = new EventController()
