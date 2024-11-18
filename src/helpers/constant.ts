@@ -6,6 +6,7 @@ export const ROLES_ARRAY = [ROLES.SUPER_ADMIN, ROLES.ORGANIZER]
 export const USER_STATUS = {
   ACTIVE: 'active',
   INACTIVE: 'inactive',
+  ALL: 'all',
 }
 export const MODULE_IDENTIFIRES = {
   USER: 'user',

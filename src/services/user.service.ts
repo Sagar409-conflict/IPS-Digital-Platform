@@ -114,12 +114,19 @@ class UserService {
     return
   }
 
-  async getById(id: string): Promise<ICreateUser | null> {
-    return User.findOne({
-      where: {
-        id: id,
+  async getById(id: string, status = USER_STATUS.ACTIVE): Promise<ICreateUser | null> {
+    let where: WhereOptions<ICreateUser> = {
+      id: id,
+    }
+    if (status === USER_STATUS.ACTIVE) {
+      where = {
+        ...where,
         status: USER_STATUS.ACTIVE,
-      },
+      }
+    }
+
+    return User.findOne({
+      where,
       attributes: [
         'id',
         'role',

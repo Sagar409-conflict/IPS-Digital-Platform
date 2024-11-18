@@ -5,7 +5,7 @@ import { IResponseAndCount } from '../types/common.interface'
 import User from '../models/user.model'
 import NewsCategory from '../models/news_category.model'
 import userService from './user.service'
-import { ROLES } from '../helpers/constant'
+import { ROLES, USER_STATUS } from '../helpers/constant'
 
 class NewsService {
   // Create a new News entry
@@ -33,7 +33,7 @@ class NewsService {
       }
     }
     if (pagination.user_id !== undefined) {
-      const user = await userService.getById(pagination.user_id)
+      const user = await userService.getById(pagination.user_id, USER_STATUS.ALL)
       if (user && user.role === ROLES.ORGANIZER) {
         where = {
           ...where,

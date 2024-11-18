@@ -7,7 +7,7 @@ import { ICreateEventAssets, IEventAssets } from '../types/event_assets.interfac
 import User from '../models/user.model'
 import EventCategory from '../models/event_category.model'
 import userService from './user.service'
-import { ROLES } from '../helpers/constant'
+import { ROLES, USER_STATUS } from '../helpers/constant'
 
 class EventService {
   async create(payload: ICreateEvent): Promise<IEvent> {
@@ -66,7 +66,8 @@ class EventService {
       }
     }
     if (pagination.user_id !== undefined) {
-      const user = await userService.getById(pagination.user_id)
+      const user = await userService.getById(pagination.user_id, USER_STATUS.ALL)
+
       if (user && user.role === ROLES.ORGANIZER) {
         where = {
           ...where,
@@ -129,6 +130,7 @@ class EventService {
       }
     }
 
+    console.log('🚀 ~ file: event.service.ts:102 ~ EventService ~ findAll ~ where:', where)
     const filter: FindOptions<ICreateEvent> = {
       where,
       include: [
