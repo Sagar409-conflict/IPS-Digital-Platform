@@ -23,7 +23,6 @@ class ContactUsService {
         [Op.or]: [
           { full_name: { [Op.like]: `%${pagination.search}%` } },
           { email: { [Op.like]: `%${pagination.search}%` } },
-          { message: { [Op.like]: `%${pagination.search}%` } },
         ],
       }
     }

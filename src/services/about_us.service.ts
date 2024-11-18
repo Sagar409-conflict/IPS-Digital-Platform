@@ -44,10 +44,7 @@ class AboutUsService {
     if (pagination.search) {
       where = {
         ...where,
-        [Op.or]: [
-          { title: { [Op.like]: `%${pagination.search}%` } },
-          { description: { [Op.like]: `%${pagination.search}%` } },
-        ],
+        [Op.or]: [{ title: { [Op.like]: `%${pagination.search}%` } }],
       }
     }
 
