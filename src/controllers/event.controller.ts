@@ -33,8 +33,8 @@ class EventController {
       // Set default values in payload
       payload.creator_id = req.user.id
       const statusValidation = {
-        [ROLES.ORGANIZER]: ['draft', 'pending'],
-        [ROLES.SUPER_ADMIN]: ['draft', 'published'],
+        [ROLES.ORGANIZER]: [EVENT_STATUS.DRAFT, EVENT_STATUS.PENDING],
+        [ROLES.SUPER_ADMIN]: [EVENT_STATUS.DRAFT, EVENT_STATUS.PUBLISHED],
       }
       const userRole = req.user.role
 
@@ -106,8 +106,8 @@ class EventController {
         console.log('Something went wrong in image upload function')
       }
 
-      if (payload.status === 'pending') {
-        const superAdmin = await User.findOne({ where: { role: 'super_admin' } })
+      if (payload.status === EVENT_STATUS.PENDING) {
+        const superAdmin = await User.findOne({ where: { role: ROLES.SUPER_ADMIN } })
         if (!superAdmin?.email) {
           console.error('Super admin email is undefined.')
           return badRequest(res, languageCode, 'SUPER_ADMIN_EMAIL_REQUIRED')
@@ -123,6 +123,18 @@ class EventController {
           submitted_date: formatDate(payload.submittedAt),
         }
         await mailTemplateService.sendEventPendingApprovalEmail(mailbody)
+      } else if (payload.status === EVENT_STATUS.PUBLISHED) {
+        //Get Event Id
+        const latestEventDetails = await eventService.findOne({ where: { id: recordCreated.id } })
+        if (!latestEventDetails) return badRequest(res, languageCode, 'EVENT_NOT_EXIST')
+
+        // Generate QR Code
+        const QRCodePath = await generateQRCode(latestEventDetails.id, latestEventDetails.title)
+        const updateRecord = (
+          await eventService.update(latestEventDetails.id, { qr_code_image: QRCodePath })
+        )[0]
+        if (!updateRecord)
+          throw new Error(`Admin has published own event unable to generateQR Code`)
       }
 
       return success(res, languageCode, undefined, 'EVENT_CREATION_SUCCESS')
@@ -208,8 +220,8 @@ class EventController {
       const event_id = req.params.id
       const payload = req.body
       const statusValidation = {
-        [ROLES.ORGANIZER]: ['draft', 'pending'],
-        [ROLES.SUPER_ADMIN]: ['draft', 'published'],
+        [ROLES.ORGANIZER]: [EVENT_STATUS.DRAFT, EVENT_STATUS.PENDING],
+        [ROLES.SUPER_ADMIN]: [EVENT_STATUS.DRAFT, EVENT_STATUS.PUBLISHED],
       }
 
       const userRole = req.user.role
@@ -262,6 +274,11 @@ class EventController {
         }
       }
 
+      //Generate QRCode
+      if (payload.status === EVENT_STATUS.PUBLISHED) {
+        payload.publishedAt = new Date()
+        payload.qr_code_image = await generateQRCode(event_id, payload.title)
+      }
       const updateRecord = (await eventService.update(event_id, payload))[0]
       if (updateRecord) {
         if (assetsUpdateStatus.thumbnail_image) await removeFile(isExist.thumbnail_image)
