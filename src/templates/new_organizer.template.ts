@@ -47,7 +47,7 @@ class SendNewOrganizerTemplate {
                 </div>
                 <div style="text-align:center;padding:16px 24px 16px 24px">
                   <a
-                    href="https://www.google.com"
+                    href="${process.env.LOGIN_PAGE_URL}"
                     style="color:#FFFFFF;font-size:12px;font-weight:bold;background-color:#000000;border-radius:64px;display:inline-block;padding:8px 12px;text-decoration:none"
                     target="_blank"
                     ><span
